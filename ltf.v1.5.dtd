@@ -1,0 +1,52 @@
+<!--
+			      A DTD for
+	           LDC LCTL Tokenized Text XML Files
+
+		      Linguistic Data Consortium
+			    August 15, 2006
+
+			     Version 1.1
+-->
+
+<!ELEMENT LCTL_TEXT (DOC+)                         >
+<!ATTLIST LCTL_TEXT lang CDATA         #IMPLIED   
+                    source_file CDATA  #IMPLIED   
+                    source_type CDATA  #IMPLIED   
+                    author CDATA       #IMPLIED   
+                    encoding CDATA     #IMPLIED    >
+
+<!ELEMENT DOC (HEADLINE|DATELINE|AUTHORLINE|TEXT)+ >
+<!ATTLIST DOC id           ID     #REQUIRED
+              tokenization CDATA  #IMPLIED
+              grammar      CDATA  #IMPLIED
+              raw_text_char_length  CDATA #IMPLIED
+              raw_text_md5          CDATA #IMPLIED
+>
+
+<!ELEMENT HEADLINE (SEG+)                          >
+<!ELEMENT DATELINE (#PCDATA)                       >
+<!ELEMENT AUTHORLINE (#PCDATA)                     >
+<!ELEMENT TEXT (P|SEG)+                            >
+
+<!ELEMENT P (SEG+)                                 >
+
+<!ELEMENT SEG (ORIGINAL_TEXT?, TOKEN*)             >
+<!ATTLIST SEG id             ID     #REQUIRED            
+              start_token    IDREF  #IMPLIED
+              end_token      IDREF  #IMPLIED
+	      start_char     CDATA  #IMPLIED
+	      end_char       CDATA  #IMPLIED        
+>
+
+<!ELEMENT ORIGINAL_TEXT (#PCDATA)                  >
+
+<!ELEMENT TOKEN (#PCDATA)                          >
+<!ATTLIST TOKEN id           ID     #REQUIRED            
+                attach       (LEFT|RIGHT|BOTH) 
+			            #IMPLIED            
+		pos          CDATA  #IMPLIED            
+		morph        CDATA  #IMPLIED            	
+		gloss        CDATA  #IMPLIED            	
+		start_char   CDATA  #IMPLIED
+		end_char     CDATA  #IMPLIED        
+>

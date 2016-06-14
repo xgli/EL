@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE LCTL_TEXT SYSTEM "ltf.v1.5.dtd">
+<LCTL_TEXT>
+<DOC id="CMN_NW_000020_20150604_F00100013.nw.xml" tokenization="tokenization_parameters" grammar="none" raw_text_char_length="1851" raw_text_md5="98e3aee237ddfb1fe3ea5b2ac9207c14">
+<TEXT>
+<SEG id="segment-0" start_char="0" end_char="37">
+<ORIGINAL_TEXT>&lt;?xml version="1.0" encoding="utf-8"?&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-0-0" pos="unknown" morph="none" start_char="0" end_char="4">&lt;?xml</TOKEN>
+<TOKEN id="token-0-1" pos="unknown" morph="none" start_char="6" end_char="18">version="1.0"</TOKEN>
+<TOKEN id="token-0-2" pos="unknown" morph="none" start_char="20" end_char="37">encoding="utf-8"?&gt;</TOKEN>
+</SEG>
+<SEG id="segment-1" start_char="39" end_char="81">
+<ORIGINAL_TEXT>&lt;DOC id="CMN_NW_000020_20150604_F00100013"&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-1-0" pos="unknown" morph="none" start_char="39" end_char="42">&lt;DOC</TOKEN>
+<TOKEN id="token-1-1" pos="unknown" morph="none" start_char="44" end_char="81">id="CMN_NW_000020_20150604_F00100013"&gt;</TOKEN>
+</SEG>
+<SEG id="segment-2" start_char="83" end_char="171">
+<ORIGINAL_TEXT>&lt;SOURCE&gt;http://club.china.com/baijiaping/gundong/11141903/20150604/19790488.html&lt;/SOURCE&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-2-0" pos="unknown" morph="none" start_char="83" end_char="171">&lt;SOURCE&gt;http://club.china.com/baijiaping/gundong/11141903/20150604/19790488.html&lt;/SOURCE&gt;</TOKEN>
+</SEG>
+<SEG id="segment-3" start_char="173" end_char="214">
+<ORIGINAL_TEXT>&lt;DATE_TIME&gt;2015-06-04T00:00:00&lt;/DATE_TIME&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-3-0" pos="unknown" morph="none" start_char="173" end_char="214">&lt;DATE_TIME&gt;2015-06-04T00:00:00&lt;/DATE_TIME&gt;</TOKEN>
+</SEG>
+<SEG id="segment-4" start_char="216" end_char="225">
+<ORIGINAL_TEXT>&lt;HEADLINE&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-4-0" pos="unknown" morph="none" start_char="216" end_char="225">&lt;HEADLINE&gt;</TOKEN>
+</SEG>
+<SEG id="segment-5" start_char="227" end_char="239">
+<ORIGINAL_TEXT>足坛乱世，中国就能摘桃子？</ORIGINAL_TEXT>
+<TOKEN id="token-5-0" pos="word" morph="none" start_char="227" end_char="230">足坛乱世</TOKEN>
+<TOKEN id="token-5-1" pos="punct" morph="none" start_char="231" end_char="231">，</TOKEN>
+<TOKEN id="token-5-2" pos="word" morph="none" start_char="232" end_char="238">中国就能摘桃子</TOKEN>
+<TOKEN id="token-5-3" pos="punct" morph="none" start_char="239" end_char="239">？</TOKEN>
+</SEG>
+<SEG id="segment-6" start_char="241" end_char="251">
+<ORIGINAL_TEXT>&lt;/HEADLINE&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-6-0" pos="unknown" morph="none" start_char="241" end_char="251">&lt;/HEADLINE&gt;</TOKEN>
+</SEG>
+<SEG id="segment-7" start_char="253" end_char="258">
+<ORIGINAL_TEXT>&lt;TEXT&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-7-0" pos="unknown" morph="none" start_char="253" end_char="258">&lt;TEXT&gt;</TOKEN>
+</SEG>
+<SEG id="segment-8" start_char="260" end_char="262">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-8-0" pos="unknown" morph="none" start_char="260" end_char="262">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-9" start_char="264" end_char="343">
+<ORIGINAL_TEXT>围绕布拉特辞职，中国社交媒体上的讨论中，最莫名其妙的，就是为中国足球击节欢庆的声音，诸如：“中国有望举办世界杯了……”“中国能从卡塔尔手中接过世界杯主办权了”。</ORIGINAL_TEXT>
+<TOKEN id="token-9-0" pos="unknown" morph="none" start_char="264" end_char="343">围绕布拉特辞职，中国社交媒体上的讨论中，最莫名其妙的，就是为中国足球击节欢庆的声音，诸如：“中国有望举办世界杯了……”“中国能从卡塔尔手中接过世界杯主办权了”。</TOKEN>
+</SEG>
+<SEG id="segment-10" start_char="345" end_char="348">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-10-0" pos="unknown" morph="none" start_char="345" end_char="348">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-11" start_char="350" end_char="352">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-11-0" pos="unknown" morph="none" start_char="350" end_char="352">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-12" start_char="354" end_char="363">
+<ORIGINAL_TEXT>这真是风马牛不相及。</ORIGINAL_TEXT>
+<TOKEN id="token-12-0" pos="word" morph="none" start_char="354" end_char="362">这真是风马牛不相及</TOKEN>
+<TOKEN id="token-12-1" pos="punct" morph="none" start_char="363" end_char="363">。</TOKEN>
+</SEG>
+<SEG id="segment-13" start_char="365" end_char="368">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-13-0" pos="unknown" morph="none" start_char="365" end_char="368">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-14" start_char="370" end_char="372">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-14-0" pos="unknown" morph="none" start_char="370" end_char="372">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-15" start_char="374" end_char="590">
+<ORIGINAL_TEXT>一场政治争斗或者阴谋，剧终最大的获益者，往往是挑起争斗的那只手，或是在阴谋格局中隐藏最深、设计却又最狠的操盘者。将国际足联过去十天的各种事态看做一场政治飓风，绝不为过。它和足球运动本身没有太多关联，更是一场政治上的党同伐异。从5月27日清晨苏黎世湖畔的抓捕行为开始，到美国司法部部长义正辞严地指斥国际足联“制度化贪腐”，到布拉特尴尬地连任成功，再到2008年一笔牵涉国际足联秘书长瓦尔克的“一千万美元贿金”，剧情终于走到了布拉特辞职。</ORIGINAL_TEXT>
+<TOKEN id="token-15-0" pos="unknown" morph="none" start_char="374" end_char="590">一场政治争斗或者阴谋，剧终最大的获益者，往往是挑起争斗的那只手，或是在阴谋格局中隐藏最深、设计却又最狠的操盘者。将国际足联过去十天的各种事态看做一场政治飓风，绝不为过。它和足球运动本身没有太多关联，更是一场政治上的党同伐异。从5月27日清晨苏黎世湖畔的抓捕行为开始，到美国司法部部长义正辞严地指斥国际足联“制度化贪腐”，到布拉特尴尬地连任成功，再到2008年一笔牵涉国际足联秘书长瓦尔克的“一千万美元贿金”，剧情终于走到了布拉特辞职。</TOKEN>
+</SEG>
+<SEG id="segment-16" start_char="592" end_char="595">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-16-0" pos="unknown" morph="none" start_char="592" end_char="595">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-17" start_char="597" end_char="599">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-17-0" pos="unknown" morph="none" start_char="597" end_char="599">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-18" start_char="601" end_char="710">
+<ORIGINAL_TEXT>这是《纸牌屋》的苏黎世版。谁能从中获得最大利益？当然是身体力行、全方位参与这次政治风暴的美国。中国有何利可谈？就因为中国资本大举入侵国际足球界了？还是因为亚洲首富王健林出现在国际足联大会现场了？王老板还是布拉特邀请去的。</ORIGINAL_TEXT>
+<TOKEN id="token-18-0" pos="unknown" morph="none" start_char="601" end_char="710">这是《纸牌屋》的苏黎世版。谁能从中获得最大利益？当然是身体力行、全方位参与这次政治风暴的美国。中国有何利可谈？就因为中国资本大举入侵国际足球界了？还是因为亚洲首富王健林出现在国际足联大会现场了？王老板还是布拉特邀请去的。</TOKEN>
+</SEG>
+<SEG id="segment-19" start_char="712" end_char="983">
+<ORIGINAL_TEXT>布拉特并非立即辞职，他会安排国际足联在2015年年底到2016年3月之间召开紧急大会，选出下任主席，这半年将是布拉特引退前的过渡期。然而布拉特已经没有足够的时间和公信力来准备自己身后之事。他的前任阿维兰热用了很长时间来栽培布拉特，保证了自己退休后相对平稳的权力过度。已经连任四届的布拉特不是没选过接班人，但曾跟他过从甚密的前国际足联秘书长鲁菲南、法国人尚帕尼，后来都成为了他的死敌。普拉蒂尼和他也有过蜜月期，但也因为布拉特在2015年恋栈不去，反目成仇。上文提到的瓦尔克是他最大的同盟，但FBI正在调查的“一千万美元贿金”，直接牵扯到了瓦尔克。</ORIGINAL_TEXT>
+<TOKEN id="token-19-0" pos="unknown" morph="none" start_char="712" end_char="983">布拉特并非立即辞职，他会安排国际足联在2015年年底到2016年3月之间召开紧急大会，选出下任主席，这半年将是布拉特引退前的过渡期。然而布拉特已经没有足够的时间和公信力来准备自己身后之事。他的前任阿维兰热用了很长时间来栽培布拉特，保证了自己退休后相对平稳的权力过度。已经连任四届的布拉特不是没选过接班人，但曾跟他过从甚密的前国际足联秘书长鲁菲南、法国人尚帕尼，后来都成为了他的死敌。普拉蒂尼和他也有过蜜月期，但也因为布拉特在2015年恋栈不去，反目成仇。上文提到的瓦尔克是他最大的同盟，但FBI正在调查的“一千万美元贿金”，直接牵扯到了瓦尔克。</TOKEN>
+</SEG>
+<SEG id="segment-20" start_char="985" end_char="988">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-20-0" pos="unknown" morph="none" start_char="985" end_char="988">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-21" start_char="990" end_char="992">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-21-0" pos="unknown" morph="none" start_char="990" end_char="992">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-22" start_char="994" end_char="1166">
+<ORIGINAL_TEXT>那是2008年，由国际足联支付给中北美及加勒比海足联的一笔款项，最终落入后者前任主席杰克·华纳囊中。这笔钱被怀疑是布拉特为南非2010年世界杯拉选票时贿赂华纳的黑金。虽然至今没有确凿认定，但一封信函“及时地”出现，确认了瓦尔克和这笔款项流转有关。6月2日，国际足联承认瓦尔克将不会出席即将开始的女足世界杯，这样的反常行为，意味着瓦尔克已自身难保。</ORIGINAL_TEXT>
+<TOKEN id="token-22-0" pos="unknown" morph="none" start_char="994" end_char="1166">那是2008年，由国际足联支付给中北美及加勒比海足联的一笔款项，最终落入后者前任主席杰克·华纳囊中。这笔钱被怀疑是布拉特为南非2010年世界杯拉选票时贿赂华纳的黑金。虽然至今没有确凿认定，但一封信函“及时地”出现，确认了瓦尔克和这笔款项流转有关。6月2日，国际足联承认瓦尔克将不会出席即将开始的女足世界杯，这样的反常行为，意味着瓦尔克已自身难保。</TOKEN>
+</SEG>
+<SEG id="segment-23" start_char="1168" end_char="1171">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-23-0" pos="unknown" morph="none" start_char="1168" end_char="1171">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-24" start_char="1173" end_char="1175">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-24-0" pos="unknown" morph="none" start_char="1173" end_char="1175">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-25" start_char="1177" end_char="1216">
+<ORIGINAL_TEXT>这“一千万美元贿金”调查和那封指证瓦尔克的信，成了压在布拉特身上的最后一根稻草。</ORIGINAL_TEXT>
+<TOKEN id="token-25-0" pos="unknown" morph="none" start_char="1177" end_char="1216">这“一千万美元贿金”调查和那封指证瓦尔克的信，成了压在布拉特身上的最后一根稻草。</TOKEN>
+</SEG>
+<SEG id="segment-26" start_char="1218" end_char="1221">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-26-0" pos="unknown" morph="none" start_char="1218" end_char="1221">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-27" start_char="1223" end_char="1225">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-27-0" pos="unknown" morph="none" start_char="1223" end_char="1225">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-28" start_char="1227" end_char="1457">
+<ORIGINAL_TEXT>谁会成为下一任主席？未来权力格局如何变化？2018年俄罗斯和2022年卡塔尔世界杯的主办权会否又起波澜？无数悬疑飘荡着。下一任主席的争夺，会是国际足球权力重新架构的关键。普拉蒂尼名望和能力都高，支持卡塔尔2022是他听从前法国总统萨科齐的决定。然而一周前的国际足联竞选中，他退居幕后，让人失望。这显示出，更深层次的矛盾，在于欧洲足球和全球足球的矛盾——普拉蒂尼很难说服其他大洲，他领导的国际足联，也能像布拉特时代那样，以利益均沾的方式，让所有国际足联成员都受益。</ORIGINAL_TEXT>
+<TOKEN id="token-28-0" pos="unknown" morph="none" start_char="1227" end_char="1457">谁会成为下一任主席？未来权力格局如何变化？2018年俄罗斯和2022年卡塔尔世界杯的主办权会否又起波澜？无数悬疑飘荡着。下一任主席的争夺，会是国际足球权力重新架构的关键。普拉蒂尼名望和能力都高，支持卡塔尔2022是他听从前法国总统萨科齐的决定。然而一周前的国际足联竞选中，他退居幕后，让人失望。这显示出，更深层次的矛盾，在于欧洲足球和全球足球的矛盾——普拉蒂尼很难说服其他大洲，他领导的国际足联，也能像布拉特时代那样，以利益均沾的方式，让所有国际足联成员都受益。</TOKEN>
+</SEG>
+<SEG id="segment-29" start_char="1459" end_char="1462">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-29-0" pos="unknown" morph="none" start_char="1459" end_char="1462">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-30" start_char="1464" end_char="1466">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-30-0" pos="unknown" morph="none" start_char="1464" end_char="1466">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-31" start_char="1468" end_char="1638">
+<ORIGINAL_TEXT>这些和中国足球既有关，又无关。即便卡塔尔失去2022主办权，世界杯就会来到中国吗？不，卡塔尔击败的2022申办对手，正是美国，这才有了美国FBI最近这4年锲而不舍的穷追猛打。中国足球长期在国际足球政治界的不贡献、不发言甚至不参与，导致中国足球的政治落后，远甚于中国足球的竞技落后。就算是马来西亚、新加坡这些国家，都比中国在国际足坛更有话语权。</ORIGINAL_TEXT>
+<TOKEN id="token-31-0" pos="unknown" morph="none" start_char="1468" end_char="1638">这些和中国足球既有关，又无关。即便卡塔尔失去2022主办权，世界杯就会来到中国吗？不，卡塔尔击败的2022申办对手，正是美国，这才有了美国FBI最近这4年锲而不舍的穷追猛打。中国足球长期在国际足球政治界的不贡献、不发言甚至不参与，导致中国足球的政治落后，远甚于中国足球的竞技落后。就算是马来西亚、新加坡这些国家，都比中国在国际足坛更有话语权。</TOKEN>
+</SEG>
+<SEG id="segment-32" start_char="1640" end_char="1643">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-32-0" pos="unknown" morph="none" start_char="1640" end_char="1643">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-33" start_char="1645" end_char="1647">
+<ORIGINAL_TEXT>&lt;P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-33-0" pos="unknown" morph="none" start_char="1645" end_char="1647">&lt;P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-34" start_char="1649" end_char="1829">
+<ORIGINAL_TEXT>乱世之中，中国依旧只能望洋兴叹。新一届足管中心主任上任两三年，居然不接受媒体采访。国际舞台上，中国大陆首位国际足联执委会委员张吉龙勉力逢迎，在国内却没有得到足够的支撑。十年前就该图谋的世界杯申办，当局者却置若罔闻。时过境迁，现在政治气候变了，又想要下山摘桃子，却全无铺垫和积累，岂不是自找没趣？国际政治，不预则废。中国根本摘不到桃子，最多望梅止渴，自己意淫一番。</ORIGINAL_TEXT>
+<TOKEN id="token-34-0" pos="unknown" morph="none" start_char="1649" end_char="1829">乱世之中，中国依旧只能望洋兴叹。新一届足管中心主任上任两三年，居然不接受媒体采访。国际舞台上，中国大陆首位国际足联执委会委员张吉龙勉力逢迎，在国内却没有得到足够的支撑。十年前就该图谋的世界杯申办，当局者却置若罔闻。时过境迁，现在政治气候变了，又想要下山摘桃子，却全无铺垫和积累，岂不是自找没趣？国际政治，不预则废。中国根本摘不到桃子，最多望梅止渴，自己意淫一番。</TOKEN>
+</SEG>
+<SEG id="segment-35" start_char="1831" end_char="1834">
+<ORIGINAL_TEXT>&lt;/P&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-35-0" pos="unknown" morph="none" start_char="1831" end_char="1834">&lt;/P&gt;</TOKEN>
+</SEG>
+<SEG id="segment-36" start_char="1836" end_char="1842">
+<ORIGINAL_TEXT>&lt;/TEXT&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-36-0" pos="unknown" morph="none" start_char="1836" end_char="1842">&lt;/TEXT&gt;</TOKEN>
+</SEG>
+<SEG id="segment-37" start_char="1844" end_char="1849">
+<ORIGINAL_TEXT>&lt;/DOC&gt;</ORIGINAL_TEXT>
+<TOKEN id="token-37-0" pos="unknown" morph="none" start_char="1844" end_char="1849">&lt;/DOC&gt;</TOKEN>
+</SEG>
+</TEXT>
+</DOC>
+</LCTL_TEXT>
