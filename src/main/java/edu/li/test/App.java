@@ -96,7 +96,7 @@ public class App {
 			 segosw.flush();
 			 String ner = getNer(segLine,"10.103.28.254",2310);
 			 int len = 0;
-			 Pattern pattern = Pattern.compile("(<.*?>)(.*?)</.*?>");
+			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
 			 Matcher matcher = pattern.matcher(ner);
 			 while(matcher.find()){	 
 				 start = matcher.start() - len + bias;
@@ -105,12 +105,18 @@ public class App {
 				 String mention = matcher.group(2);
 				 String type = matcher.group(1);
 				 String loc = start + "-" + end;
+				 
 				 System.out.print(mention + "\t");
-				 nerosw.write(mention + "\t");
-				 System.out.print(type + "\t");
-				 nerosw.write(type + "\t");
-				 System.out.println(loc);
-				 nerosw.write(loc + "\n");
+				 nerosw.write(mention + "\t");				 
+				 System.out.print(loc + "\t");
+				 nerosw.write(fileName + ":" + loc + "\t");					 
+				 System.out.println(type);
+				 nerosw.write(type + "\n");
+				 
+				 
+		 
+
+
 				 nerosw.flush();
 			 }
 		 }
