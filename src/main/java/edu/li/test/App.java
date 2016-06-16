@@ -112,9 +112,6 @@ public class App {
 				 nerosw.write(fileName + ":" + loc + "\t");					 
 				 System.out.println(type);
 				 nerosw.write(type + "\n");
-				 
-				 
-		 
 
 
 				 nerosw.flush();

@@ -12,17 +12,10 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.text.StringAndBytesText;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.mapper.StrictDynamicMappingException;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-import static org.elasticsearch.common.xcontent.XContentFactory.*;
 
 
 /**
@@ -108,7 +101,7 @@ public class Search {
 		String lang = "cmn";
 
 		SearchHits hits = getHits(mention, mention_type, lang);
-		for (SearchHit hit : hits.getHits()){ //根据需要修改			
+		for (SearchHit hit : hits.getHits()){ //getHits 的使用			
 			System.out.println(hit.getId());
 			System.out.println(hit.getFields().get("rs_label_zh").getValue());
 			System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());
