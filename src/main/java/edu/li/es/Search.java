@@ -82,10 +82,10 @@ public class Search {
 		
 		TransportClient client = geTransportClient();
 		SearchResponse actionGet = client.prepareSearch("base_kb")
-										.setTypes("entity")											
+										.setTypes("entity")										
 										.setTemplateName("template_" + mention_type + "_" + lang)
 										.setTemplateType(ScriptService.ScriptType.FILE)
-										.setTemplateParams(templateParams)
+										.setTemplateParams(templateParams)						
 //										.setQuery( QueryBuilders.termQuery("_id", "2"))
 										.execute()
 										.actionGet();
@@ -101,6 +101,7 @@ public class Search {
 		String lang = "cmn";
 
 		SearchHits hits = getHits(mention, mention_type, lang);
+//		System.out.println(hits.totalHits());
 		for (SearchHit hit : hits.getHits()){ //getHits 的使用			
 			System.out.println(hit.getId());
 			System.out.println(hit.getFields().get("rs_label_zh").getValue());
