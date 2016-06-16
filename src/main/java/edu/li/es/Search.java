@@ -12,10 +12,17 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.text.StringAndBytesText;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.mapper.StrictDynamicMappingException;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.ScriptService;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+import static org.elasticsearch.common.xcontent.XContentFactory.*;
 
 
 /**
@@ -76,22 +83,36 @@ public class Search {
 		return client;
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static  SearchHits getHits(String mention,String mention_type, String lang){
+		Map<String, Object> templateParams = new HashMap<String, Object>();
+		templateParams.put("mention_"+mention_type, mention);
+		
 		TransportClient client = geTransportClient();
 		SearchResponse actionGet = client.prepareSearch("base_kb")
-										.setTypes("entity")
-										.setQuery( QueryBuilders.termQuery("_id", "f_m.0d05w3"))
+										.setTypes("entity")											
+										.setTemplateName("template_" + mention_type + "_" + lang)
+										.setTemplateType(ScriptService.ScriptType.FILE)
+										.setTemplateParams(templateParams)
+//										.setQuery( QueryBuilders.termQuery("_id", "2"))
 										.execute()
 										.actionGet();
 
-		SearchHits hits = actionGet.getHits();
-//		List <Map<String, Object>> matchResult = new LinkedList<Map<String , Object>>();
-		for (SearchHit hit : hits.getHits()){
-			System.out.println(hit.getSource());
+		return actionGet.getHits();		
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub	
+//		
+		String mention = "中国";
+		String mention_type = "ORG";
+		String lang = "cmn";
+
+		SearchHits hits = getHits(mention, mention_type, lang);
+		for (SearchHit hit : hits.getHits()){ //根据需要修改			
+			System.out.println(hit.getId());
+			System.out.println(hit.getFields().get("rs_label_zh").getValue());
+			System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());
 		}
-								
-		
 
 	}
 
