@@ -57,14 +57,14 @@ public class cmnGenCandidate {
 //				 System.out.println(mention+":"+mention_type);
 				 SearchHits hits = Search.getHits(mention, mention_type, "cmn");
 //				 System.out.print("li" + "\t" + "EDL"  + "\t");
-				 osw.write("li" + "\t" + "EDL" + "\t");
+//				 osw.write("li" + "\t" + "EDL" + "\t");
 				 if (0 == hits.totalHits()){
-					 System.out.println(mention + "\t" + mention_loc + "\t" + "NIL" + "\t" + mention_type);
-					 osw.write(mention + "\t" + mention_loc + "NIL"  + "\t" + mention_type + "\n");
+//					 System.out.println(mention + "\t" + mention_loc + "\t" + "NIL" + "\t" + mention_type);
+					 osw.write(mention + "\t" + mention_loc + "\t" + "NIL"  + "\t" + mention_type + "\n");
 					 continue;
 				 }
 				 for (SearchHit hit : hits.getHits()){ //getHits 的使用	
-					System.out.println(mention + "\t" + mention_loc + "\t"+ hit.getId()  + "\t" + mention_type);
+//					System.out.println(mention + "\t" + mention_loc + "\t"+ hit.getId()  + "\t" + mention_type);
 					osw.write(mention + "\t" + mention_loc + "\t"+ hit.getId()  + "\t" + mention_type + "\n");
 					break;
 				 }

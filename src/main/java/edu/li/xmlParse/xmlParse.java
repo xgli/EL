@@ -96,7 +96,7 @@ public class xmlParse {
 		for(Element SEG : SEGs){
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
-			if (-1 == text.indexOf("<")){ //提取纯文本
+			if (-1 == text.indexOf("<") && -1 == text.indexOf("&lt")){ //提取纯文本
 				textosw.write(SEG.attributeValue("start_char") + " " + text + "\n");
 				textosw.flush();
 			}
@@ -120,7 +120,7 @@ public class xmlParse {
 	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
-		String fileName = "CMN_DF_000020_20150108_F00100074.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
+		String fileName = "CMN_DF_000196_20150225_F000000C3.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
 		ParseDf(fileName);
 
 	}

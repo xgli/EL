@@ -57,7 +57,15 @@ public class cmnGenMention {
 			 line = line.substring(1,line.length()-1);
 			 String[] tokens = line.split(", ");
 			 for(String token : tokens){
-				 sb.append(token.split("/")[0] + "\t");
+//				 System.out.println(token);
+				 String[] terms = token.split("/");
+				 if(0 == terms.length){
+					 sb.append(token + "\t");
+				 }
+				 else{
+					 sb.append(token.split("/")[0] + "\t"); 
+				 }
+
 			 }
 			 sb.append("\n");
 		 } 

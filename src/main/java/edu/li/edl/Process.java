@@ -3,13 +3,16 @@
  */
 package edu.li.edl;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import org.dom4j.DocumentException;
 
 import edu.li.candidate.cmnGenCandidate;
 import edu.li.mention.cmnGenMention;
 import edu.li.xmlParse.xmlParse;
+import edu.stanford.nlp.ie.crf.FactorTable;
 
 /**
  *date:Jun 17, 2016 10:51:21 AM
@@ -26,10 +29,39 @@ public class Process {
 	 */
 	public static void main(String[] args) throws DocumentException, IOException {
 		// TODO Auto-generated method stub
-		String fileName = "CMN_DF_000020_20150108_F00100074.df.ltf.xml";
-		xmlParse.ParseDf(fileName);
-		cmnGenMention.GetMention(fileName, "df");
-		cmnGenCandidate.GenCandidate(fileName, "df");
+//		String fileName = "CMN_DF_000196_20150225_F000000C3.df.ltf.xml";
+//		System.out.println("xmlParse:###########");
+//		xmlParse.ParseDf(fileName);
+//		System.out.println("GenMention:###########");
+//		cmnGenMention.GetMention(fileName, "df");
+//		System.out.println("GenCandidate:#########");
+//		cmnGenCandidate.GenCandidate(fileName, "df");
+		String fileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "news";
+		File dir = new File(fileDir);
+		File[] files = dir.listFiles();
+		int all = files.length;
+		int done = 0;
+		long start = System.currentTimeMillis();
+		if(files != null){
+			for(File file : files){
+				done += 1;
+				System.out.println("doing:" + done + "\t" + "all:" + all);
+				String fileName = file.getName();
+				System.out.println(fileName);
+				if(fileName.endsWith("xml")){
+//					System.out.println("xmlParse:###########");
+//					xmlParse.ParseDf(fileName);
+					xmlParse.ParseNews(fileName);
+//					System.out.println("GenMention:###########");
+					cmnGenMention.GetMention(fileName, "news");
+//					System.out.println("GenCandidate:#########");
+					cmnGenCandidate.GenCandidate(fileName, "news");					
+				}
+			}
+			long end = System.currentTimeMillis();
+			System.out.println((end - start) + "s");
+		}
+				
 
 	}
 
