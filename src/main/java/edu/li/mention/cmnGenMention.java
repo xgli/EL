@@ -113,7 +113,7 @@ public class cmnGenMention {
 		 OutputStreamWriter segosw = new OutputStreamWriter(segfos, "UTF-8");
 		 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
 		 
-
+		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
 			 int bias = Integer.parseInt(line.split(" ")[0].trim());
 			 String segLine = line.split(" ")[1];
@@ -134,7 +134,7 @@ public class cmnGenMention {
 //				 System.out.print(mention + "\t");
 				 nerosw.write(mention + "\t");				 
 //				 System.out.print(loc + "\t");
-				 nerosw.write(fileName + ":" + loc + "\t");					 
+				 nerosw.write(fileID + ":" + loc + "\t");					 
 //				 System.out.println(type);
 				 nerosw.write(type + "\n");
 				 nerosw.flush();
