@@ -26,7 +26,7 @@ import edu.stanford.nlp.io.IOUtils;
 public class GenCandidata {
 	
 	
-	public static final String FILEINPUTDIR = "data" + File.separator + "mention" + File.separator;
+	public static final String FILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" +File.separator;
 	public static final String FILEOUTDIR = "data" + File.separator + "candidate" + File.separator;
 	
 	public static void  main(String[] args) throws IOException {
@@ -67,11 +67,8 @@ public class GenCandidata {
 //					System.out.print(mention + "\t" + mention_loc + mid + "\t" + mention_type + "NAM" + "\t" + "1.0");
 					break;
 				 }
-				 osw.flush();
-				 
-//				 System.out.println("freebase##");
-//				 System.out.println(SearchExample.freebaseSearch(mention));
-//				 System.out.println("*******************************");				 
+				 osw.flush();			 
+		 
 			 }			 
 			 
 		 }

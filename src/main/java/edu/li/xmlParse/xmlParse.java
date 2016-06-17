@@ -34,17 +34,25 @@ public class xmlParse {
 	 * @throws DocumentException 
 	 * @throws IOException 
 	 */
-	public  static final String FILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String FILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "df" + File.separator;
+	public  static final String DFFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
+	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "df" + File.separator;
+	
+	public  static final String NEWSFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
+	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "news" + File.separator;
+	
+
+	
+	
 	public static final String AUTHOROUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator; 
 	
-	public static void ParseNews(String filePath) throws DocumentException, IOException{
+	public static void ParseNews(String fileName) throws DocumentException, IOException{
 		SAXReader saxReader = new SAXReader();
-		File file = new File(filePath);
+		File file = new File(NEWSFILEINPUTDIR + fileName);
 		Document document = saxReader.read(file);
 		Element LCTL_TEXT = document.getRootElement(); //LCTL_TEXT
 		Element DOC = (Element) LCTL_TEXT.elements().get(0);
-		String fileOutPath = FILEOUTDIR + DOC.attributeValue("id");//输出文件路径
+//		String fileOutPath = NEWSFILEOUTDIR + DOC.attributeValue("id");//输出文件路径
+		String fileOutPath = NEWSFILEOUTDIR + fileName;
 		FileOutputStream fos = new FileOutputStream(fileOutPath);
 		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		
@@ -62,20 +70,24 @@ public class xmlParse {
 		fos.close();
 	}
 	
-	public static void ParseDf(String filePath) throws DocumentException, IOException {
+	public static void ParseDf(String fileName) throws DocumentException, IOException {
 		SAXReader saxReader = new SAXReader();
-		File file = new File(filePath);
+		File file = new File(DFFILEINPUTDIR + fileName);
 		Document document = saxReader.read(file);
 		Element LCTL_TEXT = document.getRootElement(); //LCTL_TEXT
 //		System.out.println(.getName());
 		Element DOC = (Element) LCTL_TEXT.elements().get(0);
 		
 		String fileID = DOC.attributeValue("id").split("\\.")[0];
-		String fileOutPath = FILEOUTDIR + DOC.attributeValue("id");//纯文本输出文件路径
+//		String fileOutPath = DFFILEOUTDIR + DOC.attributeValue("id");//纯文本输出文件路径
+		String fileOutPath = DFFILEOUTDIR + fileName;
+		
 		FileOutputStream textfos = new FileOutputStream(fileOutPath);
 		OutputStreamWriter textosw = new OutputStreamWriter(textfos, "UTF-8");
 		
-		String authorOutPath = AUTHOROUTDIR + DOC.attributeValue("id");//作者输出文件路径
+//		String authorOutPath = AUTHOROUTDIR + DOC.attributeValue("id");//作者输出文件路径
+		String authorOutPath = AUTHOROUTDIR + fileName;//作者输出文件路径
+		
 		FileOutputStream authorfos = new FileOutputStream(authorOutPath);
 		OutputStreamWriter authorosw = new OutputStreamWriter(authorfos, "UTF-8");	
 		
@@ -94,7 +106,7 @@ public class xmlParse {
 				if(matcher.find()){
 					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1);
 					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1;					
-					System.out.println(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end);
+//					System.out.println(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end);
 					authorosw.write(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end + "\n");
 					authorosw.flush();
 				}
@@ -108,8 +120,8 @@ public class xmlParse {
 	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
-		String filePath = FILEINPUTDIR +"CMN_DF_000020_20150108_F00100074.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
-		ParseDf(filePath);
+		String fileName = "CMN_DF_000020_20150108_F00100074.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
+		ParseDf(fileName);
 
 	}
 

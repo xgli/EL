@@ -14,22 +14,19 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.elasticsearch.index.analysis.FieldNameAnalyzer;
-
-import com.spatial4j.core.shape.SpatialRelation;
+import org.elasticsearch.common.lang3.ObjectUtils.Null;
 
 import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
 
 /**
- *date:Jun 16, 2016 2:49:06 PM
+ *date:Jun 17, 2016 9:24:51 AM
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
- *last modified: Jun 16, 2016 2:49:06 PM
+ *last modified: Jun 17, 2016 9:24:51 AM
  */
-
-public class GenMention {
+public class cmnGenMention {
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "news" + File.separator;
@@ -75,74 +72,77 @@ public class GenMention {
 		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
 		 bw.close();
 		 br.close();
-		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
+//		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
+		 String ner = sw.toString().replaceAll("\t", "").replaceAll("PERSON", "PER");
 		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
 	}
 	
-//	public static void GetMention(String fileName,String inPutDir,String outPutDir) throws IOException {
-////		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.xml";
-//		 String text = IOUtils.slurpFile(inPutDir + fileName);	 
-//		 String segText = getAnsjSegment(text);
-//		 String[] lines = segText.split("\n");
-//		 int start = 0; //mention location the first char.
-//		 int end = 0;  //mention location the lastest char.	
-//		 
-//		 if(type.equals("news")){
-//			 
-//			 FileOutputStream segfos = new FileOutputStream(NEWSSEGMENTOUTDIR + fileName);
-//			 OutputStreamWriter segosw = new OutputStreamWriter(segfos, "UTF-8");
-//			 
-//			 FileOutputStream nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-//			 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
-//			 
-//		 }
-//		 else {
-//			 
-//			 FileOutputStream segfos = new FileOutputStream(SEGMENTOUTDIR + fileName);
-//			 OutputStreamWriter segosw = new OutputStreamWriter(segfos, "UTF-8");
-//			 
-//			 FileOutputStream nerfos = new FileOutputStream(FILEOUTDIR + fileName);
-//			 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
-//			 
-//		 }
-//
-//		 for(String line:lines){
-//			 int bias = Integer.parseInt(line.split(" ")[0].trim());
-//			 String segLine = line.split(" ")[1];
-//			 segosw.write(segLine + "\n");
-//			 segosw.flush();
-//			 String ner = getNer(segLine);
-//			 int len = 0;
-//			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
-//			 Matcher matcher = pattern.matcher(ner);
-//			 while(matcher.find()){	 
-//				 start = matcher.start() - len + bias;
-//				 end = start + matcher.group(2).length() - 1;
-//				 len = len + matcher.group(1).length() * 2 + 1;
-//				 String mention = matcher.group(2);
-//				 String type = matcher.group(1);
-//				 String loc = start + "-" + end;
-//				 
+	public static void GetMention(String fileName,String file_type) throws IOException {
+//		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.xml";
+		String text = "";
+		 FileOutputStream segfos = null;
+//		 OutputStreamWriter segosw = null;
+		 
+		 FileOutputStream nerfos = null;
+//		 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
+		
+		 if(file_type.equals("news")){
+			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
+			 segfos = new FileOutputStream(NEWSSEGMENTOUTDIR + fileName);
+			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
+		 }
+		 else {
+			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
+			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
+			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
+		 }
+ 
+		 String segText = getAnsjSegment(text);
+		 String[] lines = segText.split("\n");
+		 int start = 0; //mention location the first char.
+		 int end = 0;  //mention location the lastest char.			 
+
+		 OutputStreamWriter segosw = new OutputStreamWriter(segfos, "UTF-8");
+		 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
+		 
+
+		 for(String line:lines){
+			 int bias = Integer.parseInt(line.split(" ")[0].trim());
+			 String segLine = line.split(" ")[1];
+			 segosw.write(segLine + "\n");
+			 segosw.flush();
+			 String ner = getNer(segLine);
+			 int len = 0;
+			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
+			 Matcher matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;
+				 len = len + matcher.group(1).length() * 2 + 1;
+				 String mention = matcher.group(2);
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;
+				 
 //				 System.out.print(mention + "\t");
-//				 nerosw.write(mention + "\t");				 
+				 nerosw.write(mention + "\t");				 
 //				 System.out.print(loc + "\t");
-//				 nerosw.write(fileName + ":" + loc + "\t");					 
+				 nerosw.write(fileName + ":" + loc + "\t");					 
 //				 System.out.println(type);
-//				 nerosw.write(type + "\n");
-//				 nerosw.flush();
-//			 }
-//		 }
-//		 nerosw.close();
-//		 nerfos.close(); 
-//		 segosw.close();
-//		 segfos.close();		
-//	}
-//	
+				 nerosw.write(type + "\n");
+				 nerosw.flush();
+			 }
+		 }
+		 nerosw.close();
+		 nerfos.close(); 
+		 segosw.close();
+		 segfos.close();		
+	}
+	
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String filePath =  DFFILEINPUTDIR + "CMN_DF_000020_20150108_F00100074.df.xml";
-//		 GetMention(filePath);
-	}	
+		 String fileName = "CMN_DF_000020_20150108_F00100074.df.xml";
+		 GetMention(fileName,"df");
+	}
 
 }

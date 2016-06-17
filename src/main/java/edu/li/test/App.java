@@ -3,7 +3,6 @@
  */
 package edu.li.test;
 
-import java.awt.SystemTray;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,10 +13,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.sound.sampled.Port;
-
-import org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseTran;
 
 import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
