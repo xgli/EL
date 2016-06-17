@@ -7,12 +7,14 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
+import org.apache.http.impl.cookie.PublicSuffixListParser;
 import org.dom4j.DocumentException;
 
 import edu.li.candidate.cmnGenCandidate;
 import edu.li.mention.cmnGenMention;
 import edu.li.xmlParse.xmlParse;
 import edu.stanford.nlp.ie.crf.FactorTable;
+import edu.stanford.nlp.sentiment.SentimentTraining;
 
 /**
  *date:Jun 17, 2016 10:51:21 AM
@@ -26,17 +28,9 @@ public class Process {
 	 * @param args
 	 * @throws IOException 
 	 * @throws DocumentException 
+	 * 
 	 */
-	public static void main(String[] args) throws DocumentException, IOException {
-		// TODO Auto-generated method stub
-//		String fileName = "CMN_DF_000196_20150225_F000000C3.df.ltf.xml";
-//		System.out.println("xmlParse:###########");
-//		xmlParse.ParseDf(fileName);
-//		System.out.println("GenMention:###########");
-//		cmnGenMention.GetMention(fileName, "df");
-//		System.out.println("GenCandidate:#########");
-//		cmnGenCandidate.GenCandidate(fileName, "df");
-		String fileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "news";
+	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
 		File dir = new File(fileDir);
 		File[] files = dir.listFiles();
 		int all = files.length;
@@ -50,19 +44,33 @@ public class Process {
 				System.out.println(fileName);
 				if(fileName.endsWith("xml")){
 //					System.out.println("xmlParse:###########");
-//					xmlParse.ParseDf(fileName);
-					xmlParse.ParseNews(fileName);
+					if(type.equals("df"))
+						xmlParse.ParseDf(fileName);
+					else
+						xmlParse.ParseNews(fileName);
 //					System.out.println("GenMention:###########");
-					cmnGenMention.GetMention(fileName, "news");
+					cmnGenMention.GetMention(fileName, type);
 //					System.out.println("GenCandidate:#########");
-					cmnGenCandidate.GenCandidate(fileName, "news");					
+					cmnGenCandidate.GenCandidate(fileName, type);					
 				}
 			}
 			long end = System.currentTimeMillis();
 			System.out.println((end - start) + "s");
 		}
 				
+		
+	}
+	
+	public static void main(String[] args) throws DocumentException, IOException {
+	
+		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "news";
+		String dfFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "df";
+		processAll(newsFileDir, "news");
+		processAll(dfFileDir, "df");		
 
 	}
+//				
+
+	
 
 }

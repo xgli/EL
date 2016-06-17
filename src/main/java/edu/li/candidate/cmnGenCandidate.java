@@ -63,7 +63,7 @@ public class cmnGenCandidate {
 						 continue;//继续循环
 					 }
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用	
-						osw.write(mention + "\t" + mention_loc + "\t"+ hit.getId()  + "\t" + mention_type + "\n");
+						osw.write(mention + "\t" + mention_loc + "\t"+ "f_" + hit.getId()  + "\t" + mention_type + "\n");
 						DoneMention.put(mention, hit.getId());						
 						break;// 获取第一个结果
 					 }

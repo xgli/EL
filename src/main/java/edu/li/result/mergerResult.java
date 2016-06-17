@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ejml.alg.dense.linsol.WrapLinearSolverBlock64;
+
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 
@@ -24,7 +26,7 @@ public class mergerResult {
 	public static final String DFRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator +"df" + File.separator;
 	public static final String NEWSRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator +"news" + File.separator;
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator;
-	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "result";
+	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "result.tab";
 	
 	public static void main(String[] args) throws IOException{
 		
@@ -46,17 +48,17 @@ public class mergerResult {
 				if(tokens[2].equals("NIL")){
 					String mention = tokens[0];
 					if(NILMention.containsKey(mention)){
-						System.out.println("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", NILMention.get(mention)) + "\tNAM\t1.0");
+						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", NILMention.get(mention)) + "\tNAM\t1.0\n");
 						
 					}
 					else{
-						System.out.println("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", "NIL"+nil) + "\tNAM\t1.0" );
+						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", "NIL"+nil) + "\tNAM\t1.0\n" );
 						NILMention.put(mention, "NIL"+nil);
 						nil++;
 					}
 				}
 				else{
-					System.out.println("li" + "\t" + "TEDL15_" + count + "\t" +line.trim() +  "\tNAM\t1.0");
+					osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim() +  "\tNAM\t1.0\n");
 //					osw.write("li" + "\t" + "TEDL15_" + count + line.trim() + "\t" + "NAM" + "\t" +"1.0" + "\n");
 				}
 				count++;
@@ -75,18 +77,18 @@ public class mergerResult {
 				if(tokens[2].equals("NIL")){
 					String mention = tokens[0];
 					if(NILMention.containsKey(mention)){
-						System.out.println("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", NILMention.get(mention)) + "\tNAM\t1.0");
+						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", NILMention.get(mention)) + "\tNAM\t1.0\n");
 						
 					}
 					else{
-						System.out.println("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", "NIL"+nil) + "\tNAM\t1.0" );
+						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", "NIL"+nil) + "\tNAM\t1.0\n" );
 						NILMention.put(mention, "NIL"+nil);
 						nil++;
 					}
 
 				}
 				else{
-					System.out.println("li" + "\t" + "TEDL15_" + count + "\t" +line.trim() +  "\tNAM\t1.0");
+					osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim() +  "\tNAM\t1.0\n");
 //					osw.write("li" + "\t" + "TEDL15_" + count + line.trim() + "\t" + "NAM" + "\t" +"1.0" + "\n");
 				}
 				count++;
@@ -104,11 +106,11 @@ public class mergerResult {
 				String[] tokens = line.split("\t");			
 				String mention = tokens[0];
 				if(NILMention.containsKey(mention)){
-					System.out.println("li" + "\t" + "TEDL15_" + count + "\t" + line.trim() + "\t" + NILMention.get(mention) + "\tPER\tNAM\t1.0");
+					osw.write("li" + "\t" + "TEDL15_" + count + "\t" + line.trim() + "\t" + NILMention.get(mention) + "\tPER\tNAM\t1.0\n");
 					
 				}
 				else{
-					System.out.println("li" + "\t" + "TEDL15_" + count + "\t" +line.trim() + "\t" + "NIL" + nil+ "\tPER\tNAM\t1.0" );
+					osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim() + "\t" + "NIL" + nil+ "\tPER\tNAM\t1.0\n" );
 					NILMention.put(mention, "NIL"+nil);
 					nil++;
 				}
