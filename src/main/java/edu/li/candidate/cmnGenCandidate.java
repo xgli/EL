@@ -63,8 +63,9 @@ public class cmnGenCandidate {
 						 continue;//继续循环
 					 }
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用	
-						osw.write(mention + "\t" + mention_loc + "\t"+ "f_" + hit.getId()  + "\t" + mention_type + "\n");
-						DoneMention.put(mention, hit.getId());						
+						osw.write(mention + "\t" + mention_loc + "\t"+  hit.getId().replace("f_", "")  + "\t" + mention_type + "\n");
+//						System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
+						DoneMention.put(mention,  hit.getId().replace("f_", ""));						
 						break;// 获取第一个结果
 					 }
 					 osw.flush();
@@ -81,7 +82,7 @@ public class cmnGenCandidate {
 	}	
 	
 	public static void  main(String[] args) throws IOException {
-		 String fileName = "CMN_DF_000020_20150108_F00100074.df.xml";
+		 String fileName = "CMN_DF_000020_20150228_F000000CW.df.ltf.xml";
 		 GenCandidate(fileName, "df");		
 	}
 

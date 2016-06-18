@@ -120,20 +120,22 @@ public class cmnGenMention {
 			 segosw.write(segLine + "\n");
 			 segosw.flush();
 			 String ner = getNer(segLine);
+//			 System.out.println(line);
+//			 System.out.println(ner);
 			 int len = 0;
 			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
 			 Matcher matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
 				 start = matcher.start() - len + bias;
 				 end = start + matcher.group(2).length() - 1;
-				 len = len + matcher.group(1).length() * 2 + 1;
+				 len = len + matcher.group(1).length() * 2 + 5;
 				 String mention = matcher.group(2);
 				 String type = matcher.group(1);
 				 String loc = start + "-" + end;
 				 
 //				 System.out.print(mention + "\t");
 				 nerosw.write(mention + "\t");				 
-//				 System.out.print(loc + "\t");
+//				 System.out.print(loc + "\n");
 				 nerosw.write(fileID + ":" + loc + "\t");					 
 //				 System.out.println(type);
 				 nerosw.write(type + "\n");
@@ -149,7 +151,7 @@ public class cmnGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "CMN_DF_000020_20150108_F00100074.df.xml";
+		 String fileName = "CMN_DF_000020_20150228_F000000CW.df.ltf.xml";
 		 GetMention(fileName,"df");
 	}
 
