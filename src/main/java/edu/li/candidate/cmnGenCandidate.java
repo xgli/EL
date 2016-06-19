@@ -47,6 +47,7 @@ public class cmnGenCandidate {
 		 String[] lines = text.split("\n");
 		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		 Map<String, String> DoneMention = new HashMap<String, String>();
+//		 System.out.println(lines[0]);
 		 for(String line : lines){
 //			 System.out.println(line);
 			 String[] tokens = line.trim().split("\t");
@@ -82,8 +83,8 @@ public class cmnGenCandidate {
 	}	
 	
 	public static void  main(String[] args) throws IOException {
-		 String fileName = "CMN_DF_000020_20150228_F000000CW.df.ltf.xml";
-		 GenCandidate(fileName, "df");		
+		 String fileName = "CMN_NW_001147_20150116_F0000005F.ltf.xml";
+		 GenCandidate(fileName, "news");		
 	}
 
 }

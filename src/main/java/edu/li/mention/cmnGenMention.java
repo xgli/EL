@@ -30,11 +30,11 @@ public class cmnGenMention {
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "news" + File.separator;
-	public static final String NEWSSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "news" + File.separator;
+	public static final String NEWSSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
 	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "df" + File.separator;
+	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "cmn" + File.separator + "df" + File.separator;
 	
 	public static final String SEGHOST = "10.103.28.254";
 	public static final int SEGPORT = 4465;
@@ -49,6 +49,7 @@ public class cmnGenMention {
 		 BufferedWriter bw = new BufferedWriter(sw);
 
 		 segServer.segClient.communicateWithsegServer(SEGHOST, SEGPORT, "utf-8",br,bw,false);
+		 
 		 br.close();
 		 bw.close();
 		 String[] lines = sw.toString().split("\n");
@@ -87,7 +88,7 @@ public class cmnGenMention {
 	
 	public static void GetMention(String fileName,String file_type) throws IOException {
 //		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.xml";
-		String text = "";
+		 String text = "";
 		 FileOutputStream segfos = null;
 //		 OutputStreamWriter segosw = null;
 		 
@@ -105,8 +106,7 @@ public class cmnGenMention {
 			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
 		 }
  
-		 String segText = getAnsjSegment(text);
-		 String[] lines = segText.split("\n");
+		 String[] lines = text.split("\n");//以行进行处理
 		 int start = 0; //mention location the first char.
 		 int end = 0;  //mention location the lastest char.			 
 
@@ -115,12 +115,16 @@ public class cmnGenMention {
 		 
 		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
-			 int bias = Integer.parseInt(line.split(" ")[0].trim());
-			 String segLine = line.split(" ")[1];
+			 int bias = Integer.parseInt(line.split("\t")[0].trim());
+//			 System.out.println(bias);
+			 String rawLine = line.split("\t")[1];
+			 String segLine = getAnsjSegment(rawLine);
+//			 System.out.println("segline:" + segLine);
+			 
 			 segosw.write(segLine + "\n");
 			 segosw.flush();
+			 
 			 String ner = getNer(segLine);
-//			 System.out.println(line);
 //			 System.out.println(ner);
 			 int len = 0;
 			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
@@ -131,15 +135,19 @@ public class cmnGenMention {
 				 len = len + matcher.group(1).length() * 2 + 5;
 				 String mention = matcher.group(2);
 				 String type = matcher.group(1);
-				 String loc = start + "-" + end;
-				 
-//				 System.out.print(mention + "\t");
-				 nerosw.write(mention + "\t");				 
-//				 System.out.print(loc + "\n");
+				 String loc = start + "-" + end;				 
+
+				 nerosw.write(mention + "\t");
 				 nerosw.write(fileID + ":" + loc + "\t");					 
-//				 System.out.println(type);
 				 nerosw.write(type + "\n");
 				 nerosw.flush();
+				 
+//				 System.out.print(mention + "\t");
+//				 System.out.print(loc + "\n");
+//				 System.out.println(type);
+				 
+				 
+				 
 			 }
 		 }
 		 nerosw.close();
@@ -151,8 +159,8 @@ public class cmnGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "CMN_DF_000020_20150228_F000000CW.df.ltf.xml";
-		 GetMention(fileName,"df");
+		 String fileName = "CMN_NW_001147_20150116_F0000005F.ltf.xml";
+		 GetMention(fileName,"news");
 	}
 
 }

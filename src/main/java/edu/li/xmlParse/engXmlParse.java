@@ -4,12 +4,9 @@
 package edu.li.xmlParse;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLNonTransientConnectionException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,33 +16,31 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import edu.li.candidate.cmnGenCandidate;
-import edu.stanford.nlp.fsm.TransducerGraph.SetToStringNodeProcessor;
-import edu.stanford.nlp.ling.CoreAnnotations.AuthorAnnotation;
+import com.jayway.jsonpath.ParseContext;
 
 /**
- *date:Jun 13, 2016 9:03:54 PM
+ *date:Jun 18, 2016 3:06:16 PM
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
- *last modified: Jun 13, 2016 9:03:54 PM
+ *last modified: Jun 18, 2016 3:06:16 PM
  */
-public class xmlParse {
-
+public class engXmlParse {
 	/**
 	 * @param args
 	 * @throws DocumentException 
 	 * @throws IOException 
 	 */
-	public  static final String DFFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "df" + File.separator;
+	public  static final String DFFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
+	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "eng" + File.separator + "df" + File.separator;
 	
-	public  static final String NEWSFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "news" + File.separator;
+	public  static final String NEWSFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
+	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "eng" + File.separator + "news" + File.separator;
 	
 
 	
 	
-	public static final String AUTHOROUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator  + "cmn" + File.separator; 
+	public static final String AUTHOROUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "eng" + File.separator; 
+	
 	
 	public static void ParseNews(String fileName) throws DocumentException, IOException{
 		SAXReader saxReader = new SAXReader();
@@ -63,6 +58,7 @@ public class xmlParse {
 		for(Element SEG : SEGs){
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
+//			System.out.println(text);
 			if (-1 == text.indexOf("<")){
 				String temp =  SEG.attributeValue("start_char") + "\t" +ORIGINAL_TEXT.getText() + "\n";
 				osw.write(temp);
@@ -98,8 +94,10 @@ public class xmlParse {
 		for(Element SEG : SEGs){
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
+//			System.out.println(text);
 			if (-1 == text.indexOf("<") && -1 == text.indexOf("&lt")){ //提取纯文本
 				textosw.write(SEG.attributeValue("start_char") + "\t" + text + "\n");
+
 				textosw.flush();
 			}
 			else if( -1 != text.indexOf("author")){//提取发贴的作者
@@ -122,9 +120,11 @@ public class xmlParse {
 	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
-		String fileName = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
-		ParseDf(fileName);
-
+		String df = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
+		ParseDf(df);
+		String news = "ENG_NW_001001_20150404_F00000000.ltf.xml";
+		ParseNews(news);
 	}
+
 
 }

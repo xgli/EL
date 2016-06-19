@@ -4,12 +4,9 @@
 package edu.li.xmlParse;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLNonTransientConnectionException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,23 +16,15 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import edu.li.candidate.cmnGenCandidate;
-import edu.stanford.nlp.fsm.TransducerGraph.SetToStringNodeProcessor;
-import edu.stanford.nlp.ling.CoreAnnotations.AuthorAnnotation;
-
 /**
- *date:Jun 13, 2016 9:03:54 PM
+ *date:Jun 18, 2016 10:04:28 PM
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
- *last modified: Jun 13, 2016 9:03:54 PM
+ *last modified: Jun 18, 2016 10:04:28 PM
  */
-public class xmlParse {
+public class cmnXmlParse {
 
-	/**
-	 * @param args
-	 * @throws DocumentException 
-	 * @throws IOException 
-	 */
+	
 	public  static final String DFFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "df" + File.separator;
 	
@@ -64,7 +53,7 @@ public class xmlParse {
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
 			if (-1 == text.indexOf("<")){
-				String temp =  SEG.attributeValue("start_char") + "\t" +ORIGINAL_TEXT.getText() + "\n";
+				String temp =  SEG.attributeValue("start_char") + "\t" +ORIGINAL_TEXT.getText() + "\n";//zhong
 				osw.write(temp);
 			}
 		}
@@ -125,6 +114,6 @@ public class xmlParse {
 		String fileName = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
 		ParseDf(fileName);
 
-	}
-
+	}	
+	
 }

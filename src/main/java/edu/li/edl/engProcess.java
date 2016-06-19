@@ -5,34 +5,23 @@ package edu.li.edl;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 
-import org.apache.http.impl.cookie.PublicSuffixListParser;
 import org.dom4j.DocumentException;
 
-import edu.li.candidate.cmnGenCandidate;
 import edu.li.candidate.engGenCandidate;
-import edu.li.mention.cmnGenMention;
 import edu.li.mention.engGenMention;
+import edu.li.result.engMergerResult;
 import edu.li.xmlParse.engXmlParse;
-import edu.li.xmlParse.xmlParse;
-import edu.stanford.nlp.ie.crf.FactorTable;
-import edu.stanford.nlp.sentiment.SentimentTraining;
 
 /**
- *date:Jun 17, 2016 10:51:21 AM
+ *date:Jun 18, 2016 10:02:37 PM
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
- *last modified: Jun 17, 2016 10:51:21 AM
+ *last modified: Jun 18, 2016 10:02:37 PM
  */
-public class Process {
-
-	/**
-	 * @param args
-	 * @throws IOException 
-	 * @throws DocumentException 
-	 * 
-	 */
+public class engProcess {
+	
+	
 	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
 		File dir = new File(fileDir);
 		File[] files = dir.listFiles();
@@ -49,15 +38,11 @@ public class Process {
 					System.out.println("xmlParse:###########");
 					if(type.equals("df"))
 						engXmlParse.ParseDf(fileName);
-//						xmlParse.ParseDf(fileName);
 					else
 						engXmlParse.ParseNews(fileName);
-//						xmlParse.ParseNews(fileName);
 					System.out.println("GenMention:###########");
 					engGenMention.GetMention(fileName, type);
-//					cmnGenMention.GetMention(fileName, type);
 					System.out.println("GenCandidate:#########");
-//					cmnGenCandidate.GenCandidate(fileName, type);
 					engGenCandidate.GenCandidate(fileName, type);
 				}
 			}
@@ -73,11 +58,10 @@ public class Process {
 		String newsFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "news";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "df";
 		processAll(newsFileDir, "news");
-		processAll(dfFileDir, "df");		
+		processAll(dfFileDir, "df");	
+		engMergerResult.mergerResult();
 
 	}
-//				
-
 	
-
+	
 }
