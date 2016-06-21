@@ -39,10 +39,7 @@ public class cmnProcess {
 				System.out.println(fileName);
 				if(fileName.endsWith("xml")){
 					System.out.println("xmlParse:###########");
-					if(type.equals("df"))
-						cmnXmlParse.ParseDf(fileName);
-					else
-						cmnXmlParse.ParseNews(fileName);
+					cmnXmlParse.Parse(fileName, type);
 					System.out.println("GenMention:###########");
 					cmnGenMention.GetMention(fileName, type);
 					System.out.println("GenCandidate:#########");
@@ -64,8 +61,6 @@ public class cmnProcess {
 		processAll(dfFileDir, "df");
 		cmnMergerResult.mergerResult();
 
-	}
-	
-	
+	}	
 	
 }

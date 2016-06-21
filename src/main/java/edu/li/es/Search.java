@@ -89,7 +89,6 @@ public class Search {
 //										.setQuery( QueryBuilders.termQuery("_id", "2"))
 										.execute()
 										.actionGet();
-
 		return actionGet.getHits();		
 	}
 	

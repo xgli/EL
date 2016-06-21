@@ -52,6 +52,7 @@ public class cmnXmlParse {
 		for(Element SEG : SEGs){
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
+//			System.out.println(x);
 			if (-1 == text.indexOf("<")){
 				String temp =  SEG.attributeValue("start_char") + "\t" +ORIGINAL_TEXT.getText() + "\n";//zhong
 				osw.write(temp);
@@ -95,8 +96,8 @@ public class cmnXmlParse {
 				Pattern pattern = Pattern.compile("author=\"(.*?)\"");
 				Matcher matcher = pattern.matcher(text);
 				if(matcher.find()){
-					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1);
-					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1;					
+					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1)  - 39 ;
+					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1 - 39;					
 //					System.out.println(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end);
 					authorosw.write(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end + "\n");
 					authorosw.flush();
@@ -109,10 +110,18 @@ public class cmnXmlParse {
 		authorfos.close();
 	}
 	
+	public static void Parse(String fileName, String type) throws DocumentException, IOException{
+		if(type.equals("df"))
+			ParseDf(fileName);
+		else 
+			ParseNews(fileName);
+	}
+	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
-		String fileName = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
-		ParseDf(fileName);
+		String fileName = "CMN_NW_000020_20150604_F00100013.nw.ltf.xml";//路径需要拼接，避免不同的平台使用。
+//		ParseDf(fileName);
+		Parse(fileName, "news");
 
 	}	
 	

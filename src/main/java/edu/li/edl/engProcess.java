@@ -36,10 +36,7 @@ public class engProcess {
 				System.out.println(fileName);
 				if(fileName.endsWith("xml")){
 					System.out.println("xmlParse:###########");
-					if(type.equals("df"))
-						engXmlParse.ParseDf(fileName);
-					else
-						engXmlParse.ParseNews(fileName);
+					engXmlParse.Parse(fileName, type);
 					System.out.println("GenMention:###########");
 					engGenMention.GetMention(fileName, type);
 					System.out.println("GenCandidate:#########");

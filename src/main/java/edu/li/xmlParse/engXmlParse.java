@@ -118,6 +118,13 @@ public class engXmlParse {
 		authorfos.close();
 	}
 	
+	public static void Parse(String fileName, String type) throws DocumentException, IOException{
+		if(type.equals("df"))
+			ParseDf(fileName);
+		else 
+			ParseNews(fileName);
+	}
+	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
 		String df = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";//路径需要拼接，避免不同的平台使用。

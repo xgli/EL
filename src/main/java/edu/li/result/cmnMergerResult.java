@@ -67,7 +67,11 @@ public class cmnMergerResult {
 		for(File file:dfFiles){			
 			text = IOUtils.slurpFile(file);
 			String[] lines = text.split("\n");
-			for(String line : lines){				
+			for(String line : lines){
+				if(line.equals("")){
+					continue;
+				}
+//				System.out.println(line);
 				String[] tokens = line.split("\t");
 				if(tokens[2].equals("NIL")){
 					String mention = tokens[0];

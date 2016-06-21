@@ -24,13 +24,15 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class cmnGenCandidate {
 	
+	public static final String LANG = "cmn";
 	
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String DFFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator + "df" + File.separator;
+	public static final String DFFILEINPUTDIR = "data" + File.separator + "mention" + File.separator +  LANG  + File.separator + "df" + File.separator;
+	public static final String DFFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator + "df" + File.separator;
 	
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator + "news" + File.separator;
+	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + LANG + File.separator + "news" + File.separator;
+	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator + "news" + File.separator;
 	
+
 	
 	public static void GenCandidate(String fileName, String fileType) throws IOException{
 		
@@ -54,29 +56,36 @@ public class cmnGenCandidate {
 			 String mention = tokens[0];
 			 String mention_type = tokens[2];
 			 String mention_loc = tokens[1];
+			 
+			 
+			 
 
-			 if(-1 == mention_type.indexOf("NIL")){
-				 if(!DoneMention.containsKey(mention)){//如果没有查询过
-					 SearchHits hits = Search.getHits(mention, mention_type, "cmn");
+			 if(-1 == mention_type.indexOf("NIL")){  //已经判定类型的
+				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
+					 SearchHits hits = Search.getHits(mention, mention_type, LANG);
 					 if (0 == hits.totalHits()){
 						 osw.write(mention + "\t" + mention_loc + "\t" + "NIL"  + "\t" + mention_type + "\n");
-						 DoneMention.put(mention, "NIL");
+						 DoneMention.put(mention+mention_type, "NIL");
 						 continue;//继续循环
 					 }
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用	
 						osw.write(mention + "\t" + mention_loc + "\t"+  hit.getId().replace("f_", "")  + "\t" + mention_type + "\n");
 //						System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
-						DoneMention.put(mention,  hit.getId().replace("f_", ""));						
+						DoneMention.put(mention+mention_type,  hit.getId().replace("f_", ""));						
 						break;// 获取第一个结果
 					 }
-					 osw.flush();
+
 				 }
 				 else {//已经查询过了
-					 osw.write(mention + "\t" + mention_loc + "\t" + DoneMention.get(mention) + "\t" + mention_type  + "\n");
+					 osw.write(mention + "\t" + mention_loc + "\t" + DoneMention.get(mention+mention_type) + "\t" + mention_type  + "\n");
 				 }
-		 	 }			 
-			 
-		 }
+				 osw.flush();
+		 	 }
+			 else { 
+//				 osw.write(mention + "\t" + mention_loc + "\t" + "NIL" + "\t" + "GPE" + "\n");
+			 }
+		 } 
+		 
 		 osw.close();
 		 fos.close();
 		

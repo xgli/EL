@@ -34,6 +34,7 @@ public class engGenMention {
 	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "eng" + File.separator + "df" + File.separator;
 	
 
+
 	public static final String NERHOST =  "10.103.28.254";
 	public static final int NERPORT = 2314;
 
@@ -84,6 +85,7 @@ public class engGenMention {
 			 String segLine = line.split("\t")[1];
 			 
 			 segosw.write(segLine);
+			 segosw.write("\n");
 			 segfos.flush();
 			 
 			 String ner = getNer(segLine);
