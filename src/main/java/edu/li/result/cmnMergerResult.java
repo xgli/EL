@@ -68,7 +68,7 @@ public class cmnMergerResult {
 			text = IOUtils.slurpFile(file);
 			String[] lines = text.split("\n");
 			for(String line : lines){
-				if(line.equals("")){
+				if(line.equals("")){ //空行可能出错
 					continue;
 				}
 //				System.out.println(line);
@@ -91,8 +91,7 @@ public class cmnMergerResult {
 				}
 				count++;
 			}
-		}
-				
+		}				
 		
 		File authorDir = new File(AUTHORRESULTINPUTDIR);
 		File[] authorFiles = authorDir.listFiles();
@@ -113,7 +112,6 @@ public class cmnMergerResult {
 				}
 				count++;
 			}	
-
 		}		
 		osw.close();
 		fos.close();
@@ -122,6 +120,4 @@ public class cmnMergerResult {
 	public static void main(String[] args) throws IOException{
 		mergerResult();
 	}	
-
-
 }
