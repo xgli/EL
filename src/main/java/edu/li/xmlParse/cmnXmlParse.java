@@ -122,7 +122,6 @@ public class cmnXmlParse {
 		String fileName = "CMN_NW_000020_20150604_F00100013.nw.ltf.xml";//路径需要拼接，避免不同的平台使用。
 //		ParseDf(fileName);
 		Parse(fileName, "news");
-
 	}	
 	
 }
