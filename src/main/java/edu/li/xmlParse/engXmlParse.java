@@ -29,12 +29,13 @@ public class engXmlParse {
 	 * @param args
 	 * @throws DocumentException 
 	 * @throws IOException 
-	 */
-	public  static final String DFFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "eng" + File.separator + "df" + File.separator;
+	 */	public static final String DIRTYPE = "test"; //test or train
+	
+	public  static final String DFFILEOUTDIR = "data" + File.separator +  "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
+	public static final String DFFILEINPUTDIR = "data" + File.separator +  DIRTYPE + File.separator +  "raw" + File.separator + "eng" + File.separator + "df" + File.separator;
 	
 	public  static final String NEWSFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "eng" + File.separator + "news" + File.separator;
+	public static final String NEWSFILEINPUTDIR = "data" + File.separator +  DIRTYPE + File.separator + "raw" + File.separator + "eng" + File.separator + "news" + File.separator;
 	
 
 	
@@ -104,8 +105,8 @@ public class engXmlParse {
 				Pattern pattern = Pattern.compile("author=\"(.*?)\"");
 				Matcher matcher = pattern.matcher(text);
 				if(matcher.find()){
-					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1);
-					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1;					
+					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1) - 39;
+					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1 - 39;					
 //					System.out.println(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end);
 					authorosw.write(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end + "\n");
 					authorosw.flush();
@@ -119,6 +120,7 @@ public class engXmlParse {
 	}
 	
 	public static void Parse(String fileName, String type) throws DocumentException, IOException{
+		
 		if(type.equals("df"))
 			ParseDf(fileName);
 		else 

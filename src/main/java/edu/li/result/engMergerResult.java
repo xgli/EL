@@ -19,10 +19,12 @@ import edu.stanford.nlp.io.IOUtils;
  *last modified: Jun 18, 2016 10:08:52 PM
  */
 public class engMergerResult {
-	public static final String DFRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "eng" + File.separator +"df" + File.separator;
-	public static final String NEWSRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "eng" + File.separator +"news" + File.separator;
+	
+	
+	public static final String DFRESULTINPUTDIR = "data" + File.separator +  "candidate" + File.separator + "eng" + File.separator +"df" + File.separator;
+	public static final String NEWSRESULTINPUTDIR = "data" + File.separator +  "candidate" + File.separator + "eng" + File.separator +"news" + File.separator;
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "eng" + File.separator;
-	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "eng.tab";
+	public static final String RESULTFINAL = "data" + File.separator +  "result" + File.separator + "eng.tab";
 	
 	
 	

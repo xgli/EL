@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.elasticsearch.common.lang3.ObjectUtils.Null;
+import org.elasticsearch.common.text.StringAndBytesText;
 
 import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
@@ -175,9 +176,23 @@ public class cmnGenMention {
 		 
 		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
+
 			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39 ;
-//			 System.out.println(bias);
 			 String rawLine = line.split("\t")[1];
+			 
+//			 if(rawLine.contains("《")){//先把报刊一类的提取出来
+//				 int s =rawLine.indexOf("《") + 1;
+//				 int e = rawLine.indexOf("》") - 1;
+//				 String m = rawLine.substring(s, e);
+//				 nerosw.write(m + "\t");
+//				 nerosw.write(fileID + ":" + (start + s) + '-' + (start + e) + "\t");					 
+//				 nerosw.write("ORG" + "\n");
+//				 nerosw.flush();
+//				 
+//			 }			 
+			 
+//			 System.out.println(bias);
+
 			 String segLine = getAnsjSegment(rawLine);
 //			 System.out.println("segline:" + segLine);
 			 
@@ -195,13 +210,17 @@ public class cmnGenMention {
 				 len = len + matcher.group(1).length() * 2 + 5;
 				 String mention = matcher.group(2);
 				 String type = matcher.group(1);
-				 String loc = start + "-" + end;	
+				 String loc = start + "-" + end;
 				 
-				 nerosw.write(mention + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-				 nerosw.write(type + "\n");
-				 nerosw.flush();
-				 
+				 if(mention.contains("《") || mention.contains("》")){
+					 ;
+				 }
+				 else {
+					 nerosw.write(mention + "\t");
+					 nerosw.write(fileID + ":" + loc + "\t");					 
+					 nerosw.write(type + "\n");
+					 nerosw.flush();
+				 }				 
 //				 System.out.print(mention + "\t");
 //				 System.out.print(loc + "\t");
 //				 System.out.println(type + "\n");	
@@ -220,6 +239,9 @@ public class cmnGenMention {
 						inend = instart + m.group(2).length() - 1;
 						inlen = inlen + m.group(1).length() * 2 + 5;
 						String inmention = m.group(2);
+						if(inmention.equals("查理")){
+							continue;
+						}
 						String intype = m.group(1);
 						String inloc = instart + "-" + inend;	
 						nerosw.write(inmention + "\t");
@@ -231,10 +253,41 @@ public class cmnGenMention {
 //						System.out.print(inloc + "\t");
 //						System.out.println(intype + "\n");	
 					}
-				 }				 
-				 			 
-		 			 
-			 }
+					else{ //test 国家分不开的类型 特殊类型
+						int otherstart = 0;
+						int otherend = 0;
+						String otherloc;
+						
+						if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
+							otherstart = start + mention.indexOf("美国");
+							otherend = otherstart + 1;
+							otherloc = otherstart + "-" + otherend;
+							nerosw.write("美国" + "\t");
+							nerosw.write(fileID + ":" + otherloc + "\t");					 
+							nerosw.write("GPE" + "\n");
+							nerosw.flush();
+						}
+						if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
+							otherstart = start + mention.indexOf("中国");
+							otherend = otherstart + 1;
+							otherloc = otherstart + "-" + otherend;
+							nerosw.write("中国" + "\t");
+							nerosw.write(fileID + ":" + otherloc + "\t");			 
+							nerosw.write("GPE" + "\n");
+							nerosw.flush();
+						}
+						if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
+							otherstart = start + mention.indexOf("巴西");
+							otherend = otherstart + 1;
+							otherloc = otherstart + "-" + otherend;
+							nerosw.write("巴西" + "\t");
+							nerosw.write(fileID + ":" + otherloc + "\t");			 
+							nerosw.write("GPE" + "\n");
+							nerosw.flush();
+						}						
+					}
+				 }			 
+		 	 }
 		 }
 		 nerosw.close();
 		 nerfos.close(); 
@@ -245,7 +298,7 @@ public class cmnGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "CMN_NW_001147_20150116_F0000005F.ltf.xml";
+		 String fileName = "CMN_NW_001323_20150621_F0010000O.nw.ltf.xml";
 		 GetMention(fileName,"news");
 	}
 

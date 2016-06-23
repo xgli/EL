@@ -30,9 +30,11 @@ public class Search {
 	 * @param args
 	 */
 	
-	public static final String CLUSTERNAME ="elasticsearch";
-	public static final String HOST = "10.110.6.43";
-	public static final int  PORT = 9300;
+	public static final String CLUSTERNAME ="elasticsearch"; //集群模型
+	public static final String INDEX = "base_kb"; //索引名称
+	public static final String TYPE = "entity";//类型名称
+	public static final String HOST = "10.110.6.43"; //服务器地址
+	public static final int  PORT = 9300; //服务端口  TCP为9300 IP为9200
 	
 	static Map<String, String> map = new HashMap<String, String>();
 	static Settings settings = ImmutableSettings.settingsBuilder().put(map).put("cluster.name",CLUSTERNAME)

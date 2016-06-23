@@ -25,7 +25,10 @@ import edu.stanford.nlp.io.IOUtils;
  *last modified: Jun 17, 2016 9:24:05 AM
  */
 public class engGenMention {
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
+	
+
+	
+	public static final String NEWSFILEINPUTDIR = "data" + File.separator  +  "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator + "news" + File.separator;
 	public static final String NEWSSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "eng" +File.separator+"news" + File.separator;
 	
@@ -35,7 +38,7 @@ public class engGenMention {
 	
 
 
-	public static final String NERHOST =  "10.103.28.254";
+	public static final String NERHOST =  "127.0.0.1";
 	public static final int NERPORT = 2314;
 
 	
@@ -81,7 +84,7 @@ public class engGenMention {
 		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
 //			 System.out.println(line);
-			 int bias = Integer.parseInt(line.split("\t")[0].trim());
+			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39;
 			 String segLine = line.split("\t")[1];
 			 
 			 segosw.write(segLine);

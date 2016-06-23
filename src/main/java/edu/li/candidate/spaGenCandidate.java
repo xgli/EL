@@ -31,6 +31,8 @@ public class spaGenCandidate {
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String LANG = "spa";
 	
+	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "spannish.tab";
+	
 	public static void GenCandidate(String fileName, String fileType) throws IOException{
 		
 		String text = null; 

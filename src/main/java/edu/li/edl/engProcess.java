@@ -19,8 +19,7 @@ import edu.li.xmlParse.engXmlParse;
  *Function TODO ADD FUNCTION.
  *last modified: Jun 18, 2016 10:02:37 PM
  */
-public class engProcess {
-	
+public class engProcess {	
 	
 	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
 		File dir = new File(fileDir);
@@ -35,30 +34,27 @@ public class engProcess {
 				String fileName = file.getName();
 				System.out.println(fileName);
 				if(fileName.endsWith("xml")){
-					System.out.println("xmlParse:###########");
+					System.out.println("xmlParse:###########start");
 					engXmlParse.Parse(fileName, type);
-					System.out.println("GenMention:###########");
+					System.out.println("xmlParse:###########end");
+					System.out.println("GenMention:###########start");
 					engGenMention.GetMention(fileName, type);
-					System.out.println("GenCandidate:#########");
+					System.out.println("GenMention:###########end");
+					System.out.println("GenCandidate:#########start");
 					engGenCandidate.GenCandidate(fileName, type);
+					System.out.println("GenCandidate:#########end");
 				}
 			}
 			long end = System.currentTimeMillis();
 			System.out.println((end - start) + "s");
-		}
-				
-		
+		}		
 	}
 	
 	public static void main(String[] args) throws DocumentException, IOException {
-	
-		String newsFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "news";
+		String newsFileDir = "data" + File.separator +  "raw" + File.separator + "eng" + File.separator +  "news";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "df";
 		processAll(newsFileDir, "news");
 		processAll(dfFileDir, "df");	
 		engMergerResult.mergerResult();
-
-	}
-	
-	
+	}	
 }

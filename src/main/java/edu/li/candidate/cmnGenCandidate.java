@@ -32,7 +32,25 @@ public class cmnGenCandidate {
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + LANG + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator + "news" + File.separator;
 	
-
+	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "chinese.tab";
+	
+	
+	public static Map<String, String> loadDict() throws IOException{
+		Map<String, String> dict = new HashMap<String, String>();
+		String text = IOUtils.slurpFile(DICTFILE);
+		String[] lines = text.split("\n");
+		for(String line : lines){
+//			System.out.println(line);
+			String[] tokens = line.split("\t");
+			String mention = tokens[0];
+			String mid = tokens[2];
+			String type = tokens[3];
+			dict.put(mention, mid + "\t" + type);
+//			System.out.println(mention + mid + type);			
+		}
+		return dict;
+	}
+	
 	
 	public static void GenCandidate(String fileName, String fileType) throws IOException{
 		
@@ -46,6 +64,12 @@ public class cmnGenCandidate {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
 			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
 		 }
+		
+		//加载词表
+		Map<String,String> dict = new HashMap<String, String>();
+		dict = loadDict();
+		
+		
 		 String[] lines = text.split("\n");
 		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		 Map<String, String> DoneMention = new HashMap<String, String>();
@@ -58,9 +82,15 @@ public class cmnGenCandidate {
 			 String mention_loc = tokens[1];
 			 
 			 
-			 
-
+			 if(dict.containsKey(mention)){
+//				 String temp =dict.get(mention);			 
+				 osw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
+				 continue;
+//				 DoneMention.put(mention+mention_type, "NIL");
+			 }
+			 		 			 
 			 if(-1 == mention_type.indexOf("NIL")){  //已经判定类型的
+				 
 				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
 					 SearchHits hits = Search.getHits(mention, mention_type, LANG);
 					 if (0 == hits.totalHits()){
@@ -92,8 +122,9 @@ public class cmnGenCandidate {
 	}	
 	
 	public static void  main(String[] args) throws IOException {
-		 String fileName = "CMN_NW_001147_20150116_F0000005F.ltf.xml";
-		 GenCandidate(fileName, "news");		
+//		 String fileName = "CMN_NW_001147_20150116_F0000005F.ltf.xml";
+//		 GenCandidate(fileName, "news");	
+		loadDict();
 	}
 
 }

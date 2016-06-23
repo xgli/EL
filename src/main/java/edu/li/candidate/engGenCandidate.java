@@ -30,7 +30,28 @@ public class engGenCandidate {
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "eng" + File.separator + "news" + File.separator;
 	
+	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "english.tab";
+	
+	
 	public static final String LANG = "eng";
+	
+	public static Map<String, String> loadDict() throws IOException{
+		Map<String, String> dict = new HashMap<String, String>();
+		String text = IOUtils.slurpFile(DICTFILE);
+		String[] lines = text.split("\n");
+		for(String line : lines){
+//			System.out.println(line);
+			String[] tokens = line.split("\t");
+			String mention = tokens[0];
+			String mid = tokens[1];
+			String type = tokens[2];
+			dict.put(mention, mid + "\t" + type);
+//			System.out.println(mention + mid + type);			
+		}
+		return dict;
+	}
+	
+	
 	
 	public static void GenCandidate(String fileName, String fileType) throws IOException{
 		
@@ -44,6 +65,11 @@ public class engGenCandidate {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
 			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
 		 }
+		
+		Map<String,String> dict = new HashMap<String, String>();
+		dict = loadDict();
+		
+		
 		 String[] lines = text.split("\n");
 		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		 Map<String, String> DoneMention = new HashMap<String, String>();
@@ -54,7 +80,13 @@ public class engGenCandidate {
 			 String mention_type = tokens[2];
 			 String mention_loc = tokens[1];
 			 
-			 
+			 //判断是否在词表中
+			 if(dict.containsKey(mention)){		 
+				 osw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
+				 continue;
+			 }	 
+			  
+			 			 
 			 if(-1 == mention_type.indexOf("NIL")){
 //				 System.out.println(mention + ":" + mention_type);
 				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
@@ -85,8 +117,9 @@ public class engGenCandidate {
 	}	
 	
 	public static void  main(String[] args) throws IOException {
-		 String fileName = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";
-		 GenCandidate(fileName, "df");		
+//			 String fileName = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";
+//			 GenCandidate(fileName, "df");		
+		loadDict();
 	}
 	
 
