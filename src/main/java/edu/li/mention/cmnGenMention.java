@@ -199,8 +199,10 @@ public class cmnGenMention {
 			 segosw.write(segLine);
 			 segosw.flush();
 			 
-			 String ner = getNer(segLine);
-//			 System.out.println(ner);
+//			 String ner = getNer(segLine);
+			 String ner = getAnsjNER(rawLine);
+					 
+			 System.out.println(ner);
 			 int len = 0;
 			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
 			 Matcher matcher = pattern.matcher(ner);
