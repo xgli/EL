@@ -54,7 +54,7 @@ public class cmnGenMention {
 		 
 		 br.close();
 		 bw.close();
-		 
+		 System.out.println(sw.toString());
 		 String[] lines = sw.toString().split("\n");
 		 StringBuilder sb = new StringBuilder();
 		 for(String line : lines){	
@@ -86,7 +86,7 @@ public class cmnGenMention {
 				 else if(-1 != terms[1].indexOf("nt")){
 					 sb.append("<ORG>" + terms[0] + "</ORG>");
 				 }
-				 else if(-1 != terms[1].indexOf("j")){
+				 else if(terms[1].equals("j")){
 					 sb.append("<GPE>" + terms[0] + "</GPE>");
 				 }
 				 else {
@@ -300,8 +300,11 @@ public class cmnGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "CMN_NW_001323_20150621_F0010000O.nw.ltf.xml";
-		 GetMention(fileName,"news");
+//		 String fileName = "CMN_NW_001323_20150621_F0010000O.nw.ltf.xml";
+//		 GetMention(fileName,"news");
+		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
+		String result =  getAnsjNER(text);
+		System.out.println(result);
 	}
 
 }
