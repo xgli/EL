@@ -9,9 +9,7 @@ import java.io.IOException;
 import org.dom4j.DocumentException;
 
 import edu.li.candidate.cmnGenCandidate;
-import edu.li.candidate.engGenCandidate;
 import edu.li.mention.cmnGenMention;
-import edu.li.mention.engGenMention;
 import edu.li.result.cmnMergerResult;
 import edu.li.xmlParse.cmnXmlParse;
 

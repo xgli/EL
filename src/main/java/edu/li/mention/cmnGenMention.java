@@ -14,9 +14,14 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.crypto.Mac;
+
 import org.elasticsearch.common.lang3.ObjectUtils.Null;
 import org.elasticsearch.common.text.StringAndBytesText;
 
+import com.hankcs.hanlp.HanLP;
+
+import TraToSim.TraToSim;
 import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
@@ -54,7 +59,7 @@ public class cmnGenMention {
 		 
 		 br.close();
 		 bw.close();
-		 System.out.println(sw.toString());
+//		 System.out.println(sw.toString());
 		 String[] lines = sw.toString().split("\n");
 		 StringBuilder sb = new StringBuilder();
 		 for(String line : lines){	
@@ -80,14 +85,23 @@ public class cmnGenMention {
 				 if(-1 != terms[1].indexOf("nr")){
 					 sb.append("<PER>"+ terms[0] + "</PER>");
 				 }
-				 else if (-1 != terms[1].indexOf("ns") || -1 != terms[1].indexOf("j")){
+				 else if (-1 != terms[1].indexOf("ns")){
 					 sb.append("<GPE>" + terms[0] + "</GPE>");
 				 }
 				 else if(-1 != terms[1].indexOf("nt")){
 					 sb.append("<ORG>" + terms[0] + "</ORG>");
 				 }
 				 else if(terms[1].equals("j")){
-					 sb.append("<GPE>" + terms[0] + "</GPE>");
+					 sb.append("<GPE>" + terms[0] + "</GPE>");	
+//					 System.out.println(line);
+//					 System.out.println("j" + ":" +  terms[0]);
+				 }
+				 else if(terms[1].equals("nw") && (-1 != terms[0].indexOf("·") || -1 != terms[0].indexOf("•"))){
+					 sb.append("<PER>"+ terms[0] + "</PER>");
+//					 System.out.println("nw" + ":" + terms[0]);
+				 }
+				 else if(terms[1].equals("nw")){
+					 System.out.println("nw"+":"+terms[0]);
 				 }
 				 else {
 					 sb.append(terms[0]); 						 
@@ -111,6 +125,7 @@ public class cmnGenMention {
 		 String[] lines = sw.toString().split("\n");
 		 StringBuilder sb = new StringBuilder();
 		 for(String line : lines){
+//			 System.out.println(line);
 			 line = line.substring(1,line.length()-1);
 			 String[] tokens = line.split(", ");
 			 for(String token : tokens){
@@ -147,7 +162,7 @@ public class cmnGenMention {
 		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
 	}
 	
-	public static void GetMention(String fileName,String file_type) throws IOException {
+	public static void GetMention(String fileName,String file_type) throws IOException {//还得进行繁转简
 //		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.xml";
 		 String text = "";
 		 FileOutputStream segfos = null;
@@ -174,11 +189,29 @@ public class cmnGenMention {
 		 OutputStreamWriter segosw = new OutputStreamWriter(segfos, "UTF-8");
 		 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
 		 
+
+		 
 		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
-
+			 boolean convertSimple = true;//进行每行判定是否为繁体
+			 
 			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39 ;
 			 String rawLine = line.split("\t")[1];
+			
+			 if(convertSimple){
+				 String templine = TraToSim.TraToSim(rawLine);
+				 if(rawLine.equals(templine)){
+					 convertSimple = false;
+				 }
+				 else {
+					 System.out.println(templine);
+					 System.out.println("old:" + rawLine);
+					 rawLine = templine;
+					 System.out.println("new:" + rawLine);
+				 }
+				 
+			 }
+			 
 			 
 //			 if(rawLine.contains("《")){//先把报刊一类的提取出来
 //				 int s =rawLine.indexOf("《") + 1;
@@ -202,7 +235,7 @@ public class cmnGenMention {
 //			 String ner = getNer(segLine);
 			 String ner = getAnsjNER(rawLine);
 					 
-			 System.out.println(ner);
+//			 System.out.println(ner);
 			 int len = 0;
 			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
 			 Matcher matcher = pattern.matcher(ner);
@@ -210,11 +243,21 @@ public class cmnGenMention {
 				 start = matcher.start() - len + bias;
 				 end = start + matcher.group(2).length() - 1;
 				 len = len + matcher.group(1).length() * 2 + 5;
-				 String mention = matcher.group(2);
+				 String mention = "";
+				 
+				 if(convertSimple){
+					 mention = rawLine.substring(matcher.start(2), matcher.end(2));
+					 System.out.println(mention);
+				 }
+				 
+				 else{
+					 mention = matcher.group(2);				 
+				 }
+
 				 String type = matcher.group(1);
 				 String loc = start + "-" + end;
 				 
-				 if(mention.contains("《") || mention.contains("》")){
+				 if(mention.contains("《") || mention.contains("》")){//过滤ner中的不规则实体
 					 ;
 				 }
 				 else {
@@ -300,11 +343,13 @@ public class cmnGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-//		 String fileName = "CMN_NW_001323_20150621_F0010000O.nw.ltf.xml";
-//		 GetMention(fileName,"news");
-		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
-		String result =  getAnsjNER(text);
-		System.out.println(result);
+		 String fileName = "CMN_NW_001318_20150214_F0010000I.nw.ltf.xml";
+		 GetMention(fileName,"news");
+////		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
+////		String result =  getAnsjNER(text);
+//		String text = ",";
+//		String result = getAnsjSegment(text);
+//		System.out.println(result);
 	}
 
 }
