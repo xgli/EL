@@ -43,7 +43,8 @@ public class other {
 //				System.out.println(line);
 //				String ner = cmnGenMention.getAnsjNER(line.split("\t")[1]);
 				
-				Pattern pattern = Pattern.compile("([\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})+)");//提取所有带·的名字
+//				Pattern pattern = Pattern.compile("([\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})+)");//提取所有带·的名字
+				Pattern pattern = Pattern.compile("((.*?))");
 				Matcher matcher = pattern.matcher(line);
 				while(matcher.find()){
 					count++;

@@ -46,7 +46,7 @@ public class TraToSim {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String oldtext = "尼日利亚博科圣地";
+		String oldtext = "z中国";
     	String newtext = TraToSim(oldtext);
     	System.out.println(oldtext);
     	System.out.println(newtext);
