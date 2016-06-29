@@ -50,67 +50,24 @@ public class cmnGenMention {
 	public static final int SEGPORT = 4465;
 	public static final String NERHOST =  "127.0.0.1";
 	public static final int NERPORT = 2310;
-	
+	public static final String ABBREFILEPATH = "data" + File.separator + "dict" + File.separator + "abbre.tab";
+	public static final String ABBREFILOUTEPATH = "data" + File.separator + "dict" + File.separator + "abbreOut.tab";
 
 	public static Set<String> filterAbbre = new  HashSet<String>();
 	static {
-		filterAbbre.add("深证");
-		filterAbbre.add("综指");
-		filterAbbre.add("股指");
-		filterAbbre.add("安保");
-		filterAbbre.add("执委");
-		filterAbbre.add("足协");
-		filterAbbre.add("房地产");
-		filterAbbre.add("通胀");
-		filterAbbre.add("瑞郎");
-		filterAbbre.add("股值");
-		filterAbbre.add("裔");
-		filterAbbre.add("中低收入");
-		filterAbbre.add("二战");
-		filterAbbre.add("老弱病残");
-		filterAbbre.add("打砸抢");
-		filterAbbre.add("安检");
-		filterAbbre.add("足联");
-		filterAbbre.add("赌");
-		filterAbbre.add("经管");
-		filterAbbre.add("女中");
-		filterAbbre.add("上百");
-		filterAbbre.add("税负");
-		filterAbbre.add("军统");
-		filterAbbre.add("秦汉");
-		filterAbbre.add("魏晋");
-		filterAbbre.add("人均");
-		filterAbbre.add("春运");
-		filterAbbre.add("上下班");
-		filterAbbre.add("日均");
-		filterAbbre.add("哥");
-		filterAbbre.add("产品销售");
-		filterAbbre.add("主客场");
-		filterAbbre.add("通胀");
-		filterAbbre.add("上证");
-		filterAbbre.add("城管");
-		filterAbbre.add("车管所");
-		filterAbbre.add("中能");
-		filterAbbre.add("贿选");
-		filterAbbre.add("外企");
-		filterAbbre.add("港股");
-		filterAbbre.add("政企");
-		filterAbbre.add("同步进行");
-		filterAbbre.add("产能");
-		filterAbbre.add("警民");
-		filterAbbre.add("文革");
-		filterAbbre.add("国企");
-		filterAbbre.add("晋");
-		filterAbbre.add("党政");
-		filterAbbre.add("奥运");
-		filterAbbre.add("奥运会");
-		filterAbbre.add("国共");		
-		filterAbbre.add("以军");	
-		filterAbbre.add("奥巴");	
-		filterAbbre.add("中资");	
-		filterAbbre.add("拉大");	
-		filterAbbre.add("冬奥会");	
-		filterAbbre.add("邮");			
+		try {
+			FileOutputStream  fos = new FileOutputStream("test.tab");
+			OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+			String text = IOUtils.slurpFile(ABBREFILEPATH);
+			String[] words = text.split("\n");
+			for (String word : words){
+				filterAbbre.add(word);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static String getAnsjNER(String text)throws IOException{
@@ -163,7 +120,7 @@ public class cmnGenMention {
 					 }
 					 else{
 						 sb.append("<GPE>" + terms[0] + "</GPE>");	
-//						 System.out.println("j" + ":" +  terms[0]);
+						 System.out.println("j" + ":" +  terms[0]);
 					 }
 
 //					 System.out.println(line);
@@ -174,8 +131,9 @@ public class cmnGenMention {
 //					 System.out.println("nw" + ":" + terms[0]);
 				 }
 				 else if(terms[1].equals("nw")){
+					 System.out.println(line);
 					 sb.append("<NIL>" + terms[0] + "</NIL>");
-//					 System.out.println("nw"+":"+terms[0]);
+					 System.out.println("nw"+":"+terms[0]);
 				 }
 				 else {
 					 sb.append(terms[0]); 						 
@@ -343,77 +301,111 @@ public class cmnGenMention {
 //				 System.out.println(type + "\n");	
 				 
 				 //增加嵌入类型，并且过滤
-				 String ansjNER = getAnsjNER(mention);//对提取出来的mention,进行二次提取
-
-				 Pattern p = Pattern.compile("<(.*?)>(.*?)</.*?>");
-				 Matcher m = p.matcher(ansjNER);
-				 int instart = 0;
-				 int inend = 0;
-				 int inlen = 0;
-				 while(m.find()){
-					String inMention = m.group(2);
-					if(!inMention.equals(mention)){
-						instart = m.start() - inlen + start;
-						inend = instart + m.group(2).length() - 1;
-
-						String inMentionRaw = mentionRaw.substring(m.start() - inlen, m.start() - inlen + m.group(2).length());
-
-						inlen = inlen + m.group(1).length() * 2 + 5;
-						if(inMention.equals("查理")){//过滤掉查理周刊
-							continue;
-						}
-						String intype = m.group(1);
-						String inloc = instart + "-" + inend;	
-//						nerosw.write(inMention + "\t");
-						nerosw.write(inMentionRaw + "\t");
-						nerosw.write(fileID + ":" + inloc + "\t");					 
-						nerosw.write(intype + "\n");
-						nerosw.flush();
-						
-						System.out.println(mention + ":" + type);
-						System.out.println("in:" + inMention + intype );
-						System.out.println("inraw:" + inMentionRaw);
-						
-						
-//						System.out.println("in:######################################");
-//						System.out.print(inmention + "\t");
-//						System.out.print(inloc + "\t");
-//						System.out.println(intype + "\n");	
-					}
-					else{ //test 国家分不开的类型 特殊类型
-						int otherstart = 0;
-						int otherend = 0;
-						String otherloc;
-						
-						if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
-							otherstart = start + mention.indexOf("美国");
-							otherend = otherstart + 1;
-							otherloc = otherstart + "-" + otherend;
-							nerosw.write("美国" + "\t");
-							nerosw.write(fileID + ":" + otherloc + "\t");					 
-							nerosw.write("GPE" + "\n");
-							nerosw.flush();
-						}
-						if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
-							otherstart = start + mention.indexOf("中国");
-							otherend = otherstart + 1;
-							otherloc = otherstart + "-" + otherend;
-							nerosw.write("中国" + "\t");
-							nerosw.write(fileID + ":" + otherloc + "\t");			 
-							nerosw.write("GPE" + "\n");
-							nerosw.flush();
-						}
-						if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
-							otherstart = start + mention.indexOf("巴西");
-							otherend = otherstart + 1;
-							otherloc = otherstart + "-" + otherend;
-							nerosw.write("巴西" + "\t");
-							nerosw.write(fileID + ":" + otherloc + "\t");			 
-							nerosw.write("GPE" + "\n");
-							nerosw.flush();
-						}						
-					}
-				 }			 
+//				 String ansjNER = getAnsjNER(mention);//对提取出来的mention,进行二次提取
+//
+//				 Pattern p = Pattern.compile("<(.*?)>(.*?)</.*?>");
+//				 Matcher m = p.matcher(ansjNER);
+//				 int instart = 0;
+//				 int inend = 0;
+//				 int inlen = 0;
+//				 while(m.find()){
+//					String inMention = m.group(2);
+//					if(!inMention.equals(mention)){
+//						instart = m.start() - inlen + start;
+//						inend = instart + m.group(2).length() - 1;
+//
+//						String inMentionRaw = mentionRaw.substring(m.start() - inlen, m.start() - inlen + m.group(2).length());
+//
+//						inlen = inlen + m.group(1).length() * 2 + 5;
+//						if(inMention.equals("查理")){//过滤掉查理周刊
+//							continue;
+//						}
+//						String intype = m.group(1);
+//						String inloc = instart + "-" + inend;	
+////						nerosw.write(inMention + "\t");
+//						nerosw.write(inMentionRaw + "\t");
+//						nerosw.write(fileID + ":" + inloc + "\t");					 
+//						nerosw.write(intype + "\n");
+//						nerosw.flush();
+//						
+//						System.out.println(mention + ":" + type);
+//						System.out.println("in:" + inMention + intype );
+//						System.out.println("inraw:" + inMentionRaw);
+//						
+//						
+////						System.out.println("in:######################################");
+////						System.out.print(inmention + "\t");
+////						System.out.print(inloc + "\t");
+////						System.out.println(intype + "\n");	
+//					}
+//					else{ //test 国家分不开的类型 特殊类型
+//						int otherstart = 0;
+//						int otherend = 0;
+//						String otherloc;
+//						
+//						if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
+//							otherstart = start + mention.indexOf("美国");
+//							otherend = otherstart + 1;
+//							otherloc = otherstart + "-" + otherend;
+//							nerosw.write("美国" + "\t");
+//							nerosw.write(fileID + ":" + otherloc + "\t");					 
+//							nerosw.write("GPE" + "\n");
+//							nerosw.flush();
+//						}
+//						if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
+//							otherstart = start + mention.indexOf("中国");
+//							otherend = otherstart + 1;
+//							otherloc = otherstart + "-" + otherend;
+//							nerosw.write("中国" + "\t");
+//							nerosw.write(fileID + ":" + otherloc + "\t");			 
+//							nerosw.write("GPE" + "\n");
+//							nerosw.flush();
+//						}
+//						if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
+//							otherstart = start + mention.indexOf("巴西");
+//							otherend = otherstart + 1;
+//							otherloc = otherstart + "-" + otherend;
+//							nerosw.write("巴西" + "\t");
+//							nerosw.write(fileID + ":" + otherloc + "\t");			 
+//							nerosw.write("GPE" + "\n");
+//							nerosw.flush();
+//						}						
+//					}
+//				 }	
+				 
+				 //不使用内嵌类型
+				int otherstart;
+				int otherend;
+				String otherloc;
+				if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
+					otherstart = start + mention.indexOf("美国");
+					otherend = otherstart + 1;
+					otherloc = otherstart + "-" + otherend;
+					nerosw.write("美国" + "\t");
+					nerosw.write(fileID + ":" + otherloc + "\t");					 
+					nerosw.write("GPE" + "\n");
+					nerosw.flush();
+				}
+				if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
+					otherstart = start + mention.indexOf("中国");
+					otherend = otherstart + 1;
+					otherloc = otherstart + "-" + otherend;
+					nerosw.write("中国" + "\t");
+					nerosw.write(fileID + ":" + otherloc + "\t");			 
+					nerosw.write("GPE" + "\n");
+					nerosw.flush();
+				}
+				if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
+					otherstart = start + mention.indexOf("巴西");
+					otherend = otherstart + 1;
+					otherloc = otherstart + "-" + otherend;
+					nerosw.write("巴西" + "\t");
+					nerosw.write(fileID + ":" + otherloc + "\t");			 
+					nerosw.write("GPE" + "\n");
+					nerosw.flush();
+				}
+				//不使用内嵌类型			 		 		 
+				 
 		 	 }
 		 }
 		 nerosw.close();

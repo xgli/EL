@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,14 +38,18 @@ public class App {
 	 */
 
 	public static void main(String[] args) throws IOException {
-		
-		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪"; //		text = text.replaceAll(".*?\"(.*?)\".*?", )
-//		String[] tokens  = text.split("/");
-		String TOresult = ToAnalysis.parse(text).toString();
-		System.out.println(TOresult);
-		String NLPresult = NlpAnalysis.parse(text).toString();
-		System.out.println(NLPresult);
+		Set<String> filterAbbre = new  HashSet<String>();
 
+
+
+		 FileOutputStream  fos = new FileOutputStream("test.tab");
+		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+		for(String element : filterAbbre){
+			osw.write(element + "\n");
+			osw.flush();
+		}
+		osw.close();
+		fos.close();
 	}
 
 }
