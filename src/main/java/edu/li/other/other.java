@@ -4,7 +4,9 @@
 package edu.li.other;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +33,8 @@ public class other {
 	 * @param args
 	 * @throws IOException 
 	 */
-	
+	public static final String ENGNEWSNAMEFILE = "data" + File.separator + "engnewsname.tab";
+	public static final String ENGDFNAMEFILE = "data" + File.separator + "engdfname.tab";
 	public static void getEnglishPerson(String fileDir) throws IOException{
 		File dir = new File(fileDir);
 		File[] files = dir.listFiles();
@@ -71,7 +74,17 @@ public class other {
 	}
 	
 	
-	public static void getEnglish(String fileDir) throws IOException{
+	public static void getEnglish(String fileDir,String  type) throws IOException{
+
+		 FileOutputStream  fos;
+		if(type.equals("news")){
+			 fos = new FileOutputStream(ENGNEWSNAMEFILE);
+		}
+		else{
+			fos = new FileOutputStream(ENGDFNAMEFILE);			
+		}
+		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+		
 		File dir = new File(fileDir);
 		File[] files = dir.listFiles();
 		int all =  files.length;
@@ -105,10 +118,15 @@ public class other {
 					int end = start + old.length() - 1;
 					String loc = start +"-"+ end;
 					System.out.println(count + "\t" +  old + "\t" + fileID +":"+ loc);
+					osw.write(old + "\t" + fileID + ":" + loc + "\n");
+					osw.flush();
 				}
 				
-			}			
+			}
+
 		}
+		osw.close();
+		fos.close();
 		
 	}	
 	
@@ -118,7 +136,8 @@ public class other {
 		// TODO Auto-generated method stub
 		String newsFileDir = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator +  "news";
 		String dfFileDir = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator +  "df";
-		getEnglish(newsFileDir);
+		getEnglish(newsFileDir,"news");
+		getEnglish(dfFileDir,"df");
 	}
 
 }

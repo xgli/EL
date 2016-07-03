@@ -114,6 +114,19 @@ public class cmnGenMention {
 				 else if(-1 != terms[1].indexOf("nt")){
 					 sb.append("<ORG>" + terms[0] + "</ORG>");
 				 }
+				 else if (-1 != terms[1].indexOf("nz")){
+					 if(terms.equals("博科圣地")){
+						 sb.append("<ORG>"+terms[0]+"</ORG>");
+						 continue;
+					 }
+					 if(terms.equals("查理周刊")){
+						 sb.append("<ORG>"+terms[0]+"</ORG>");
+						 continue;
+					 }
+					 sb.append("<NIL>" + terms[0] + "</NIL>"); 
+					 System.out.println(line);
+					 System.out.println("nz" + terms[0]);
+				 }
 				 else if(terms[1].equals("j")){
 					 if(filterAbbre.contains(terms[0])){
 						 sb.append(terms[0]);						 
@@ -131,6 +144,11 @@ public class cmnGenMention {
 //					 System.out.println("nw" + ":" + terms[0]);
 				 }
 				 else if(terms[1].equals("nw")){
+					 if(terms[0].equals("杰布")){
+						 sb.append("<PER>"+ terms[0] + "</PER>");
+						 continue;
+					 }
+
 					 System.out.println(line);
 					 sb.append("<NIL>" + terms[0] + "</NIL>");
 					 System.out.println("nw"+":"+terms[0]);
@@ -218,19 +236,21 @@ public class cmnGenMention {
 
 		 OutputStreamWriter segosw = new OutputStreamWriter(segfos, "UTF-8");
 		 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
-		 
-
+	 
 		 
 		 String fileID = fileName.split("\\.")[0];//获取文件name
 		 
 		 for(String line:lines){
 			 
 //			 boolean convertSimple = true;//进行每行判定是否为繁体
+			 if(line.equals("")){
+				 continue;
+			 }
 			 
 			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39 ;
 			 String tempLine = line.split("\t")[1];
 			
-			 tempLine = tempLine.replaceAll("•", "·");
+			 tempLine = tempLine.replaceAll("•", "·").replace("－", "·");
 			 String rawLine = TraToSim.TraToSim(tempLine);//全部进行转换,然后在templine中找位置,在
 //			 if(rawLine.equals(templine)){
 //				 convertSimple = false;
@@ -400,6 +420,24 @@ public class cmnGenMention {
 					otherend = otherstart + 1;
 					otherloc = otherstart + "-" + otherend;
 					nerosw.write("巴西" + "\t");
+					nerosw.write(fileID + ":" + otherloc + "\t");			 
+					nerosw.write("GPE" + "\n");
+					nerosw.flush();
+				}
+				if(-1 != mention.indexOf("英国") && !mention.equals("英国")){
+					otherstart = start + mention.indexOf("英国");
+					otherend = otherstart + 1;
+					otherloc = otherstart + "-" + otherend;
+					nerosw.write("英国" + "\t");
+					nerosw.write(fileID + ":" + otherloc + "\t");			 
+					nerosw.write("GPE" + "\n");
+					nerosw.flush();
+				}
+				if(-1 != mention.indexOf("德国") && !mention.equals("德国")){
+					otherstart = start + mention.indexOf("德国");
+					otherend = otherstart + 1;
+					otherloc = otherstart + "-" + otherend;
+					nerosw.write("德国" + "\t");
 					nerosw.write(fileID + ":" + otherloc + "\t");			 
 					nerosw.write("GPE" + "\n");
 					nerosw.flush();

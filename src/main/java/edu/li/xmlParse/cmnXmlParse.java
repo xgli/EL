@@ -88,7 +88,7 @@ public class cmnXmlParse {
 		for(Element SEG : SEGs){
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
-			if (-1 == text.indexOf("<") && -1 == text.indexOf("&lt")){ //提取纯文本
+			if (-1 == text.indexOf("<") && -1 == text.indexOf("&lt") && 0 != text.indexOf("http")){ //提取纯文本
 				textosw.write(SEG.attributeValue("start_char") + "\t" + text + "\n");
 				textosw.flush();
 			}
