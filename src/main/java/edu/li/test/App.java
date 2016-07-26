@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.ansj.splitWord.analysis.ToAnalysis;
 
+import com.google.common.primitives.Bytes;
+
+import edu.li.other.testProps;
 import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
@@ -38,18 +41,21 @@ public class App {
 	 */
 
 	public static void main(String[] args) throws IOException {
-		Set<String> filterAbbre = new  HashSet<String>();
-
-
-
-		 FileOutputStream  fos = new FileOutputStream("test.tab");
-		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-		for(String element : filterAbbre){
-			osw.write(element + "\n");
-			osw.flush();
+//		Set<String> filterAbbre = new  HashSet<String>();
+//
+//		 FileOutputStream  fos = new FileOutputStream("test.tab");
+//		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+//		for(String element : filterAbbre){
+//			osw.write(element + "\n");
+//			osw.flush();
+//		}
+//		osw.close();
+//		fos.close();
+		String text = "中国";
+		char[] words = text.toCharArray();
+		for(char word : words){
+			System.out.println(word+"a");
 		}
-		osw.close();
-		fos.close();
 	}
 
 }

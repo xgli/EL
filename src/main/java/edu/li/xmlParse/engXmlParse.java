@@ -29,18 +29,31 @@ public class engXmlParse {
 	 * @param args
 	 * @throws DocumentException 
 	 * @throws IOException 
-	 */	public static final String DIRTYPE = "test"; //test or train
+	 */	
 	
 	public  static final String DFFILEOUTDIR = "data" + File.separator +  "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
-	public static final String DFFILEINPUTDIR = "data" + File.separator +  DIRTYPE + File.separator +  "raw" + File.separator + "eng" + File.separator + "df" + File.separator;
+	public static final String DFFILEINPUTDIR = "data" + File.separator +  File.separator +  "raw" + File.separator + "eng" + File.separator + "df" + File.separator;
 	
 	public  static final String NEWSFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator +  DIRTYPE + File.separator + "raw" + File.separator + "eng" + File.separator + "news" + File.separator;
-	
-
-	
+	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "eng" + File.separator + "news" + File.separator;
+		
 	
 	public static final String AUTHOROUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "eng" + File.separator; 
+	
+	static{
+		File file = null;
+		file = new File(AUTHOROUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(DFFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(NEWSFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		
+	}
+	
 	
 	
 	public static void ParseNews(String fileName) throws DocumentException, IOException{

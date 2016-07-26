@@ -1,5 +1,7 @@
 package edu.li.wordSegment;
 
+//没有用了，只需要有服务端就可以了
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;

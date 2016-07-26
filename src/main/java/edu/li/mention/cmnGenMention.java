@@ -9,10 +9,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +28,7 @@ import org.omg.CORBA.SystemException;
 import com.hankcs.hanlp.HanLP;
 
 import TraToSim.TraToSim;
+import edu.li.other.testProps;
 import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
@@ -46,13 +49,32 @@ public class cmnGenMention {
 	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
 	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "cmn" + File.separator + "df" + File.separator;
 	
+	//ansj的服务地址
 	public static final String SEGHOST = "127.0.0.1";
 	public static final int SEGPORT = 4465;
+	//stanford的服务地址
 	public static final String NERHOST =  "127.0.0.1";
 	public static final int NERPORT = 2310;
+	
 	public static final String ABBREFILEPATH = "data" + File.separator + "dict" + File.separator + "abbre.tab";
 	public static final String ABBREFILOUTEPATH = "data" + File.separator + "dict" + File.separator + "abbreOut.tab";
 
+	static{//判断文件目录是否存在
+		File file;
+		file = new File(DFFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(DFSEGMENTOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(NEWSFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(NEWSSEGMENTOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+	}	
+	
 	public static Set<String> filterAbbre = new  HashSet<String>();
 	static {
 		try {
@@ -168,7 +190,7 @@ public class cmnGenMention {
 		 StringWriter sw = new StringWriter(); // create client writer not to write a file
 		 BufferedWriter bw = new BufferedWriter(sw);
 
-		 segServer.segClient.communicateWithsegServer(SEGHOST, SEGPORT, "utf-8",br,bw,false);
+		 NERClient.communicateWithNERServer(SEGHOST, SEGPORT, "utf-8",br,bw,true);//使用stanfordner的client程序进行交互
 		 
 		 br.close();
 		 bw.close();
@@ -311,7 +333,7 @@ public class cmnGenMention {
 					 ;
 				 }
 				 else {
-					 nerosw.write(mentionRaw + "\t");
+					 nerosw.write(mention + "\t");
 					 nerosw.write(fileID + ":" + loc + "\t");					 
 					 nerosw.write(type + "\n");
 					 nerosw.flush();

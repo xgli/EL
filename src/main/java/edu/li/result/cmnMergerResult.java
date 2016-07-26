@@ -17,12 +17,13 @@ import edu.stanford.nlp.io.IOUtils;
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
  *last modified: Jun 18, 2016 10:08:41 PM
+ *合并中文的结果
  */
 public class cmnMergerResult {
 	public static final String DFRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator +"df" + File.separator;
 	public static final String NEWSRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator +"news" + File.separator;
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "cmn" + File.separator;
-	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "cmn.tab";	
+	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "cmn_li.tab";	
 	
 	
 	public static void mergerResult() throws IOException{
@@ -115,6 +116,7 @@ public class cmnMergerResult {
 		}		
 		osw.close();
 		fos.close();
+		Check.checkResult(RESULTFINAL);
 	}	
 		
 	public static void main(String[] args) throws IOException{

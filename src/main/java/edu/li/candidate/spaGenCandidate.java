@@ -33,6 +33,35 @@ public class spaGenCandidate {
 	
 	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "spannish.tab";
 	
+	static{
+		File file ;
+		file = new File(DFFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory()){
+			file.mkdirs();
+		}
+		file = new File(NEWSFILEOUTDIR);
+		if(!file.exists() && file.isDirectory()){
+			file.mkdirs();
+		}
+	}
+	
+	public static Map<String, String> loadDict() throws IOException{
+		Map<String, String> dict = new HashMap<String, String>();
+		String text = IOUtils.slurpFile(DICTFILE);
+		String[] lines = text.split("\n");
+		for(String line : lines){
+//			System.out.println(line);
+			String[] tokens = line.split("\t");
+			String mention = tokens[0];
+			String mid = tokens[1];
+			String type = tokens[2];
+			dict.put(mention, mid + "\t" + type);
+//			System.out.println(mention + mid + type);			
+		}
+		return dict;
+	}
+	
+	
 	public static void GenCandidate(String fileName, String fileType) throws IOException{
 		
 		String text = null; 

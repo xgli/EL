@@ -28,12 +28,21 @@ public class spaXmlParse {
 	
 	public  static final String NEWSFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "spa" + File.separator + "news" + File.separator;
-	
-
-	
-	
+		
 	public static final String AUTHOROUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator+ "spa" + File.separator; 
-	
+		
+	static{
+		File file = null;
+		file = new File(AUTHOROUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(DFFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(NEWSFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();		
+	}
 	
 	public static void ParseNews(String fileName) throws DocumentException, IOException{
 		SAXReader saxReader = new SAXReader();
@@ -97,8 +106,8 @@ public class spaXmlParse {
 				Pattern pattern = Pattern.compile("author=\"(.*?)\"");
 				Matcher matcher = pattern.matcher(text);
 				if(matcher.find()){
-					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1);
-					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1;					
+					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1) -39;
+					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1 - 39;					
 //					System.out.println(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end);
 					authorosw.write(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end + "\n");
 					authorosw.flush();

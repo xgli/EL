@@ -4,7 +4,9 @@
 package edu.li.edl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import org.dom4j.DocumentException;
 
@@ -28,20 +30,33 @@ public class spaProcess {
 		int done = 0;
 		long start = System.currentTimeMillis();
 		if(files != null){
+			FileOutputStream failedFilefos = new FileOutputStream("failedspa.tab");
+			OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");
 			for(File file : files){
-				done += 1;
-				System.out.println("doing:" + done + "\t" + "all:" + all);
-				String fileName = file.getName();
-				System.out.println(fileName);
-				if(fileName.endsWith("xml")){
-//					System.out.println("xmlParse:###########");
-//					spaXmlParse.Parse(fileName, type);
-//					System.out.println("GenMention:###########");
-//					spaGenMention.GetMention(fileName, type);
-					System.out.println("GenCandidate:#########");
-					spaGenCandidate.GenCandidate(fileName, type);
+				try {
+					done += 1;
+					System.out.println("doing:" + done + "\t" + "all:" + all);
+					String fileName = file.getName();
+					System.out.println(fileName);
+					if(fileName.endsWith("xml")){
+						System.out.println("xmlParse:###########");
+						spaXmlParse.Parse(fileName, type);
+						System.out.println("GenMention:###########");
+						spaGenMention.GetMention(fileName, type);
+						System.out.println("GenCandidate:#########");
+						spaGenCandidate.GenCandidate(fileName, type);
+					}
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.toString());
+					failedFileosw.write(file.getName() + "\n");
+					failedFileosw.write(e.toString() + "\n");
+					continue;	
 				}
 			}
+			failedFileosw.close();
+			failedFilefos.close();
 			long end = System.currentTimeMillis();
 			System.out.println((end - start) + "s");
 		}
@@ -53,8 +68,8 @@ public class spaProcess {
 	
 		String newsFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "news";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "df";
-		processAll(newsFileDir, "news");
-		processAll(dfFileDir, "df");	
+//		processAll(newsFileDir, "news");
+//		processAll(dfFileDir, "df");	
 		spaMergerResult.mergerResult();
 	}
 	

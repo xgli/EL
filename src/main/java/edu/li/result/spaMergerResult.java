@@ -17,13 +17,14 @@ import edu.stanford.nlp.io.IOUtils;
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
  *last modified: Jun 18, 2016 10:09:04 PM
+ *合并西班牙文的结果
  */
 public class spaMergerResult {
 	
 	public static final String DFRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator +"df" + File.separator;
 	public static final String NEWSRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator +"news" + File.separator;
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "spa" + File.separator;
-	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "spa.tab";
+	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "spa_li.tab";
 	
 	
 	
@@ -70,13 +71,15 @@ public class spaMergerResult {
 		for(File file:dfFiles){			
 			text = IOUtils.slurpFile(file);
 			String[] lines = text.split("\n");
-			for(String line : lines){				
+			for(String line : lines){
+//				System.out.println(line);
+				if(line.equals(""))
+					continue;
 				String[] tokens = line.split("\t");
 				if(tokens[2].equals("NIL")){
 					String mention = tokens[0];
 					if(NILMention.containsKey(mention)){
 						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", NILMention.get(mention)) + "\tNAM\t1.0\n");
-						
 					}
 					else{
 						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", "NIL"+nil) + "\tNAM\t1.0\n" );
@@ -117,6 +120,7 @@ public class spaMergerResult {
 		
 		osw.close();
 		fos.close();
+		Check.checkResult(RESULTFINAL);
 	}	
 	
 		

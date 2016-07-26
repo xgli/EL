@@ -17,6 +17,7 @@ import edu.stanford.nlp.io.IOUtils;
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
  *last modified: Jun 18, 2016 10:08:52 PM
+ *合并英文的结果
  */
 public class engMergerResult {
 	
@@ -24,7 +25,7 @@ public class engMergerResult {
 	public static final String DFRESULTINPUTDIR = "data" + File.separator +  "candidate" + File.separator + "eng" + File.separator +"df" + File.separator;
 	public static final String NEWSRESULTINPUTDIR = "data" + File.separator +  "candidate" + File.separator + "eng" + File.separator +"news" + File.separator;
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "eng" + File.separator;
-	public static final String RESULTFINAL = "data" + File.separator +  "result" + File.separator + "eng.tab";
+	public static final String RESULTFINAL = "data" + File.separator +  "result" + File.separator + "eng_li.tab";
 	
 	
 	
@@ -99,7 +100,9 @@ public class engMergerResult {
 		for(File file:authorFiles){			
 			text = IOUtils.slurpFile(file);
 			String[] lines = text.split("\n");
-			for(String line : lines){				
+			for(String line : lines){
+				if(line.equals(""))
+					continue;
 				String[] tokens = line.split("\t");			
 				String mention = tokens[0];
 				if(NILMention.containsKey(mention)){
@@ -118,6 +121,7 @@ public class engMergerResult {
 		
 		osw.close();
 		fos.close();
+		Check.checkResult(RESULTFINAL);
 	}	
 	
 	

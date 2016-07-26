@@ -83,7 +83,8 @@ public class other {
 		else{
 			fos = new FileOutputStream(ENGDFNAMEFILE);			
 		}
-		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+		
+		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		
 		File dir = new File(fileDir);
 		File[] files = dir.listFiles();
@@ -114,6 +115,7 @@ public class other {
 					}
 					count++;		
 					System.out.println(line);
+					osw.write(line+"\n");
 					int start = matcher.start() + bias - 39 ;
 					int end = start + old.length() - 1;
 					String loc = start +"-"+ end;

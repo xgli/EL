@@ -35,6 +35,20 @@ public class engGenCandidate {
 	
 	public static final String LANG = "eng";
 	
+	static{//判断是否存在文件目录
+		File file ;
+		file = new File(DFFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory()){
+			file.mkdirs();
+		}
+		file = new File(NEWSFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory()){
+			file.mkdirs();
+		}
+	}
+	
+	
+	
 	public static Map<String, String> loadDict() throws IOException{
 		Map<String, String> dict = new HashMap<String, String>();
 		String text = IOUtils.slurpFile(DICTFILE);

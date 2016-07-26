@@ -1,40 +1,28 @@
 /**
  * 
  */
-package edu.li.es;
+package edu.li.result;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.netty.util.HashedWheelTimer;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.script.ScriptService;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
-import edu.li.other.testProps;
-
-
 /**
- *date:Jun 15, 2016 10:07:13 AM
+ *date:Jul 25, 2016 8:58:29 PM
  * @author lxg xgli0807@gmail.com
  *Function TODO ADD FUNCTION.
- *last modified: Jun 15, 2016 10:07:13 AM
+ *last modified: Jul 25, 2016 8:58:29 PM
  */
-public class Search {
-
-	/**
-	 * @param args
-	 */
+public class searchDict {
 	
 	public static final String CLUSTERNAME ="elasticsearch"; //集群模型
 	public static final String INDEX = "base_kb"; //索引名称
@@ -84,14 +72,14 @@ public class Search {
 		return client;
 	}
 	
-	public static  SearchHits getHits(String mention,String mention_type, String lang){
+	public static  SearchHits getHits(String mention,String index, String type){
 		Map<String, Object> templateParams = new HashMap<String, Object>();
-		templateParams.put("mention_"+mention_type, mention);
+		templateParams.put("mention", mention);
 		
 		TransportClient client = geTransportClient();
-		SearchResponse actionGet = client.prepareSearch(INDEX)
-										.setTypes(TYPE)										
-										.setTemplateName("template_" + mention_type + "_" + lang)
+		SearchResponse actionGet = client.prepareSearch(index)
+										.setTypes(type)										
+										.setTemplateName("template_searchDict")
 										.setTemplateType(ScriptService.ScriptType.FILE)
 										.setTemplateParams(templateParams)						
 //										.setQuery( QueryBuilders.termQuery("_id", "2"))
@@ -100,27 +88,12 @@ public class Search {
 		return actionGet.getHits();		
 	}
 	
+ 
 	
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub	
-//		
-		String mention = "上海市";
-		String mention_type = "GPE";
-		String lang = "cmn";
-
-		SearchHits hits = getHits(mention, mention_type, lang);
-//		System.out.println(hits.totalHits());
-		for (SearchHit hit : hits.getHits()){ //getHits 的使用			
-			if(hit.getScore() >= 1){
-				System.out.println(hit.getId());
-				System.out.println(hit.getScore());
-				System.out.println(hit.getFields().get("rs_label_zh").getValue());
-				System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());			
-			}
-
-		}
-
-	}
+	
+	
+	
+	
 
 }

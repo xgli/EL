@@ -6,8 +6,10 @@ package edu.li.xmlParse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +18,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import edu.li.other.testProps;
+
 /**
  *date:Jun 18, 2016 10:04:28 PM
  * @author lxg xgli0807@gmail.com
@@ -23,18 +27,29 @@ import org.dom4j.io.SAXReader;
  *last modified: Jun 18, 2016 10:04:28 PM
  */
 public class cmnXmlParse {
-
 	
 	public  static final String DFFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	
+//	
 	public  static final String NEWSFILEOUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "news" + File.separator;
-	
-
-	
-	
+//	
+//	
 	public static final String AUTHOROUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator  + "cmn" + File.separator; 
+	
+	static{
+		File file = null;
+		file = new File(AUTHOROUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(DFFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(NEWSFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		
+	}
 	
 	public static void ParseNews(String fileName) throws DocumentException, IOException{
 		SAXReader saxReader = new SAXReader();
@@ -119,9 +134,9 @@ public class cmnXmlParse {
 	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
-		String fileName = "CMN_NW_000020_20150604_F00100013.nw.ltf.xml";//路径需要拼接，避免不同的平台使用。
-//		ParseDf(fileName);
-		Parse(fileName, "news");
+		String fileName = "CMN_DF_000020_20150108_F00100074.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
+//		ParseDf(fileName); 
+		Parse(fileName, "df");
 	}	
 	
 }

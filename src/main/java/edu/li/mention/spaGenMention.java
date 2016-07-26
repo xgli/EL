@@ -25,6 +25,9 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class spaGenMention {
 
+	public static final String NERHOST =  "127.0.0.1";
+	public static final int NERPORT = 2311;
+	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String NEWSSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "spa" +File.separator+"news" + File.separator;
@@ -33,10 +36,21 @@ public class spaGenMention {
 	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "df" + File.separator;
 	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "spa" + File.separator + "df" + File.separator;
 	
-
-	public static final String NERHOST =  "10.103.28.254";
-	public static final int NERPORT = 2311;
-
+	static{//判断文件目录是否存在
+		File file;
+		file = new File(DFFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(DFSEGMENTOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(NEWSFILEOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+		file = new File(NEWSSEGMENTOUTDIR);
+		if(!file.exists() && !file.isDirectory())
+			file.mkdirs();
+	}	
 	
 	public static String getNer(String text) throws IOException{
 	   	 StringReader sr = new StringReader(text); //输入切分好的text
@@ -79,7 +93,7 @@ public class spaGenMention {
 		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
 //			 System.out.println(line);
-			 int bias = Integer.parseInt(line.split("\t")[0].trim());
+			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39;
 			 String segLine = line.split("\t")[1];
 			 
 			 segosw.write(segLine);
