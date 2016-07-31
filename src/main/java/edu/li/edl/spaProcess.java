@@ -65,12 +65,25 @@ public class spaProcess {
 	}
 	
 	public static void main(String[] args) throws DocumentException, IOException {
-	
+		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "mentionlist.tab";
+		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator +"tempresult.tab";
+		
+		File file;
+		file = new File(MENTIONLISTOUTFILE);
+		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();	  			
+		
+		
 		String newsFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "news";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "df";
-//		processAll(newsFileDir, "news");
-//		processAll(dfFileDir, "df");	
-		spaMergerResult.mergerResult();
+		processAll(newsFileDir, "news");
+		processAll(dfFileDir, "df");	
+//		spaMergerResult.mergerResult();
+		spaMergerResult.mergerAuthor();
 	}
 	
 

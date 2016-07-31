@@ -7,6 +7,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import edu.li.candidate.cmnGenCandidate;
+import edu.li.expand.expandMention;
+import edu.li.mention.cmnGenMention;
+import edu.li.result.cmnMergerResult;
+import edu.li.xmlParse.cmnXmlParse;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
@@ -41,12 +46,13 @@ public class cmnProcess {
 					String fileName = file.getName();
 					System.out.println(fileName);
 					if(fileName.endsWith("xml")){
-//						System.out.println("xmlParse:###########");
-//						cmnXmlParse.Parse(fileName, type);
-//						System.out.println("GenMention:###########");
-//						cmnGenMention.GetMention(fileName, type);
+						System.out.println("xmlParse:###########");
+						cmnXmlParse.Parse(fileName, type);
+						System.out.println("GenMention:###########");
+						cmnGenMention.GetMention(fileName, type);
 						System.out.println("GenCandidate:#########");
 						cmnGenCandidate.GenCandidate(fileName, type);
+//						expandMention.expand(fileName, type);
 					}
 					
 				} catch (Exception e) {
@@ -69,7 +75,17 @@ public class cmnProcess {
 	}
 	
 	public static void main(String[] args) throws DocumentException, IOException {
-	
+		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "mentionlist.tab";
+		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator +"tempresult.tab";
+		File file;
+		file = new File(MENTIONLISTOUTFILE);		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();		
+		
+		
 		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "news";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "df";
 		
@@ -77,6 +93,7 @@ public class cmnProcess {
 		processAll(newsFileDir, "news");
 		processAll(dfFileDir, "df");
 //		cmnMergerResult.mergerResult();
+		cmnMergerResult.mergerAuthor();
 
 	}	
 	

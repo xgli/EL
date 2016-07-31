@@ -92,27 +92,68 @@ public class spaXmlParse {
 		OutputStreamWriter authorosw = new OutputStreamWriter(authorfos, "UTF-8");	
 		
 		Element TEXT = (Element) DOC.elements().get(0);
+		int flag = 0;
 		List<Element> SEGs = TEXT.elements();
 		for(Element SEG : SEGs){
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
 //			System.out.println(text);
-			if (-1 == text.indexOf("<") && -1 == text.indexOf("&lt")){ //提取纯文本
-				textosw.write(SEG.attributeValue("start_char") + "\t" + text + "\n");
-
-				textosw.flush();
+			
+			if (-1 != text.indexOf("<quote orig_author=")  ||-1 != text.indexOf("&lt;quote orig_author=") ){
+				flag += 1;
+//				System.out.println(flag);
+				continue;
 			}
-			else if( -1 != text.indexOf("author")){//提取发贴的作者
+			
+			if(-1 != text.indexOf("</quote>") || -1 != text.indexOf ("&lt;/quote&gt;")){
+				flag -= 1;
+//				System.out.println(flag);
+				continue;
+			}
+			
+			if (flag != 0){
+//				System.out.println(flag);
+				continue;
+			}
+			
+			
+			if(-1 != text.indexOf("&lt;post id=") || -1 != text.indexOf("<post id=")){//提取作者
 				Pattern pattern = Pattern.compile("author=\"(.*?)\"");
 				Matcher matcher = pattern.matcher(text);
 				if(matcher.find()){
-					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1) -39;
-					int end = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.end(1) - 1 - 39;					
+					int len = matcher.group(1).trim().length();
+					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1);
+					int end = start + len - 1;					
 //					System.out.println(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end);
 					authorosw.write(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end + "\n");
 					authorosw.flush();
-				}
+				}				
+				continue;				
 			}
+			
+			if(text.equals("</post>") || text.equals("&lt;/post&gt;") ){
+				continue;
+			}
+			
+			textosw.write(SEG.attributeValue("start_char") + "\t" + text + "\n");
+			textosw.flush();
+//			if (-1 == text.indexOf("<") && -1 == text.indexOf("&lt")){ //提取纯文本
+//				textosw.write(SEG.attributeValue("start_char") + "\t" + text + "\n");
+//
+//				textosw.flush();
+//			}
+//			else if( -1 != text.indexOf("author")){//提取发贴的作者
+//				Pattern pattern = Pattern.compile("author=\"(.*?)\"");
+//				Matcher matcher = pattern.matcher(text);
+//				if(matcher.find()){
+//					int len = matcher.group(1).trim().length();
+//					int start = Integer.parseInt(SEG.attributeValue("start_char")) + matcher.start(1);
+//					int end = start + len - 1;					
+////					System.out.println(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end);
+//					authorosw.write(matcher.group(1) + "\t" + fileID + ":" + start + "-" + end + "\n");
+//					authorosw.flush();
+//				}
+//			}
 		}
 		textosw.close();
 		textfos.close();

@@ -91,7 +91,23 @@ public class Search {
 		TransportClient client = geTransportClient();
 		SearchResponse actionGet = client.prepareSearch(INDEX)
 										.setTypes(TYPE)										
-										.setTemplateName("template_" + mention_type + "_" + lang)
+										.setTemplateName("template_"+mention_type + "_" + lang)
+										.setTemplateType(ScriptService.ScriptType.FILE)
+										.setTemplateParams(templateParams)						
+//										.setQuery( QueryBuilders.termQuery("_id", "2"))
+										.execute()
+										.actionGet();
+		return actionGet.getHits();		
+	}
+	
+	public static  SearchHits getHitsById(String mid){
+		Map<String, Object> templateParams = new HashMap<String, Object>();
+		templateParams.put("mid", mid);
+		
+		TransportClient client = geTransportClient();
+		SearchResponse actionGet = client.prepareSearch(INDEX)
+										.setTypes(TYPE)										
+										.setTemplateName("template_search_id")
 										.setTemplateType(ScriptService.ScriptType.FILE)
 										.setTemplateParams(templateParams)						
 //										.setQuery( QueryBuilders.termQuery("_id", "2"))
@@ -102,9 +118,17 @@ public class Search {
 	
 	
 	
+	
+	
+	
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub	
-//		
+//		// TODO Auto-generated method stub	
+//		SearchHit hit = getHitsById("f_m.015fr").getHits()[0];
+////		SearchHit hit = hits.getHits()[0];
+//		System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());
+		
+////		
 		String mention = "上海市";
 		String mention_type = "GPE";
 		String lang = "cmn";

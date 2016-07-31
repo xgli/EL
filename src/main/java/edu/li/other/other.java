@@ -128,18 +128,12 @@ public class other {
 
 		}
 		osw.close();
-		fos.close();
-		
-	}	
-	
+		fos.close();		
+	}			
 	
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		String newsFileDir = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator +  "news";
-		String dfFileDir = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator +  "df";
-		getEnglish(newsFileDir,"news");
-		getEnglish(dfFileDir,"df");
 	}
 
 }

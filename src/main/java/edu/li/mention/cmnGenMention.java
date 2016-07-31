@@ -43,11 +43,11 @@ public class cmnGenMention {
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "news" + File.separator;
-	public static final String NEWSSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "cmn" + File.separator + "news" + File.separator;
+	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "cmn" + File.separator;
 	
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
 	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "cmn" + File.separator + "df" + File.separator;
+//	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "mentionText" + File.separator  + "cmn" + File.separator;
 	
 	//ansj的服务地址
 	public static final String SEGHOST = "127.0.0.1";
@@ -64,13 +64,10 @@ public class cmnGenMention {
 		file = new File(DFFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
-		file = new File(DFSEGMENTOUTDIR);
+		file = new File(MENTIONTEXTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 		file = new File(NEWSFILEOUTDIR);
-		if(!file.exists() && !file.isDirectory())
-			file.mkdirs();
-		file = new File(NEWSSEGMENTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 	}	
@@ -231,24 +228,23 @@ public class cmnGenMention {
 		 br.close();
 //		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
 		 String ner = sw.toString().replaceAll("\t", "").replaceAll("PERSON", "PER");
+		 ner = ner.replaceAll("</PER>·<PER>", "·");
 		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
 	}
 	
 	public static void GetMention(String fileName,String file_type) throws IOException {//还得进行繁转简
 
 		 String text = "";
-		 FileOutputStream segfos = null;//分词输出		 
+
 		 FileOutputStream nerfos = null;//ner输出
 
-		
+		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 		 if(file_type.equals("news")){
 			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-			 segfos = new FileOutputStream(NEWSSEGMENTOUTDIR + fileName);
 			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
 		 }
 		 else {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
-			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
 			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
 		 }
  
@@ -269,7 +265,7 @@ public class cmnGenMention {
 				 continue;
 			 }
 			 
-			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39 ;
+			 int bias = Integer.parseInt(line.split("\t")[0].trim());
 			 String tempLine = line.split("\t")[1];
 			
 			 tempLine = tempLine.replaceAll("•", "·").replace("－", "·");
@@ -301,8 +297,8 @@ public class cmnGenMention {
 			 segosw.write(segLine);
 			 segosw.flush();
 			 
-//			 String ner = getNer(segLine);//斯坦福实体识别
-			 String ner = getAnsjNER(rawLine);//ansj实体识别					 
+			 String ner = getNer(segLine);//斯坦福实体识别
+//			 String ner = getAnsjNER(rawLine);//ansj实体识别					 
 //			 System.out.println(ner);
 			 
 			 int len = 0;
@@ -416,54 +412,54 @@ public class cmnGenMention {
 //				 }	
 				 
 				 //不使用内嵌类型
-				int otherstart;
-				int otherend;
-				String otherloc;
-				if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
-					otherstart = start + mention.indexOf("美国");
-					otherend = otherstart + 1;
-					otherloc = otherstart + "-" + otherend;
-					nerosw.write("美国" + "\t");
-					nerosw.write(fileID + ":" + otherloc + "\t");					 
-					nerosw.write("GPE" + "\n");
-					nerosw.flush();
-				}
-				if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
-					otherstart = start + mention.indexOf("中国");
-					otherend = otherstart + 1;
-					otherloc = otherstart + "-" + otherend;
-					nerosw.write("中国" + "\t");
-					nerosw.write(fileID + ":" + otherloc + "\t");			 
-					nerosw.write("GPE" + "\n");
-					nerosw.flush();
-				}
-				if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
-					otherstart = start + mention.indexOf("巴西");
-					otherend = otherstart + 1;
-					otherloc = otherstart + "-" + otherend;
-					nerosw.write("巴西" + "\t");
-					nerosw.write(fileID + ":" + otherloc + "\t");			 
-					nerosw.write("GPE" + "\n");
-					nerosw.flush();
-				}
-				if(-1 != mention.indexOf("英国") && !mention.equals("英国")){
-					otherstart = start + mention.indexOf("英国");
-					otherend = otherstart + 1;
-					otherloc = otherstart + "-" + otherend;
-					nerosw.write("英国" + "\t");
-					nerosw.write(fileID + ":" + otherloc + "\t");			 
-					nerosw.write("GPE" + "\n");
-					nerosw.flush();
-				}
-				if(-1 != mention.indexOf("德国") && !mention.equals("德国")){
-					otherstart = start + mention.indexOf("德国");
-					otherend = otherstart + 1;
-					otherloc = otherstart + "-" + otherend;
-					nerosw.write("德国" + "\t");
-					nerosw.write(fileID + ":" + otherloc + "\t");			 
-					nerosw.write("GPE" + "\n");
-					nerosw.flush();
-				}
+//				int otherstart;
+//				int otherend;
+//				String otherloc;
+//				if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
+//					otherstart = start + mention.indexOf("美国");
+//					otherend = otherstart + 1;
+//					otherloc = otherstart + "-" + otherend;
+//					nerosw.write("美国" + "\t");
+//					nerosw.write(fileID + ":" + otherloc + "\t");					 
+//					nerosw.write("GPE" + "\n");
+//					nerosw.flush();
+//				}
+//				if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
+//					otherstart = start + mention.indexOf("中国");
+//					otherend = otherstart + 1;
+//					otherloc = otherstart + "-" + otherend;
+//					nerosw.write("中国" + "\t");
+//					nerosw.write(fileID + ":" + otherloc + "\t");			 
+//					nerosw.write("GPE" + "\n");
+//					nerosw.flush();
+//				}
+//				if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
+//					otherstart = start + mention.indexOf("巴西");
+//					otherend = otherstart + 1;
+//					otherloc = otherstart + "-" + otherend;
+//					nerosw.write("巴西" + "\t");
+//					nerosw.write(fileID + ":" + otherloc + "\t");			 
+//					nerosw.write("GPE" + "\n");
+//					nerosw.flush();
+//				}
+//				if(-1 != mention.indexOf("英国") && !mention.equals("英国")){
+//					otherstart = start + mention.indexOf("英国");
+//					otherend = otherstart + 1;
+//					otherloc = otherstart + "-" + otherend;
+//					nerosw.write("英国" + "\t");
+//					nerosw.write(fileID + ":" + otherloc + "\t");			 
+//					nerosw.write("GPE" + "\n");
+//					nerosw.flush();
+//				}
+//				if(-1 != mention.indexOf("德国") && !mention.equals("德国")){
+//					otherstart = start + mention.indexOf("德国");
+//					otherend = otherstart + 1;
+//					otherloc = otherstart + "-" + otherend;
+//					nerosw.write("德国" + "\t");
+//					nerosw.write(fileID + ":" + otherloc + "\t");			 
+//					nerosw.write("GPE" + "\n");
+//					nerosw.flush();
+//				}
 				//不使用内嵌类型			 		 		 
 				 
 		 	 }
@@ -479,11 +475,15 @@ public class cmnGenMention {
 		// TODO Auto-generated method stub
 		 String fileName = "CMN_NW_001346_20150616_F0010001R.nw.ltf.xml";
 		 GetMention(fileName,"news");
-////		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
-////		String result =  getAnsjNER(text);
+		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
+		String segtext = getAnsjSegment(text);
+		System.out.println(segtext);
+		String anner = getAnsjNER(text);
+		System.out.println(anner);
+		String result =  getNer(segtext);
 //		String text = ",";
 //		String result = getAnsjSegment(text);
-//		System.out.println(result);
+		System.out.println(result);
 	}
 
 }

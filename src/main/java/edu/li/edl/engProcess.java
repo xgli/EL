@@ -11,6 +11,8 @@ import java.io.OutputStreamWriter;
 import org.dom4j.DocumentException;
 
 import edu.li.candidate.engGenCandidate;
+import edu.li.expand.engExpandMention;
+import edu.li.expand.expandMention;
 import edu.li.mention.engGenMention;
 import edu.li.result.engMergerResult;
 import edu.li.xmlParse.engXmlParse;
@@ -48,6 +50,8 @@ public class engProcess {
 						System.out.println("GenCandidate:#########start");
 						engGenCandidate.GenCandidate(fileName, type);
 						System.out.println("GenCandidate:#########end");
+//						engExpandMention.expand(fileName, type);
+
 					}
 					
 				} catch (Exception e) {
@@ -67,10 +71,21 @@ public class engProcess {
 	}
 	
 	public static void main(String[] args) throws DocumentException, IOException {
+		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "engmentionlist.tab";
+		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
+		File file;
+		file = new File(MENTIONLISTOUTFILE);
+		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();	  	
+		
 		String newsFileDir = "data" + File.separator +  "raw" + File.separator + "eng" + File.separator +  "news";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "df";
 		processAll(newsFileDir, "news");
 		processAll(dfFileDir, "df");	
-		engMergerResult.mergerResult();
+//		engMergerResult.mergerAuthor();
 	}	
 }

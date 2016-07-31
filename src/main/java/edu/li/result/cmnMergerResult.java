@@ -23,7 +23,8 @@ public class cmnMergerResult {
 	public static final String DFRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator +"df" + File.separator;
 	public static final String NEWSRESULTINPUTDIR = "data" + File.separator + "candidate" + File.separator + "cmn" + File.separator +"news" + File.separator;
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "cmn" + File.separator;
-	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "cmn_li.tab";	
+	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "cmn_li.tab";
+	public static final String AUTHOROUTFILE = "data" + File.separator + "result" + File.separator +"cmn" + File.separator + "author.tab";
 	
 	
 	public static void mergerResult() throws IOException{
@@ -48,7 +49,6 @@ public class cmnMergerResult {
 					String mention = tokens[0];
 					if(NILMention.containsKey(mention)){
 						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", NILMention.get(mention)) + "\tNAM\t1.0\n");
-						
 					}
 					else{
 						osw.write("li" + "\t" + "TEDL15_" + count + "\t" +line.trim().replace("NIL", "NIL"+nil) + "\tNAM\t1.0\n" );
@@ -117,9 +117,36 @@ public class cmnMergerResult {
 		osw.close();
 		fos.close();
 		Check.checkResult(RESULTFINAL);
-	}	
+	}
+	
+	public static void mergerAuthor() throws IOException{
+		
+		File authorDir = new File(AUTHORRESULTINPUTDIR);
+		
+		 FileOutputStream fos = new FileOutputStream(AUTHOROUTFILE);
+		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");		
+		
+		File[] authorFiles = authorDir.listFiles();
+		for(File file:authorFiles){			
+			String text = IOUtils.slurpFile(file);
+			String[] lines = text.split("\n");
+			for(String line : lines){
+				if (line.equals(""))
+					continue;
+				osw.write(line + "\n");
+			}
+			osw.flush();
+	
+		}		
+		osw.close();
+		fos.close();		
+		
+		
+		
+	}
 		
 	public static void main(String[] args) throws IOException{
-		mergerResult();
+//		mergerResult();
+		mergerAuthor();
 	}	
 }

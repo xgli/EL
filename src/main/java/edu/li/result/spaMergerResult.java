@@ -26,7 +26,7 @@ public class spaMergerResult {
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "spa" + File.separator;
 	public static final String RESULTFINAL = "data" + File.separator + "result" + File.separator + "spa_li.tab";
 	
-	
+	public static final String AUTHOROUTFILE = "data" + File.separator + "result" + File.separator +"spa" + File.separator + "author.tab";	
 	
 	public static void mergerResult() throws IOException{
 		Map<String,String> NILMention = new HashMap<String, String>();
@@ -123,11 +123,37 @@ public class spaMergerResult {
 		Check.checkResult(RESULTFINAL);
 	}	
 	
+	
+	public static void mergerAuthor() throws IOException{
+		
+		File authorDir = new File(AUTHORRESULTINPUTDIR);
+		
+		 FileOutputStream fos = new FileOutputStream(AUTHOROUTFILE);
+		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");		
+		
+		File[] authorFiles = authorDir.listFiles();
+		for(File file:authorFiles){			
+			String text = IOUtils.slurpFile(file);
+			String[] lines = text.split("\n");
+			for(String line : lines){
+				if (line.equals(""))
+					continue;
+				osw.write(line + "\n");
+			}
+			osw.flush();
+	
+		}		
+		osw.close();
+		fos.close();
+		
+	}	
+	
 		
 	
 	
 	public static void main(String[] args) throws IOException{
-		mergerResult();
+//		mergerResult();
+		mergerAuthor();
 	}	
 
 	

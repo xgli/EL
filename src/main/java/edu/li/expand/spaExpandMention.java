@@ -23,7 +23,7 @@ import edu.stanford.nlp.io.IOUtils;
  *Function TODO ADD FUNCTION.
  *last modified: Jun 23, 2016 4:57:18 PM
  */
-public class expandMention {
+public class spaExpandMention {
 	public static final String NEWSMENTIONINPUTDIR  = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String DFMENTIONINPUTDIR  = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
 //	public static final String MENTIONINPUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator;

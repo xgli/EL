@@ -30,24 +30,21 @@ public class spaGenMention {
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "news" + File.separator;
-	public static final String NEWSSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "spa" +File.separator+"news" + File.separator;
+	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "spa" +File.separator;
 	
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "df" + File.separator;
 	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "df" + File.separator;
-	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "spa" + File.separator + "df" + File.separator;
+//	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "spa" + File.separator;
 	
 	static{//判断文件目录是否存在
 		File file;
 		file = new File(DFFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
-		file = new File(DFSEGMENTOUTDIR);
+		file = new File(MENTIONTEXTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 		file = new File(NEWSFILEOUTDIR);
-		if(!file.exists() && !file.isDirectory())
-			file.mkdirs();
-		file = new File(NEWSSEGMENTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 	}	
@@ -68,19 +65,19 @@ public class spaGenMention {
 	public static void GetMention(String fileName,String file_type) throws IOException {
 		 
 		 String text = "";
-		 FileOutputStream segfos = null;		 
-		 FileOutputStream nerfos = null;
+	 
+		 FileOutputStream nerfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 
-		
+		 FileOutputStream segfos = null;	
 		 if(file_type.equals("news")){
 			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
 			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-			 segfos = new FileOutputStream(NEWSSEGMENTOUTDIR + fileName);
+
 		 }
 		 else {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
 			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
-			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
+//			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
 		 } 
 
 		 String[] lines = text.split("\n");
@@ -93,7 +90,7 @@ public class spaGenMention {
 		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
 //			 System.out.println(line);
-			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39;
+			 int bias = Integer.parseInt(line.split("\t")[0].trim());
 			 String segLine = line.split("\t")[1];
 			 
 			 segosw.write(segLine);

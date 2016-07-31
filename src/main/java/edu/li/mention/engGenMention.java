@@ -31,24 +31,21 @@ public class engGenMention {
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator  +  "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
 	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator + "news" + File.separator;
-	public static final String NEWSSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator + "eng" +File.separator+"news" + File.separator;
+	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "eng" +File.separator;
 	
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
 	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator + "df" + File.separator;
-	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "eng" + File.separator + "df" + File.separator;
+//	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "eng" + File.separator;
 	
 	static{//判断文件目录是否存在
 		File file;
 		file = new File(DFFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
-		file = new File(DFSEGMENTOUTDIR);
+		file = new File(MENTIONTEXTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 		file = new File(NEWSFILEOUTDIR);
-		if(!file.exists() && !file.isDirectory())
-			file.mkdirs();
-		file = new File(NEWSSEGMENTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 	}	
@@ -71,19 +68,19 @@ public class engGenMention {
 	public static void GetMention(String fileName,String file_type) throws IOException {
 		 
 		 String text = "";
-		 FileOutputStream segfos = null;		 
+		 
 		 FileOutputStream nerfos = null;
 
-		
+		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 		 if(file_type.equals("news")){
 			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
 			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-			 segfos = new FileOutputStream(NEWSSEGMENTOUTDIR + fileName);
+
 		 }
 		 else {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
 			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
-			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
+//			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
 		 } 
 
 		 String[] lines = text.split("\n");
@@ -96,14 +93,15 @@ public class engGenMention {
 		 String fileID = fileName.split("\\.")[0];
 		 for(String line:lines){
 //			 System.out.println(line);
-			 int bias = Integer.parseInt(line.split("\t")[0].trim()) - 39;
-			 String segLine = line.split("\t")[1];
+			 int bias = Integer.parseInt(line.split("\t")[0].trim());
+			 String textLine = line.split("\t")[1];
 			 
-			 segosw.write(segLine);
+			 segosw.write(textLine);
 			 segosw.write("\n");
 			 segfos.flush();
 			 
-			 String ner = getNer(segLine);
+			 String ner = getNer(textLine);
+//			 System.out.print(bias);
 //			 System.out.println(ner);
 			 int len = 0;
 			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
@@ -113,6 +111,7 @@ public class engGenMention {
 				 end = start + matcher.group(2).length() - 1;
 				 len = len + matcher.group(1).length() * 2 + 5;
 				 String mention = matcher.group(2);
+//				 System.out.println(mention);
 				 String type = matcher.group(1);
 				 String loc = start + "-" + end;
 				 
@@ -134,8 +133,9 @@ public class engGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";
+		 String fileName = "ENG_DF_001228_20150614_F001000DP.df.ltf.xml";
 		 GetMention(fileName,"df");
+//		System.out.println(getNer("Don't you mean Chelsea Manning...?"));
 	}
 	
 	

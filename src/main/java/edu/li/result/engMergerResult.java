@@ -26,7 +26,7 @@ public class engMergerResult {
 	public static final String NEWSRESULTINPUTDIR = "data" + File.separator +  "candidate" + File.separator + "eng" + File.separator +"news" + File.separator;
 	public static final String AUTHORRESULTINPUTDIR = "data" + File.separator + "result" + File.separator + "author" + File.separator + "eng" + File.separator;
 	public static final String RESULTFINAL = "data" + File.separator +  "result" + File.separator + "eng_li.tab";
-	
+	public static final String AUTHOROUTFILE = "data" + File.separator + "result" + File.separator +"eng" + File.separator + "author.tab";
 	
 	
 	public static void mergerResult() throws IOException{
@@ -124,12 +124,35 @@ public class engMergerResult {
 		Check.checkResult(RESULTFINAL);
 	}	
 	
+	public static void mergerAuthor() throws IOException{
+		
+		File authorDir = new File(AUTHORRESULTINPUTDIR);
+		
+		 FileOutputStream fos = new FileOutputStream(AUTHOROUTFILE);
+		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");		
+		
+		File[] authorFiles = authorDir.listFiles();
+		for(File file:authorFiles){			
+			String text = IOUtils.slurpFile(file);
+			String[] lines = text.split("\n");
+			for(String line : lines){
+				if (line.equals(""))
+					continue;
+				osw.write(line + "\n");
+			}
+			osw.flush();
 	
+		}		
+		osw.close();
+		fos.close();
+		
+	}	
 		
 	
 	
 	public static void main(String[] args) throws IOException{
-		mergerResult();
+//		mergerResult();
+		mergerAuthor();
 	}	
 
 }
