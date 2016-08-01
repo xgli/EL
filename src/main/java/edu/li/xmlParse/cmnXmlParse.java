@@ -53,26 +53,27 @@ public class cmnXmlParse {
 	
 	public static void ParseNews(String fileName) throws DocumentException, IOException{
 		SAXReader saxReader = new SAXReader();
-		File file = new File(NEWSFILEINPUTDIR + fileName);
+		File file = new File(NEWSFILEINPUTDIR + fileName);			
 		Document document = saxReader.read(file);
-		Element LCTL_TEXT = document.getRootElement(); //LCTL_TEXT
+		
+		Element doc = document.getRootElement(); //LCTL_TEXT
 		Element DOC = (Element) LCTL_TEXT.elements().get(0);
 //		String fileOutPath = NEWSFILEOUTDIR + DOC.attributeValue("id");//输出文件路径
 		String fileOutPath = NEWSFILEOUTDIR + fileName;
 		FileOutputStream fos = new FileOutputStream(fileOutPath);
 		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		
-		Element TEXT = (Element) DOC.elements().get(0);
-		List<Element> SEGs = TEXT.elements();
-		for(Element SEG : SEGs){
-			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
-			String text = ORIGINAL_TEXT.getText();
-//			System.out.println(x);
-			if (-1 == text.indexOf("<")){
-				String temp =  SEG.attributeValue("start_char") + "\t" +ORIGINAL_TEXT.getText() + "\n";//zhong
-				osw.write(temp);
-			}
-		}
+//		Element TEXT = (Element) DOC.elements().get(0);
+//		List<Element> SEGs = TEXT.elements();
+//		for(Element SEG : SEGs){
+//			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
+//			String text = ORIGINAL_TEXT.getText();
+////			System.out.println(x);
+//			if (-1 == text.indexOf("<")){
+//				String temp =  SEG.attributeValue("start_char") + "\t" +ORIGINAL_TEXT.getText() + "\n";//zhong
+//				osw.write(temp);
+//			}
+//		}
 		osw.close();
 		fos.close();
 	}
