@@ -29,22 +29,19 @@ public class spaGenMention {
 	public static final int NERPORT = 2311;
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "news" + File.separator;
+	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "spa" +File.separator;
 	
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "df" + File.separator;
-	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "df" + File.separator;
+//	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "df" + File.separator;
 //	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "spa" + File.separator;
 	
 	static{//判断文件目录是否存在
 		File file;
-		file = new File(DFFILEOUTDIR);
+		file = new File(MENTIONFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 		file = new File(MENTIONTEXTOUTDIR);
-		if(!file.exists() && !file.isDirectory())
-			file.mkdirs();
-		file = new File(NEWSFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 	}	
@@ -57,26 +54,26 @@ public class spaGenMention {
 		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
 		 bw.close();
 		 br.close();
-		 String ner = sw.toString().replaceAll("LUG>", "GPE>").replaceAll("PERS>", "PER>");
+		 String ner = sw.toString().replace("LUG>", "GPE>").replace("PERS>", "PER>");
 		 //		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
-		 return ner.replaceAll("OTROS>", "NIL>");
+		 return ner.replace("<OTROS>", "").replace("</OTROS>", "");
 	}
 	
 	public static void GetMention(String fileName,String file_type) throws IOException {
 		 
 		 String text = "";
 	 
-		 FileOutputStream nerfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
+		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 
-		 FileOutputStream segfos = null;	
+		 FileOutputStream nerfos = new FileOutputStream(MENTIONFILEOUTDIR + fileName);	
 		 if(file_type.equals("news")){
 			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
+//			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
 
 		 }
 		 else {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
-			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
+//			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
 //			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
 		 } 
 
@@ -128,7 +125,7 @@ public class spaGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";
+		 String fileName = "SPA_DF_000386_20150107_F0010007W.df.ltf.xml";
 		 GetMention(fileName,"df");
 	}
 	

@@ -46,10 +46,11 @@ public class cmnProcess {
 					String fileName = file.getName();
 					System.out.println(fileName);
 					if(fileName.endsWith("xml")){
-						System.out.println("xmlParse:###########");
-						cmnXmlParse.Parse(fileName, type);
-						System.out.println("GenMention:###########");
-						cmnGenMention.GetMention(fileName, type);
+//						System.out.println("xmlParse:###########");
+//						cmnXmlParse.Parse(fileName, type);
+//						System.out.println("GenMention:###########");
+//						cmnGenMention.GetMention(fileName, type);
+						
 						System.out.println("GenCandidate:#########");
 						cmnGenCandidate.GenCandidate(fileName, type);
 //						expandMention.expand(fileName, type);

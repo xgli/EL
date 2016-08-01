@@ -109,20 +109,20 @@ public class engXmlParse {
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
 
-			if (-1 != text.indexOf("<quote orig_author=")  ||-1 != text.indexOf("&lt;quote orig_author=") ){
+			if (-1 != text.indexOf("<quote") || -1 != text.indexOf ("&lt;/quote")){
 				flag += 1;
-//				System.out.println(flag);
+				System.out.println(flag);
 				continue;
 			}
 			
 			if(-1 != text.indexOf("</quote>") || -1 != text.indexOf ("&lt;/quote&gt;")){
 				flag -= 1;
-//				System.out.println(flag);
+				System.out.println(flag);
 				continue;
 			}
 			
 			if (flag != 0){
-//				System.out.println(flag);
+				System.out.println(flag);
 				continue;
 			}
 			

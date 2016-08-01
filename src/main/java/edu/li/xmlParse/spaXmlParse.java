@@ -99,20 +99,20 @@ public class spaXmlParse {
 			String text = ORIGINAL_TEXT.getText();
 //			System.out.println(text);
 			
-			if (-1 != text.indexOf("<quote orig_author=")  ||-1 != text.indexOf("&lt;quote orig_author=") ){
+			if (-1 != text.indexOf("<quote")  ||-1 != text.indexOf("&lt;quote") ){
 				flag += 1;
-//				System.out.println(flag);
+				System.out.println(flag);
 				continue;
 			}
 			
 			if(-1 != text.indexOf("</quote>") || -1 != text.indexOf ("&lt;/quote&gt;")){
 				flag -= 1;
-//				System.out.println(flag);
+				System.out.println(flag);
 				continue;
 			}
 			
 			if (flag != 0){
-//				System.out.println(flag);
+				System.out.println(flag);
 				continue;
 			}
 			
@@ -171,9 +171,9 @@ public class spaXmlParse {
 	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
-		String df = "ENG_DF_000170_20150322_F00000082.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
+		String df = "SPA_DF_000386_20150107_F0010007W.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
 		ParseDf(df);
-		String news = "ENG_NW_001001_20150404_F00000000.ltf.xml";
-		ParseNews(news);
+//		String news = "ENG_NW_001001_20150404_F00000000.ltf.xml";
+//		ParseNews(news);
 	}
 }

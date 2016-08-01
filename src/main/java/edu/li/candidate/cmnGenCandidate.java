@@ -26,12 +26,12 @@ public class cmnGenCandidate {
 	
 	public static final String LANG = "cmn";
 	
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "mention" + File.separator +  LANG  + File.separator + "df" + File.separator;
+	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mentiones" + File.separator +  LANG  + File.separator;
 //	public static final String DFFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator + "df" + File.separator;
-	public static final String DFFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator;	
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + LANG + File.separator + "news" + File.separator;
+	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator;	
+//	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + LANG + File.separator + "news" + File.separator;
 //	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator + "news" + File.separator;
-	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator;
+//	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator;
 	
 	//候选的文本
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + LANG + File.separator;
@@ -43,11 +43,7 @@ public class cmnGenCandidate {
 	
 	static{
 		File file ;
-		file = new File(DFFILEOUTDIR);
-		if(!file.exists() && !file.isDirectory()){
-			file.mkdirs();
-		}
-		file = new File(NEWSFILEOUTDIR);
+		file = new File(CANDIDATEFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory()){
 			file.mkdirs();
 		}
@@ -78,26 +74,27 @@ public class cmnGenCandidate {
 	
 	public static void GenCandidate(String fileName, String fileType) throws IOException{
 		
-		String text = null; 
-		FileOutputStream fos = null;
-		if (fileType.equals("news")){
-			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-			 fos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-		 }
-		 else{
-			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
-			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
-		 }
+		String text = IOUtils.slurpFile(MENTIONFILEINPUTDIR + fileName);
+		FileOutputStream fos = new FileOutputStream(CANDIDATEFILEOUTDIR + fileName);
+		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+		
+//		if (fileType.equals("news")){
+//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
+//			 fos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
+//		 }
+//		 else{
+//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
+//			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
+//		 }
 		
 		//加载词表
 		 Map<String,String> dict = new HashMap<String, String>();
-		 dict = loadDict();
-		 
+		 dict = loadDict();		 
 		
 		
 		
 		 String[] lines = text.split("\n");
-		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+
 		 Map<String, String> DoneMention = new HashMap<String, String>();
 //		 System.out.println(lines[0]);
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
@@ -106,7 +103,7 @@ public class cmnGenCandidate {
 			 if(line.equals("")){
 				 continue;
 			 }
-//			 System.out.println(line);
+			 System.out.println(line);
 			 String[] tokens = line.trim().split("\t");
 			 String mention = tokens[0];
 			 String mention_type = tokens[2];
@@ -118,8 +115,7 @@ public class cmnGenCandidate {
 				 OutputStreamWriter resultosw = new OutputStreamWriter(resultfos, "utf-8");
 				 resultosw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
 				 resultosw.close();
-				 resultfos.close();
-				 
+				 resultfos.close();				 
 //				 String mid_type =dict.get(mention);
 //				 String mid = mid_type.split("\t") 
 //				 osw.write("@" + mention + "\t" + mention_loc + "\t" + dict.get(mention).split("\t")[1] + "\n" +  dict.get(mention).split("\t")[0] + "\n");

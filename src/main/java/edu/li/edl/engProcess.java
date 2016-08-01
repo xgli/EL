@@ -41,12 +41,12 @@ public class engProcess {
 					String fileName = file.getName();
 					System.out.println(fileName);
 					if(fileName.endsWith("xml")){
-						System.out.println("xmlParse:###########start");
-						engXmlParse.Parse(fileName, type);
-						System.out.println("xmlParse:###########end");
-						System.out.println("GenMention:###########start");
-						engGenMention.GetMention(fileName, type);
-						System.out.println("GenMention:###########end");
+//						System.out.println("xmlParse:###########start");
+//						engXmlParse.Parse(fileName, type);
+//						System.out.println("xmlParse:###########end");
+//						System.out.println("GenMention:###########start");
+//						engGenMention.GetMention(fileName, type);
+//						System.out.println("GenMention:###########end");
 						System.out.println("GenCandidate:#########start");
 						engGenCandidate.GenCandidate(fileName, type);
 						System.out.println("GenCandidate:#########end");

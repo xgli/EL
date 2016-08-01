@@ -106,21 +106,24 @@ public class cmnXmlParse {
 		for(Element SEG : SEGs){
 			Element ORIGINAL_TEXT = (Element) SEG.elements().get(0);
 			String text = ORIGINAL_TEXT.getText();
-			
-			if (-1 != text.indexOf("<quote orig_author=")  ||-1 != text.indexOf("&lt;quote orig_author=") ){
+//			System.out.println(text);
+			if (-1 != text.indexOf("<quote") || -1 != text.indexOf ("&lt;/quote")) {
 				flag += 1;
 				System.out.println(flag);
+//				System.out.println(flag + ":" + text);
 				continue;
 			}
 			
 			if(-1 != text.indexOf("</quote>") || -1 != text.indexOf ("&lt;/quote&gt;")){
 				flag -= 1;
 				System.out.println(flag);
+//				System.out.println(flag + ":" + text);
 				continue;
 			}
 			
 			if (flag != 0){
-				System.out.println(flag);
+//				System.out.println(flag);
+//				System.out.println(text);
 				continue;
 			}
 
@@ -180,7 +183,7 @@ public class cmnXmlParse {
 	
 	public static void main(String[] args) throws IOException, DocumentException {
 		// TODO Auto-generated method stub
-		String fileName = "CMN_DF_000020_20150108_F00100074.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
+		String fileName = "CMN_DF_000191_20150603_F0010009X.df.ltf.xml";//路径需要拼接，避免不同的平台使用。
 //		ParseDf(fileName); 
 		Parse(fileName, "df");
 	}	

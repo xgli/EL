@@ -42,11 +42,11 @@ import edu.stanford.nlp.io.IOUtils;
 public class cmnGenMention {
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "news" + File.separator;
+	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn"+ File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "cmn" + File.separator;
 	
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
+//	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
 //	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "mentionText" + File.separator  + "cmn" + File.separator;
 	
 	//ansj的服务地址
@@ -61,15 +61,13 @@ public class cmnGenMention {
 
 	static{//判断文件目录是否存在
 		File file;
-		file = new File(DFFILEOUTDIR);
+		file = new File(MENTIONFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 		file = new File(MENTIONTEXTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
-		file = new File(NEWSFILEOUTDIR);
-		if(!file.exists() && !file.isDirectory())
-			file.mkdirs();
+
 	}	
 	
 	public static Set<String> filterAbbre = new  HashSet<String>();
@@ -227,25 +225,25 @@ public class cmnGenMention {
 		 bw.close();
 		 br.close();
 //		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
-		 String ner = sw.toString().replaceAll("\t", "").replaceAll("PERSON", "PER");
+		 String ner = sw.toString().replaceAll("\t", "").replace("PERSON>", "PER>");
 		 ner = ner.replaceAll("</PER>·<PER>", "·");
-		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
+		 return  ner.replace("<MISC>", "").replace("</MISC>", "");//这一类有点特殊。
 	}
 	
 	public static void GetMention(String fileName,String file_type) throws IOException {//还得进行繁转简
 
 		 String text = "";
 
-		 FileOutputStream nerfos = null;//ner输出
+		 FileOutputStream nerfos = new FileOutputStream(MENTIONFILEOUTDIR + fileName);
 
 		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 		 if(file_type.equals("news")){
 			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
+//			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
 		 }
 		 else {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
-			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
+//			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
 		 }
  
 		 String[] lines = text.split("\n");//以行进行处理

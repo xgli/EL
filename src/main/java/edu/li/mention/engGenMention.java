@@ -14,7 +14,6 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
 
@@ -30,22 +29,19 @@ public class engGenMention {
 	public static final int NERPORT = 2314;
 	
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator  +  "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator + "news" + File.separator;
+	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "eng" +File.separator;
 	
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
-	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator + "df" + File.separator;
+//	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator ;
 //	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "eng" + File.separator;
 	
 	static{//判断文件目录是否存在
 		File file;
-		file = new File(DFFILEOUTDIR);
+		file = new File(MENTIONFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 		file = new File(MENTIONTEXTOUTDIR);
-		if(!file.exists() && !file.isDirectory())
-			file.mkdirs();
-		file = new File(NEWSFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
 	}	
@@ -62,24 +58,25 @@ public class engGenMention {
 //		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
 		 String ner = sw.toString().replaceAll("PERSON>", "PER>").replaceAll("LOCATION>", "GPE>");
 //		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
-		 return ner.replaceAll("ORGANIZATION>", "ORG>").replaceAll("MISC>", "NIL>");
+		 return ner.replaceAll("ORGANIZATION>", "ORG>").replaceAll("<MISC>", "").replaceAll("</MISC>", "");
 	}
 	
 	public static void GetMention(String fileName,String file_type) throws IOException {
 		 
 		 String text = "";
 		 
-		 FileOutputStream nerfos = null;
+
 
 		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
+		 FileOutputStream nerfos = new FileOutputStream(MENTIONFILEOUTDIR + fileName);;
 		 if(file_type.equals("news")){
 			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
+//			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
 
 		 }
 		 else {
 			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
-			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
+//			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
 //			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
 		 } 
 
@@ -130,6 +127,15 @@ public class engGenMention {
 		 segfos.close();
 	}
 	
+	/**
+	 * @param string
+	 * @return
+	 */
+	private static FileOutputStream FileOutputStream(String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub

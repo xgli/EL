@@ -24,11 +24,11 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class spaGenCandidate {
 	
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "df" + File.separator;
-	public static final String DFFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
+	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator;
+	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
 	
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "news" + File.separator;
-	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
+//	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "news" + File.separator;
+//	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
 	public static final String LANG = "spa";
 	
 	
@@ -41,11 +41,11 @@ public class spaGenCandidate {
 	
 	static{
 		File file ;
-		file = new File(DFFILEOUTDIR);
+		file = new File(CANDIDATEFILEOUTDIR);
 		if(!file.exists() && !file.isDirectory()){
 			file.mkdirs();
 		}
-		file = new File(NEWSFILEOUTDIR);
+		file = new File(ENTITYTEXTOUTDIR);
 		if(!file.exists() && file.isDirectory()){
 			file.mkdirs();
 		}
@@ -70,23 +70,26 @@ public class spaGenCandidate {
 	
 	public static void GenCandidate(String fileName, String fileType) throws IOException{
 		
-		String text = null; 
-		FileOutputStream fos = null;
-		if (fileType.equals("news")){
-			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-			 fos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-		 }
-		 else{
-			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
-			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
-		 }
+		String text = IOUtils.slurpFile(MENTIONFILEINPUTDIR + fileName); 
+		FileOutputStream fos = new FileOutputStream(CANDIDATEFILEOUTDIR + fileName);
+		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+		
+		
+//		if (fileType.equals("news")){
+//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
+//			 fos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
+//		 }
+//		 else{
+//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
+//			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
+//		 }
 		
 		Map<String,String> dict = new HashMap<String, String>();
 		dict = loadDict();
 		
 		
 		 String[] lines = text.split("\n");
-		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+
 		 Map<String, String> DoneMention = new HashMap<String, String>();
 		 
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
