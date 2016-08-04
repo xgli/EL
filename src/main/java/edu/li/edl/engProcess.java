@@ -44,12 +44,12 @@ public class engProcess {
 //						System.out.println("xmlParse:###########start");
 //						engXmlParse.Parse(fileName, type);
 //						System.out.println("xmlParse:###########end");
-//						System.out.println("GenMention:###########start");
-//						engGenMention.GetMention(fileName, type);
-//						System.out.println("GenMention:###########end");
-						System.out.println("GenCandidate:#########start");
-						engGenCandidate.GenCandidate(fileName, type);
-						System.out.println("GenCandidate:#########end");
+						System.out.println("GenMention:###########start");
+						engGenMention.GetMention(fileName, type);
+						System.out.println("GenMention:###########end");
+//						System.out.println("GenCandidate:#########start");
+//						engGenCandidate.GenCandidate(fileName, type);
+//						System.out.println("GenCandidate:#########end");
 //						engExpandMention.expand(fileName, type);
 
 					}
@@ -71,18 +71,18 @@ public class engProcess {
 	}
 	
 	public static void main(String[] args) throws DocumentException, IOException {
-		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "engmentionlist.tab";
-		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
-		File file;
-		file = new File(MENTIONLISTOUTFILE);
+//		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "engmentionlist.tab";
+//		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
+//		File file;
+//		file = new File(MENTIONLISTOUTFILE);
+//		
+//		if(file.exists())
+//			file.delete();
+//		file = new File(TEMPRESULTOUTFILE);
+//		if(file.exists())
+//			file.delete();	  	
 		
-		if(file.exists())
-			file.delete();
-		file = new File(TEMPRESULTOUTFILE);
-		if(file.exists())
-			file.delete();	  	
-		
-		String newsFileDir = "data" + File.separator +  "raw" + File.separator + "eng" + File.separator +  "news";
+		String newsFileDir = "data" + File.separator +  "raw" + File.separator + "eng" + File.separator +  "nw";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "df";
 		processAll(newsFileDir, "news");
 		processAll(dfFileDir, "df");	

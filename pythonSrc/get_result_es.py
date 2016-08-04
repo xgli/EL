@@ -51,8 +51,8 @@ def is_repetition(pos_dict, filename, begin_pos, end_pos):
 
 #%%Chinese
 print 'Chinese'
-character_num_dict = pickle.load(file('cmn_file_len.pk', 'rb'))
-cmn_author_and_pinyin_found_dict = {}
+#character_num_dict = pickle.load(file('file_loc_dict.pk', 'rb'))
+cmn_author_and_pinyin_found_dict = pickle.load(file('file_loc_dict.pk','rb'))
 cmn_es_find_dict = {}
 filter_for_research_file = open('../data/dict/chinese.tab', 'r')#词表
 fw = open('cmn_res.txt', 'w')
@@ -69,7 +69,7 @@ for line in filter_for_research_file:
     cnt = 0
     try:
         for candidation in decodejson["hits"]["hits"]:
-            cmn_author_and_pinyin_found_dict.setdefault(candidation['_id'], [0]*(int(character_num_dict[candidation['_id']]) + 1))
+            cmn_author_and_pinyin_found_dict.setdefault(candidation['_id'], [0]*10000)
             cmn_es_find_dict.setdefault(candidation["_id"],[])
             flag = 0
             res = ''
@@ -111,7 +111,7 @@ filter_for_research_file.close()
 pickle.dump(cmn_es_find_dict,file("cmn_es_found.pk","wb"))
 pickle.dump(cmn_author_and_pinyin_found_dict, file('cmn_es_found_loc.pk', 'wb'))
 
-
+'''
 #%%English
 print 'English'
 eng_pos_num_dict = pickle.load(file('eng_file_len.pk', 'rb'))
@@ -184,6 +184,9 @@ filter_for_research_file.close()
 pickle.dump(eng_author_and_words_found_dict, file('eng_es_found_loc.pk', 'wb'))
 pickle.dump(eng_es_find_dict,file("eng_es_found.pk","wb"))
 
+
+
+
 #%%Spanish
 print 'Spanish'
 spa_pos_num_dict = pickle.load(file('spa_file_len.pk', 'rb'))
@@ -246,3 +249,4 @@ fw.close()
 filter_for_research_file.close()
 pickle.dump(spa_author_and_words_found_dict, file('spa_es_found_loc.pk', 'wb'))
 pickle.dump(spa_es_find_dict,file("spa_es_found.pk","wb"))
+'''

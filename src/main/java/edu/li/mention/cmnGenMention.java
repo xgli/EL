@@ -41,13 +41,10 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class cmnGenMention {
 	
+	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn"+ File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "cmn" + File.separator;
-	
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
-//	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn" + File.separator + "df" + File.separator;
-//	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "mentionText" + File.separator  + "cmn" + File.separator;
 	
 	//ansj的服务地址
 	public static final String SEGHOST = "127.0.0.1";
@@ -239,11 +236,9 @@ public class cmnGenMention {
 		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 		 if(file_type.equals("news")){
 			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-//			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
 		 }
 		 else {
-			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
-//			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
+			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
 		 }
  
 		 String[] lines = text.split("\n");//以行进行处理
@@ -254,11 +249,10 @@ public class cmnGenMention {
 		 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
 	 
 		 
-		 String fileID = fileName.split("\\.")[0];//获取文件name
+		 String fileID = fileName.replace(".xml", "");//获取文件name
 		 
-		 for(String line:lines){
-			 
-//			 boolean convertSimple = true;//进行每行判定是否为繁体
+		 for(String line:lines){			 
+
 			 if(line.equals("")){
 				 continue;
 			 }
@@ -268,26 +262,7 @@ public class cmnGenMention {
 			
 			 tempLine = tempLine.replaceAll("•", "·").replace("－", "·");
 			 String rawLine = TraToSim.TraToSim(tempLine);//全部进行转换,然后在templine中找位置,在
-//			 if(rawLine.equals(templine)){
-//				 convertSimple = false;
-//			 }
-//			 else {
-//				 System.out.println(templine);
-//				 System.out.println("old:" + rawLine);
-//				 System.out.println("new:" + rawLine);
-//			 }
-	 
-			 
-//			 if(rawLine.contains("《")){//打算把报刊一类的提取出来
-//				 int s =rawLine.indexOf("《") + 1;
-//				 int e = rawLine.indexOf("》") - 1;
-//				 String m = rawLine.substring(s, e);
-//				 nerosw.write(m + "\t");
-//				 nerosw.write(fileID + ":" + (start + s) + '-' + (start + e) + "\t");					 
-//				 nerosw.write("ORG" + "\n");
-//				 nerosw.flush();//				 
-//			 }			 
-			 
+		 	 	
 
 			 String segLine = getAnsjSegment(rawLine);//ansj分词
 //			 System.out.println("segline:" + segLine);
@@ -298,169 +273,118 @@ public class cmnGenMention {
 			 String ner = getNer(segLine);//斯坦福实体识别
 //			 String ner = getAnsjNER(rawLine);//ansj实体识别					 
 //			 System.out.println(ner);
-			 
+			 System.out.println(ner);
 			 int len = 0;
-			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
-			 Matcher matcher = pattern.matcher(ner);
+			 Pattern pattern;
+			 Matcher matcher;
+			 pattern = Pattern.compile("<(GPE)>(.*?)</GPE>");
+			 matcher = pattern.matcher(ner);
 			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
+//				 System.out.println(matcher.group(0));
+//				 System.out.println(matcher.group(1));
+//				 System.out.println(matcher.group(2));
 				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;
+				 end = start + matcher.group(2).length() - 1;			 
 
-				 
-//				System.out.println(tempLine);
-//				System.out.println(ner);
-//				System.out.println(matcher.start() - len);
-//				System.out.println(matcher.start() - len + matcher.group(2).length() -1);
-				 
-				String mention = matcher.group(2);				 
-				String mentionRaw = tempLine.substring(matcher.start() - len, matcher.start() - len + matcher.group(2).length());				 
-
-//				System.out.println(men1);
-//				System.out.println(mention);
+				 String mention = matcher.group(2);					 
 				
 				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
 
 				 String type = matcher.group(1);
-				 String loc = start + "-" + end;
-				 
-				 if(mention.contains("《") || mention.contains("》")){//过滤ner中的不规则实体
-					 ;
-				 }
-				 else {
-					 nerosw.write(mention + "\t");
-					 nerosw.write(fileID + ":" + loc + "\t");					 
-					 nerosw.write(type + "\n");
-					 nerosw.flush();
-				 }				 
-//				 System.out.print(mention + "\t");
-//				 System.out.print(loc + "\t");
-//				 System.out.println(type + "\n");	
-				 
-				 //增加嵌入类型，并且过滤
-//				 String ansjNER = getAnsjNER(mention);//对提取出来的mention,进行二次提取
-//
-//				 Pattern p = Pattern.compile("<(.*?)>(.*?)</.*?>");
-//				 Matcher m = p.matcher(ansjNER);
-//				 int instart = 0;
-//				 int inend = 0;
-//				 int inlen = 0;
-//				 while(m.find()){
-//					String inMention = m.group(2);
-//					if(!inMention.equals(mention)){
-//						instart = m.start() - inlen + start;
-//						inend = instart + m.group(2).length() - 1;
-//
-//						String inMentionRaw = mentionRaw.substring(m.start() - inlen, m.start() - inlen + m.group(2).length());
-//
-//						inlen = inlen + m.group(1).length() * 2 + 5;
-//						if(inMention.equals("查理")){//过滤掉查理周刊
-//							continue;
-//						}
-//						String intype = m.group(1);
-//						String inloc = instart + "-" + inend;	
-////						nerosw.write(inMention + "\t");
-//						nerosw.write(inMentionRaw + "\t");
-//						nerosw.write(fileID + ":" + inloc + "\t");					 
-//						nerosw.write(intype + "\n");
-//						nerosw.flush();
-//						
-//						System.out.println(mention + ":" + type);
-//						System.out.println("in:" + inMention + intype );
-//						System.out.println("inraw:" + inMentionRaw);
-//						
-//						
-////						System.out.println("in:######################################");
-////						System.out.print(inmention + "\t");
-////						System.out.print(inloc + "\t");
-////						System.out.println(intype + "\n");	
-//					}
-//					else{ //test 国家分不开的类型 特殊类型
-//						int otherstart = 0;
-//						int otherend = 0;
-//						String otherloc;
-//						
-//						if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
-//							otherstart = start + mention.indexOf("美国");
-//							otherend = otherstart + 1;
-//							otherloc = otherstart + "-" + otherend;
-//							nerosw.write("美国" + "\t");
-//							nerosw.write(fileID + ":" + otherloc + "\t");					 
-//							nerosw.write("GPE" + "\n");
-//							nerosw.flush();
-//						}
-//						if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
-//							otherstart = start + mention.indexOf("中国");
-//							otherend = otherstart + 1;
-//							otherloc = otherstart + "-" + otherend;
-//							nerosw.write("中国" + "\t");
-//							nerosw.write(fileID + ":" + otherloc + "\t");			 
-//							nerosw.write("GPE" + "\n");
-//							nerosw.flush();
-//						}
-//						if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
-//							otherstart = start + mention.indexOf("巴西");
-//							otherend = otherstart + 1;
-//							otherloc = otherstart + "-" + otherend;
-//							nerosw.write("巴西" + "\t");
-//							nerosw.write(fileID + ":" + otherloc + "\t");			 
-//							nerosw.write("GPE" + "\n");
-//							nerosw.flush();
-//						}						
-//					}
-//				 }	
-				 
-				 //不使用内嵌类型
-//				int otherstart;
-//				int otherend;
-//				String otherloc;
-//				if(-1 != mention.indexOf("美国") && !mention.equals("美国")){
-//					otherstart = start + mention.indexOf("美国");
-//					otherend = otherstart + 1;
-//					otherloc = otherstart + "-" + otherend;
-//					nerosw.write("美国" + "\t");
-//					nerosw.write(fileID + ":" + otherloc + "\t");					 
-//					nerosw.write("GPE" + "\n");
-//					nerosw.flush();
-//				}
-//				if(-1 != mention.indexOf("中国") && !mention.equals("中国")){
-//					otherstart = start + mention.indexOf("中国");
-//					otherend = otherstart + 1;
-//					otherloc = otherstart + "-" + otherend;
-//					nerosw.write("中国" + "\t");
-//					nerosw.write(fileID + ":" + otherloc + "\t");			 
-//					nerosw.write("GPE" + "\n");
-//					nerosw.flush();
-//				}
-//				if(-1 != mention.indexOf("巴西") && !mention.equals("巴西")){
-//					otherstart = start + mention.indexOf("巴西");
-//					otherend = otherstart + 1;
-//					otherloc = otherstart + "-" + otherend;
-//					nerosw.write("巴西" + "\t");
-//					nerosw.write(fileID + ":" + otherloc + "\t");			 
-//					nerosw.write("GPE" + "\n");
-//					nerosw.flush();
-//				}
-//				if(-1 != mention.indexOf("英国") && !mention.equals("英国")){
-//					otherstart = start + mention.indexOf("英国");
-//					otherend = otherstart + 1;
-//					otherloc = otherstart + "-" + otherend;
-//					nerosw.write("英国" + "\t");
-//					nerosw.write(fileID + ":" + otherloc + "\t");			 
-//					nerosw.write("GPE" + "\n");
-//					nerosw.flush();
-//				}
-//				if(-1 != mention.indexOf("德国") && !mention.equals("德国")){
-//					otherstart = start + mention.indexOf("德国");
-//					otherend = otherstart + 1;
-//					otherloc = otherstart + "-" + otherend;
-//					nerosw.write("德国" + "\t");
-//					nerosw.write(fileID + ":" + otherloc + "\t");			 
-//					nerosw.write("GPE" + "\n");
-//					nerosw.flush();
-//				}
-				//不使用内嵌类型			 		 		 
-				 
-		 	 }
+				 String loc = start + "-" + end;		 
+		
+				 nerosw.write(mention + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+				 nerosw.write(type + "\n");
+				 nerosw.flush(); 
+			}
+			 pattern = Pattern.compile("<(PER)>(.*?)</PER>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
+//				 System.out.println(matcher.group(0));
+//				 System.out.println(matcher.group(1));
+//				 System.out.println(matcher.group(2));
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;			 
+
+				 String mention = matcher.group(2);					 
+				
+				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
+
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;		 
+		
+				 nerosw.write(mention + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+				 nerosw.write(type + "\n");
+				 nerosw.flush(); 
+			}
+			 pattern = Pattern.compile("<(ORG)>(.*?)</ORG>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
+//				 System.out.println(matcher.group(0));
+//				 System.out.println(matcher.group(1));
+//				 System.out.println(matcher.group(2));
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;			 
+
+				 String mention = matcher.group(2);					 
+				
+				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
+
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;		 
+		
+				 nerosw.write(mention + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+				 nerosw.write(type + "\n");
+				 nerosw.flush(); 
+			}
+			 pattern = Pattern.compile("<(LOC)>(.*?)</LOC>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
+//				 System.out.println(matcher.group(0));
+//				 System.out.println(matcher.group(1));
+//				 System.out.println(matcher.group(2));
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;			 
+
+				 String mention = matcher.group(2);					 
+				
+				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
+
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;		 
+		
+				 nerosw.write(mention + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+				 nerosw.write(type + "\n");
+				 nerosw.flush(); 
+			}
+			 pattern = Pattern.compile("<(FAC)>(.*?)</FAC>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
+//				 System.out.println(matcher.group(0));
+//				 System.out.println(matcher.group(1));
+//				 System.out.println(matcher.group(2));
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;			 
+
+				 String mention = matcher.group(2);					 
+				
+				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
+
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;		 
+		
+				 nerosw.write(mention + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+				 nerosw.write(type + "\n");
+				 nerosw.flush(); 
+			}		 
+		 
+		 
+		 
 		 }
 		 nerosw.close();
 		 nerfos.close(); 
@@ -471,17 +395,17 @@ public class cmnGenMention {
 	public static void main(String[] args) throws IOException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "CMN_NW_001346_20150616_F0010001R.nw.ltf.xml";
-		 GetMention(fileName,"news");
-		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
-		String segtext = getAnsjSegment(text);
-		System.out.println(segtext);
-		String anner = getAnsjNER(text);
-		System.out.println(anner);
-		String result =  getNer(segtext);
-//		String text = ",";
-//		String result = getAnsjSegment(text);
-		System.out.println(result);
+		String fileName = "CMN_DF_000020_20110201_G00A0E8P9.xml";
+		GetMention(fileName,"df");
+//		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
+//		String segtext = getAnsjSegment(text);
+//		System.out.println(segtext);
+//		String anner = getAnsjNER(text);
+//		System.out.println(anner);
+//		String result =  getNer(segtext);
+////		String text = ",";
+////		String result = getAnsjSegment(text);
+//		System.out.println(result);
 	}
 
 }

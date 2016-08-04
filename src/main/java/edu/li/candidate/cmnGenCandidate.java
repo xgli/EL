@@ -27,11 +27,8 @@ public class cmnGenCandidate {
 	public static final String LANG = "cmn";
 	
 	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mentiones" + File.separator +  LANG  + File.separator;
-//	public static final String DFFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator + "df" + File.separator;
 	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator;	
-//	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + LANG + File.separator + "news" + File.separator;
-//	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator + "news" + File.separator;
-//	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator;
+
 	
 	//候选的文本
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + LANG + File.separator;

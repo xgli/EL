@@ -48,11 +48,11 @@ public class cmnProcess {
 					if(fileName.endsWith("xml")){
 //						System.out.println("xmlParse:###########");
 //						cmnXmlParse.Parse(fileName, type);
-//						System.out.println("GenMention:###########");
-//						cmnGenMention.GetMention(fileName, type);
+						System.out.println("GenMention:###########");
+						cmnGenMention.GetMention(fileName, type);
 						
-						System.out.println("GenCandidate:#########");
-						cmnGenCandidate.GenCandidate(fileName, type);
+//						System.out.println("GenCandidate:#########");
+//						cmnGenCandidate.GenCandidate(fileName, type);
 //						expandMention.expand(fileName, type);
 					}
 					
@@ -87,14 +87,14 @@ public class cmnProcess {
 			file.delete();		
 		
 		
-		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "news";
+		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "nw";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "df";
 		
 		
 		processAll(newsFileDir, "news");
 		processAll(dfFileDir, "df");
 //		cmnMergerResult.mergerResult();
-		cmnMergerResult.mergerAuthor();
+//		cmnMergerResult.mergerAuthor();
 
 	}	
 	

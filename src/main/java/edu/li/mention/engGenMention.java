@@ -28,13 +28,11 @@ public class engGenMention {
 	public static final String NERHOST =  "127.0.0.1";
 	public static final int NERPORT = 2314;
 	
+	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator  +  "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
 	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "eng" +File.separator;
-	
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
-//	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator ;
-//	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "eng" + File.separator;
+
 	
 	static{//判断文件目录是否存在
 		File file;
@@ -87,7 +85,7 @@ public class engGenMention {
 		 OutputStreamWriter segosw = new OutputStreamWriter(segfos, "UTF-8");
 		 OutputStreamWriter nerosw = new OutputStreamWriter(nerfos, "UTF-8");
 		 
-		 String fileID = fileName.split("\\.")[0];
+		 String fileID = fileName.replace(".xml", "");
 		 for(String line:lines){
 //			 System.out.println(line);
 			 int bias = Integer.parseInt(line.split("\t")[0].trim());
@@ -101,8 +99,11 @@ public class engGenMention {
 //			 System.out.print(bias);
 //			 System.out.println(ner);
 			 int len = 0;
-			 Pattern pattern = Pattern.compile("<(.*?)>(.*?)</.*?>");
-			 Matcher matcher = pattern.matcher(ner);
+			 Pattern pattern;
+			 Matcher matcher;
+			 
+			 pattern = Pattern.compile("<(PER)>(.*?)</PER>");
+			 matcher = pattern.matcher(ner);
 			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
 				 start = matcher.start() - len + bias;
 				 end = start + matcher.group(2).length() - 1;
@@ -120,6 +121,86 @@ public class engGenMention {
 				 nerosw.write(type + "\n");
 				 nerosw.flush();
 			 }
+			 
+			 pattern = Pattern.compile("<(GPE)>(.*?)</GPE>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;
+				 len = len + matcher.group(1).length() * 2 + 5;
+				 String mention = matcher.group(2);
+//				 System.out.println(mention);
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;
+				 
+//				 System.out.print(mention + "\t");
+				 nerosw.write(mention + "\t");				 
+//				 System.out.print(loc + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+//				 System.out.println(type);
+				 nerosw.write(type + "\n");
+				 nerosw.flush();
+			 }
+			 pattern = Pattern.compile("<(ORG)>(.*?)</ORG>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;
+				 len = len + matcher.group(1).length() * 2 + 5;
+				 String mention = matcher.group(2);
+//				 System.out.println(mention);
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;
+				 
+//				 System.out.print(mention + "\t");
+				 nerosw.write(mention + "\t");				 
+//				 System.out.print(loc + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+//				 System.out.println(type);
+				 nerosw.write(type + "\n");
+				 nerosw.flush();
+			 }
+			 
+			 pattern = Pattern.compile("<(LOC)>(.*?)</LOC>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;
+				 len = len + matcher.group(1).length() * 2 + 5;
+				 String mention = matcher.group(2);
+//				 System.out.println(mention);
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;
+				 
+//				 System.out.print(mention + "\t");
+				 nerosw.write(mention + "\t");				 
+//				 System.out.print(loc + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+//				 System.out.println(type);
+				 nerosw.write(type + "\n");
+				 nerosw.flush();
+			 }
+			 pattern = Pattern.compile("<(FAC)>(.*?)</FAC>");
+			 matcher = pattern.matcher(ner);
+			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
+				 start = matcher.start() - len + bias;
+				 end = start + matcher.group(2).length() - 1;
+				 len = len + matcher.group(1).length() * 2 + 5;
+				 String mention = matcher.group(2);
+//				 System.out.println(mention);
+				 String type = matcher.group(1);
+				 String loc = start + "-" + end;
+				 
+//				 System.out.print(mention + "\t");
+				 nerosw.write(mention + "\t");				 
+//				 System.out.print(loc + "\t");
+				 nerosw.write(fileID + ":" + loc + "\t");					 
+//				 System.out.println(type);
+				 nerosw.write(type + "\n");
+				 nerosw.flush();
+			 }
+			 
+			 
 		 }
 		 nerosw.close();
 		 nerfos.close(); 

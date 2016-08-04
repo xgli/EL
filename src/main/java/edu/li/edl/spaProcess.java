@@ -39,12 +39,12 @@ public class spaProcess {
 					String fileName = file.getName();
 					System.out.println(fileName);
 					if(fileName.endsWith("xml")){
-						System.out.println("xmlParse:###########");
-						spaXmlParse.Parse(fileName, type);
+//						System.out.println("xmlParse:###########");
+//						spaXmlParse.Parse(fileName, type);
 						System.out.println("GenMention:###########");
 						spaGenMention.GetMention(fileName, type);
-						System.out.println("GenCandidate:#########");
-						spaGenCandidate.GenCandidate(fileName, type);
+//						System.out.println("GenCandidate:#########");
+//						spaGenCandidate.GenCandidate(fileName, type);
 					}
 					
 				} catch (Exception e) {
@@ -78,12 +78,12 @@ public class spaProcess {
 			file.delete();	  			
 		
 		
-		String newsFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "news";
+		String newsFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "nw";
 		String dfFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "df";
 		processAll(newsFileDir, "news");
 		processAll(dfFileDir, "df");	
 //		spaMergerResult.mergerResult();
-		spaMergerResult.mergerAuthor();
+//		spaMergerResult.mergerAuthor();
 	}
 	
 

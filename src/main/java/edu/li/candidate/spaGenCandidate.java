@@ -27,8 +27,7 @@ public class spaGenCandidate {
 	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator;
 	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
 	
-//	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "news" + File.separator;
-//	public static final String NEWSFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
+
 	public static final String LANG = "spa";
 	
 	

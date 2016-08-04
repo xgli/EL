@@ -152,12 +152,12 @@ public class putDocumentIntoES {
 		File dir = new File(INDEXOUTDIR);
 		File[] files = dir.listFiles();
 		for(File file : files){
-//			System.out.println(file.getName());
+			System.out.println(file.getName());
 			String fileName = file.getName().split("\\.")[0];
 			String indexText = IOUtils.slurpFile(file, "utf-8");
 
 			TransportClient client = geTransportClient();
-			IndexResponse response =  client.prepareIndex("kbp2016", "chinese", fileName)
+			IndexResponse response =  client.prepareIndex("chinese_kbp2016", "text", fileName)
 							.setSource("snt",indexText)
 							.get();
 			if(!response.isCreated()){
