@@ -109,13 +109,13 @@ for line in filter_for_research_file:
 fw.close()
 filter_for_research_file.close()
 pickle.dump(cmn_es_find_dict,file("cmn_es_found.pk","wb"))
-pickle.dump(cmn_author_and_pinyin_found_dict, file('cmn_es_found_loc.pk', 'wb'))
+pickle.dump(cmn_author_and_pinyin_found_dict, file('file_loc_dict.pk', 'wb'))
 
-'''
+
 #%%English
 print 'English'
-eng_pos_num_dict = pickle.load(file('eng_file_len.pk', 'rb'))
-eng_es_find_dict = {}
+#eng_pos_num_dict = pickle.load(file('eng_file_len.pk', 'rb'))
+eng_es_find_dict = pickle.load(file("file_loc_dict.pk","wb"))
 eng_author_and_words_found_dict = {}
 
 #filter_for_research_file = open('d:/data/tmp/english/all_types.txt', 'r')
@@ -133,7 +133,7 @@ for line in filter_for_research_file:
     cnt = 0
     try:
         for candidation in decodejson["hits"]["hits"]:
-            eng_author_and_words_found_dict.setdefault(candidation['_id'], [0]*(int(eng_pos_num_dict[candidation['_id']]) + 1))
+            eng_author_and_words_found_dict.setdefault(candidation['_id'], [0]*1000)
             eng_es_find_dict.setdefault(candidation["_id"],[])
             flag = 0
             res = ''
@@ -182,10 +182,10 @@ for line in filter_for_research_file:
 fw.close()
 filter_for_research_file.close()
 pickle.dump(eng_author_and_words_found_dict, file('eng_es_found_loc.pk', 'wb'))
-pickle.dump(eng_es_find_dict,file("eng_es_found.pk","wb"))
+pickle.dump(eng_es_find_dict,file("file_loc_dict.pk","wb"))
 
 
-
+'''
 
 #%%Spanish
 print 'Spanish'
