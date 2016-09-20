@@ -4,16 +4,25 @@
 package edu.li.candidate;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.dom4j.DocumentException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import edu.li.es.Search;
+import edu.li.mention.spaGenMention;
 import edu.stanford.nlp.io.IOUtils;
 
 /**
@@ -24,7 +33,7 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class spaGenCandidate {
 	
-	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator;
+	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mentiones" + File.separator + "spa" + File.separator;
 	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
 	
 
@@ -38,6 +47,8 @@ public class spaGenCandidate {
 	
 	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "spanish.tab";
 	
+	static Map<String,String> DoneMention;
+	
 	static{
 		File file ;
 		file = new File(CANDIDATEFILEOUTDIR);
@@ -48,6 +59,30 @@ public class spaGenCandidate {
 		if(!file.exists() && file.isDirectory()){
 			file.mkdirs();
 		}
+		
+		file = new File("spa_candidate.ser");
+		if(file.exists()){
+			FileInputStream fis;
+			try {
+				fis = new FileInputStream("spa_candidate.ser");
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				DoneMention = (HashMap<String, String>) ois.readObject();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+			
+		}
+		else {
+			DoneMention = new HashMap<String, String>();			
+		}
+		
 	}
 	
 	public static Map<String, String> loadDict() throws IOException{
@@ -55,7 +90,6 @@ public class spaGenCandidate {
 		String text = IOUtils.slurpFile(DICTFILE);
 		String[] lines = text.split("\n");
 		for(String line : lines){
-//			System.out.println(line);
 			String[] tokens = line.split("\t");
 			String mention = tokens[0];
 			String mid = tokens[1];
@@ -66,30 +100,26 @@ public class spaGenCandidate {
 		return dict;
 	}
 	
+	static Map<String,String> dict = new HashMap<String, String>();
+	static {
+		try {
+			dict = loadDict();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
-	public static void GenCandidate(String fileName, String fileType) throws IOException{
+	
+	
+	public static void GenCandidate(String fileName) throws IOException{
 		
 		String text = IOUtils.slurpFile(MENTIONFILEINPUTDIR + fileName); 
 		FileOutputStream fos = new FileOutputStream(CANDIDATEFILEOUTDIR + fileName);
 		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-		
-		
-//		if (fileType.equals("news")){
-//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-//			 fos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-//		 }
-//		 else{
-//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
-//			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
-//		 }
-		
-		Map<String,String> dict = new HashMap<String, String>();
-		dict = loadDict();
-		
-		
-		 String[] lines = text.split("\n");
+				
+		String[] lines = text.split("\n");
 
-		 Map<String, String> DoneMention = new HashMap<String, String>();
 		 
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
 		 OutputStreamWriter mentionosw = new OutputStreamWriter(mentionfos, "utf-8");
@@ -114,6 +144,9 @@ public class spaGenCandidate {
 				 continue;
 			 }		 
 			 
+			 if(mention_type.equals("FAC"))//字表查错的FAC
+				 continue;
+			 
 			 
 			 if(-1 == mention_type.indexOf("NIL")){// 实验识别出来的两个相同的mention有不同的类型
 //				 System.out.println(mention + ":" + mention_type);
@@ -135,7 +168,7 @@ public class spaGenCandidate {
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
 						 thresholdScore =  (float) 0.5;	
-					 System.out.println(thresholdScore);
+//					 System.out.println(thresholdScore);
 					 String candidates = "";					 
 					 
 					 
@@ -153,11 +186,6 @@ public class spaGenCandidate {
 								candidateFileosw.close();
 								candidateFilefos.close();
 							}
-
-//						osw.write(mention + "\t" + mention_loc + "\t"+  hit.getId().replace("f_", "")  + "\t" + mention_type + "\n");
-////					System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
-//						DoneMention.put(mention+mention_type,  hit.getId().replace("f_", ""));						
-//						break;// 获取第一个结果
 					 }
 					DoneMention.put(mention+mention_type,  candidates);	
 					osw.write(candidates);
@@ -177,9 +205,119 @@ public class spaGenCandidate {
 		
 	}	
 	
-	public static void  main(String[] args) throws IOException {
-		 String fileName = "SPA_NW_001075_20150615_F0010003L.nw.ltf.xml";
-		 GenCandidate(fileName, "news");		
+	
+	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
+		File dir = new File(fileDir);
+		File[] files = dir.listFiles();
+		int all = files.length;
+		int done = 0;
+		long start = System.currentTimeMillis();
+		if(files != null){
+			FileOutputStream failedFilefos = new FileOutputStream("failedspa.tab");
+			OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");
+			for(File file : files){
+				try {
+					done += 1;
+					System.out.println("doing:" + done + "\t" + "all:" + all);
+					String fileName = file.getName();
+					System.out.println(fileName);
+					if(fileName.endsWith("xml")){
+						System.out.println("GenCandidate:#########");
+//						spaGenCandidate.GenCandidate(fileName, type);
+					}
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.toString());
+					failedFileosw.write(file.getName() + "\n");
+					failedFileosw.write(e.toString() + "\n");
+					continue;	
+				}
+			}
+			failedFileosw.close();
+			failedFilefos.close();
+			long end = System.currentTimeMillis();
+			System.out.println((end - start) + "s");
+		}
+				
+		
+	}
+	
+	
+	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
+//		 String fileName = "SPA_NW_001075_20150615_F0010003L.nw.ltf.xml";
+//		 GenCandidate(fileName, "news");	
+//		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "mentionlist.tab";
+//		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator +"tempresult.tab";
+		
+		File file;
+		file = new File(MENTIONLISTOUTFILE);
+		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();	  			
+		
+		
+//		String newsFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "nw";
+//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "df";
+//		processAll(newsFileDir, "news");
+//		processAll(dfFileDir, "df");	
+		
+		FileInputStream fis = new FileInputStream("data/spafilenamelist.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		List<String> files = (ArrayList<String>) ois.readObject();
+		
+		
+	
+		int all = files.size();
+		int done = 0;
+		long start = System.currentTimeMillis();
+		
+		FileOutputStream failedFilefos = new FileOutputStream("failedspa.tab");
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");		
+		
+
+		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
+			String fileName = iterator.next();
+			done += 1;
+			System.out.println("doing:" + done + "\t" + "all:" + all);
+			System.out.println(fileName);
+			try {
+//				if(fileName.endsWith("xml")){
+//					System.out.println("GenMention:###########");
+//					cmnGenCandidate(fileName);
+					spaGenCandidate.GenCandidate(fileName);
+
+//				}
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e.toString());
+//					System.out.println(e.printStackTrace());
+				failedFileosw.write(fileName + "\n");
+				failedFileosw.write(e.toString() + "\n");
+				continue;					
+			}		
+
+		}	
+		
+		failedFileosw.close();
+		failedFilefos.close();
+		long end = System.currentTimeMillis();
+		System.out.println((end - start) + "s");
+		
+		
+		
+		
+		
+		FileOutputStream fos = new FileOutputStream("spa_candidate.ser");
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(DoneMention);
+		oos.close();
+		fos.close(); 
+		 
 	}
 	
 	

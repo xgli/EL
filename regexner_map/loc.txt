@@ -1,0 +1,30 @@
+world
+river
+region
+point
+area
+island
+base
+northern border
+northern Iraq
+outskirts
+south
+north
+district
+water
+territory
+fringe
+sea
+cradle
+airspace
+heart
+entrance
+coast
+center
+desert
+part
+planet
+hilltop
+heaven
+overseas
+downtown

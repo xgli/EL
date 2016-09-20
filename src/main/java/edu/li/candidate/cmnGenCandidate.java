@@ -4,15 +4,25 @@
 package edu.li.candidate;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import org.dom4j.DocumentException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import edu.li.es.Search;
+import edu.li.mention.engGenMention;
 import edu.li.wordSegment.AnsjSegment;
 import edu.stanford.nlp.io.IOUtils;
 
@@ -38,6 +48,8 @@ public class cmnGenCandidate {
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator +"tempresult.tab";
 	
+	static Map<String,String> DoneMention;
+	
 	static{
 		File file ;
 		file = new File(CANDIDATEFILEOUTDIR);
@@ -47,6 +59,30 @@ public class cmnGenCandidate {
 		file = new File(ENTITYTEXTOUTDIR);
 		if(!file.exists() && !file.isDirectory()){
 			file.mkdirs();
+		}
+		
+		file = new File("cmn_candidate.ser");
+		if(file.exists()){
+			FileInputStream fis;
+			try {
+				fis = new FileInputStream("cmn_candidate.ser");
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				DoneMention = (HashMap<String, String>) ois.readObject();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+			
+		}
+		else {
+			DoneMention = new HashMap<String, String>();
+			
 		}
 	}
 	
@@ -68,8 +104,18 @@ public class cmnGenCandidate {
 		return dict;
 	}
 	
+	static Map<String,String> dict = new HashMap<String, String>();
+	static {
+		try {
+			dict = loadDict();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
-	public static void GenCandidate(String fileName, String fileType) throws IOException{
+	
+	public static void GenCandidate(String fileName) throws IOException{
 		
 		String text = IOUtils.slurpFile(MENTIONFILEINPUTDIR + fileName);
 		FileOutputStream fos = new FileOutputStream(CANDIDATEFILEOUTDIR + fileName);
@@ -85,14 +131,14 @@ public class cmnGenCandidate {
 //		 }
 		
 		//加载词表
-		 Map<String,String> dict = new HashMap<String, String>();
-		 dict = loadDict();		 
+//		 Map<String,String> dict = new HashMap<String, String>();
+//		 dict = loadDict();		 
 		
 		
 		
 		 String[] lines = text.split("\n");
 
-		 Map<String, String> DoneMention = new HashMap<String, String>();
+//		 Map<String, String> DoneMention = new HashMap<String, String>();
 //		 System.out.println(lines[0]);
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
 		 OutputStreamWriter mentionosw = new OutputStreamWriter(mentionfos, "utf-8");
@@ -100,7 +146,7 @@ public class cmnGenCandidate {
 			 if(line.equals("")){
 				 continue;
 			 }
-			 System.out.println(line);
+//			 System.out.println(line);
 			 String[] tokens = line.trim().split("\t");
 			 String mention = tokens[0];
 			 String mention_type = tokens[2];
@@ -134,6 +180,9 @@ public class cmnGenCandidate {
 				 continue;
 //				 DoneMention.put(mention+mention_type, "NIL");
 			 }
+			 
+			 if(mention_type.equals("FAC"))//字表查错的FAC
+				 continue;
 			 		 			 
 			 if(-1 == mention_type.indexOf("NIL")){  //已经判定类型的
 				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
@@ -151,7 +200,7 @@ public class cmnGenCandidate {
 					 if (thresholdScore < (float) 0.5)
 						 thresholdScore =  (float) 0.5;
 					 
-					 System.out.println(thresholdScore);
+//					 System.out.println(thresholdScore);
 					 String candidates = "";
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用						 
 						if(hit.getScore() >= thresholdScore){							
@@ -187,10 +236,119 @@ public class cmnGenCandidate {
 		 fos.close();		
 	}	
 	
-	public static void  main(String[] args) throws IOException {
-		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.ltf.xml";
-		 GenCandidate(fileName, "news");	
-//		loadDict();
+	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
+		File dir = new File(fileDir);
+		File[] files = dir.listFiles();
+		int all = files.length;
+		int done = 0;
+		long start = System.currentTimeMillis();
+		
+		FileOutputStream failedFilefos = new FileOutputStream("failedcmn.tab");
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");	
+		
+		
+		if(files != null){
+			for(File file : files){
+				try {
+					done += 1;
+					System.out.println("doing:" + done + "\t" + "all:" + all);
+					String fileName = file.getName();
+					System.out.println(fileName);
+					if(fileName.endsWith("xml")){						
+						System.out.println("GenCandidate:#########");
+//						cmnGenCandidate.GenCandidate(fileName, type);
+					}
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.toString());
+//					System.out.println(e.printStackTrace());
+					failedFileosw.write(file.getName() + "\n");
+					failedFileosw.write(e.toString() + "\n");
+					continue;					
+				}
+
+			}
+			failedFileosw.close();
+			failedFilefos.close();
+			long end = System.currentTimeMillis();
+			System.out.println((end - start) + "s");
+		}
+				
+		
+	}
+	
+	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
+//		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.ltf.xml";
+//		 GenCandidate(fileName, "news");	
+//		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "mentionlist.tab";
+//		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator +"tempresult.tab";
+		File file;
+		file = new File(MENTIONLISTOUTFILE);		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();		
+		
+		
+//		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "nw";
+//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "df";
+		
+		
+//		processAll(newsFileDir, "news");
+//		processAll(dfFileDir, "df");
+		
+		FileInputStream fis = new FileInputStream("data/cmnfilenamelist.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		List<String> files = (ArrayList<String>) ois.readObject();
+		
+		
+	
+		int all = files.size();
+		int done = 0;
+		long start = System.currentTimeMillis();
+		
+		FileOutputStream failedFilefos = new FileOutputStream("failedcmn.tab");
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");		
+		
+
+		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
+			String fileName = iterator.next();
+			done += 1;
+			System.out.println("doing:" + done + "\t" + "all:" + all);
+			System.out.println(fileName);
+			try {
+//				if(fileName.endsWith("xml")){
+//					System.out.println("GenMention:###########");
+//					cmnGenCandidate(fileName);
+					cmnGenCandidate.GenCandidate(fileName);
+
+//				}
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e.toString());
+//					System.out.println(e.printStackTrace());
+				failedFileosw.write(fileName + "\n");
+				failedFileosw.write(e.toString() + "\n");
+				continue;					
+			}		
+
+		}	
+		
+		failedFileosw.close();
+		failedFilefos.close();
+		long end = System.currentTimeMillis();
+		System.out.println((end - start) + "s");		
+		
+		FileOutputStream fos = new FileOutputStream("cmn_candidate.ser");
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(DoneMention);
+		oos.close();
+		fos.close();
+		 
+		 
 	}
 
 }

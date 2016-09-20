@@ -12,7 +12,7 @@ def is_reptition(pos_dict,filename,begin_pos,end_pos):
     else:
         return False
 
-def deletebyes(fileindir,fileoutdir,filename,file_loc_dict):
+def deletebyes(fileindir,fileoutdir,filename,file_loc_dict,dict):
 #删除跟词表重叠的mention
     print filename
     fileinpath = fileindir + filename
@@ -21,6 +21,7 @@ def deletebyes(fileindir,fileoutdir,filename,file_loc_dict):
     lines = fr.readlines()
     fr.close()
     fw = open(fileoutpath,"w")
+    doc_id = filename.replace(".xml","")
     for line in lines:
         id_loc = line.split("\t")[1]
         id = id_loc.split(":")[0]
@@ -32,32 +33,20 @@ def deletebyes(fileindir,fileoutdir,filename,file_loc_dict):
         else:
             fw.write(line)
             fw.flush()
-    fw.close()
-    
 
-def addbyes(fileindir,fileoutdir,filename,dict):
-    print filename
-    fileinpath = fileindir + filename
-    fileoutpath = fileoutdir + filename
-    fr = open(fileinpath,"r")
-    text = fr.read()
-    fw = open(fileoutpath,"w")
-    fw.write(text)
-    id = filename.split(".")[0]
-    if dict.has_key(id):
-        for res in dict[id]:
+    if dict.has_key(doc_id):
+        for res in dict[doc_id]:
             restokens = res.split("\t")
             reline = restokens[0] + "\t" + restokens[1] + "\t" + restokens[-1]
             fw.write(reline.encode("utf-8")+"\n")
     fw.close()
 
-es_loc_dict = pickle.load(file("cmn_es_found_loc.pk","rb"))
 
-spa_es_found_dict = pickle.load(file("eng_es_found.pk","rb"))
+es_loc_dict = pickle.load(file("spa_es_found_loc.pk","rb"))
+spa_es_found_dict = pickle.load(file("spa_es_found.pk","rb"))
 spa_mention_in_dir = "../data/mention/spa/"
 spa_mention_out_dir = "../data/mentiones/spa/"
 file_list = os.listdir(spa_mention_in_dir)
 for filename in file_list:
-    deletebyes(spa_mention_in_dir,spa_mention_out_dir,filename,es_loc_dict)
-    addbyes(spa_mention_in_dir,spa_mention_out_dir,filename,spa_es_found_dict)
+    deletebyes(spa_mention_in_dir,spa_mention_out_dir,filename,es_loc_dict,spa_es_found_dict)
 

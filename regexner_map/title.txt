@@ -1,0 +1,377 @@
+[Gg]overnor	TITLE
+[Mm]uslim	TITLE
+[Pp]resident	TITLE
+[Qq]ueen	TITLE
+[Rr]epublican	TITLE
+[Ss]enator	TITLE
+actor	TITLE
+adjutant	TITLE
+administrator	TITLE
+adult	TITLE
+adviser	TITLE
+advisor	TITLE
+advocate	TITLE
+agitator	TITLE
+ambassador	TITLE
+analyst	TITLE
+ancestor	TITLE
+appointee	TITLE
+[Aa]rchbishop	TITLE
+artist	TITLE
+asshole	TITLE
+assistant	TITLE
+assistant manager	TITLE
+attacker	TITLE
+Attorney General	TITLE
+aviator	TITLE
+baby	TITLE
+banker	TITLE
+bartender	TITLE
+bastard	TITLE
+billionaire	TITLE
+blogger	TITLE
+bomber	TITLE
+boss	TITLE
+boy	TITLE
+breakdancer	TITLE
+bride	TITLE
+broker	TITLE
+brother	TITLE
+brother-in-law	TITLE
+businesswoman	TITLE
+campaign manager	TITLE
+campaigner	TITLE
+caregiver	TITLE
+carpenter	TITLE
+cartoonist	TITLE
+CDI	TITLE
+CEO	TITLE
+chair	TITLE
+chairman	TITLE
+chairwoman	TITLE
+Chancellor	TITLE
+chief	TITLE
+chief negotiator	TITLE
+Chief of Army Staff	TITLE
+child	TITLE
+[Cc]hristian	TITLE
+circuit judge	TITLE
+citizen	TITLE
+classmate	TITLE
+clergyman	TITLE
+cleric	TITLE
+clerk	TITLE
+client	TITLE
+coach	TITLE
+colleague	TITLE
+columnist	TITLE
+comedian	TITLE
+[Cc]ommandant	TITLE
+commander	TITLE
+Commander of Brigade	TITLE
+commentator	TITLE
+composer	TITLE
+Congressman	TITLE
+conservative	TITLE
+consultant	TITLE
+contractor	TITLE
+COO	TITLE
+cook	TITLE
+cop	TITLE
+councilman	TITLE
+counselor	TITLE
+cousin	TITLE
+coward	TITLE
+creator	TITLE
+crypto-mathematician	TITLE
+Cuban-American	TITLE
+cuckold	TITLE
+cunt	TITLE
+DA	TITLE
+dad	TITLE
+daughter	TITLE
+dealer	TITLE
+decider	TITLE
+defendant	TITLE
+defender	TITLE
+[Dd]emocrat	TITLE
+Democrat Incompetent	TITLE
+demonstrator	TITLE
+deputy	TITLE
+Deputy Defense Secretary	TITLE
+descendant	TITLE
+designer	TITLE
+dictator	TITLE
+diplomat	TITLE
+Director of Army Public Relations	TITLE
+director of research	TITLE
+dissenter	TITLE
+divorcee	TITLE
+donor	TITLE
+driver	TITLE
+dropout	TITLE
+drop-out	TITLE
+drug-user	TITLE
+dude	TITLE
+dumb ass	TITLE
+[Ee]conomist	TITLE
+editor	TITLE
+ego	TITLE
+employee	TITLE
+envoy	TITLE
+examiner	TITLE
+[Ee]x-husband	TITLE
+ex-president	TITLE
+extremist	TITLE
+eyewitness	TITLE
+eye-witness	TITLE
+fan	TITLE
+farmer	TITLE
+father	TITLE
+FBI agent	TITLE
+Federal Minister of Finances	TITLE
+fella	TITLE
+[Ff]elon	TITLE
+fiance	TITLE
+fiancé	TITLE
+fiancee	TITLE
+fighter	TITLE
+figure	TITLE
+Finance Minister	TITLE
+first lady	TITLE
+fishmonger	TITLE
+florist	TITLE
+footballer	TITLE
+Foreign Minister	TITLE
+Foreign Secretary	TITLE
+former Prime Minister of Italy	TITLE
+[Ff]ounder	TITLE
+friend	TITLE
+front-runner	TITLE
+fundraiser	TITLE
+[Gg]eneral	TITLE
+girl	TITLE
+gnome	TITLE
+godfather	TITLE
+good ole boy	TITLE
+gov.	TITLE
+governer	TITLE
+[Gg]raduate	TITLE
+grandfather	TITLE
+[Gg]randmaster	TITLE
+grandmother	TITLE
+grandpa	TITLE
+grandson	TITLE
+great-grandfather	TITLE
+Greek Finance Minister	TITLE
+Greek Prime Minister	TITLE
+gringo	TITLE
+guest	TITLE
+gunman	TITLE
+guy	TITLE
+hardliner	TITLE
+hero	TITLE
+historian	TITLE
+Holidaymaker	TITLE
+hostage	TITLE
+Huero	TITLE
+husband	TITLE
+Hypocrite	TITLE
+idiot	TITLE
+IDP	TITLE
+illustrator	TITLE
+imam	TITLE
+im-POTUS	TITLE
+influencer	TITLE
+innocent	TITLE
+instructor	TITLE
+investigator	TITLE
+Jacques Chirac	TITLE
+janitor	TITLE
+jefe	TITLE
+jihadi	TITLE
+jihadist	TITLE
+journalist	TITLE
+jurist	TITLE
+kid	TITLE
+killer	TITLE
+king	TITLE
+[Kk]night	TITLE
+landscape architect	TITLE
+lawmaker	TITLE
+lawyer	TITLE
+leader	TITLE
+legislator	TITLE
+lemming	TITLE
+liberal	TITLE
+lieutenant	TITLE
+lobbyist	TITLE
+loner	TITLE
+loon	TITLE
+loser	TITLE
+[Mm]ajor	TITLE
+male	TITLE
+man	TITLE
+manager	TITLE
+mayor	TITLE
+member	TITLE
+[Mm]essiah	TITLE
+military chief	TITLE
+minister	TITLE
+minister of Productive Reconstruction, Environment and Energy	TITLE
+Minister of the Interior	TITLE
+minister of Trade and Industry	TITLE
+Ministre de l'Intérieur	TITLE
+[Mm]olech	TITLE
+mom	TITLE
+monster	TITLE
+mother	TITLE
+mother-of-two	TITLE
+mufti	TITLE
+murderer	TITLE
+national	TITLE
+National Security Adviser	TITLE
+native	TITLE
+neighbour	TITLE
+nephew	TITLE
+nurse	TITLE
+observer	TITLE
+officer	TITLE
+official	TITLE
+one	TITLE
+OP	TITLE
+outsider	TITLE
+owner	TITLE
+P.M.	TITLE
+partner	TITLE
+pastor	TITLE
+pater familias	TITLE
+paymaster	TITLE
+perpetrator	TITLE
+person	TITLE
+philanthropist	TITLE
+photographer	TITLE
+physician	TITLE
+pioneer	TITLE
+player	TITLE
+plumber	TITLE
+PM	TITLE
+point-man	TITLE
+Police Commissioner	TITLE
+policeman	TITLE
+politician	TITLE
+polyglot	TITLE
+Pope	TITLE
+poster	TITLE
+POTUS	TITLE
+powerhouse	TITLE
+preacher	TITLE
+predecessor	TITLE
+Prez	TITLE
+Prime Minister	TITLE
+prisoner	TITLE
+professor	TITLE
+prophet	TITLE
+prosecutor	TITLE
+protégé	TITLE
+psychiatrist	TITLE
+psychoanalyst	TITLE
+public defender	TITLE
+public relations specialist	TITLE
+puppet master	TITLE
+racist	TITLE
+radical	TITLE
+ranger	TITLE
+recipient	TITLE
+recluse	TITLE
+Reporter	TITLE
+rescuer	TITLE
+research associate	TITLE
+researcher	TITLE
+resident	TITLE
+rival	TITLE
+rocker	TITLE
+role model	TITLE
+roommate	TITLE
+RPCV	TITLE
+Saint	TITLE
+scholar	TITLE
+schoolboy	TITLE
+scientist of international reputation	TITLE
+secretary	TITLE
+Secretary of State	TITLE
+secretary of the state	TITLE
+secretary-general	TITLE
+Security Tsar	TITLE
+senior	TITLE
+Sheriff	TITLE
+shooter	TITLE
+singer	TITLE
+sir	TITLE
+sister	TITLE
+SOB	TITLE
+socialist	TITLE
+soldier	TITLE
+son	TITLE
+South Carolinian	TITLE
+spokesman	TITLE
+spokesperson	TITLE
+spokeswoman	TITLE
+state senator	TITLE
+state’s attorney	TITLE
+statesman	TITLE
+stepmother	TITLE
+stepson	TITLE
+strategist	TITLE
+student	TITLE
+successor	TITLE
+suicide bomber	TITLE
+supporter	TITLE
+Supremacist	TITLE
+survivor	TITLE
+talk-radio host	TITLE
+target	TITLE
+teenager	TITLE
+terrorist	TITLE
+thief	TITLE
+thug	TITLE
+tourist	TITLE
+traitor	TITLE
+Tunisian	TITLE
+typhoo	TITLE
+tyrant	TITLE
+uncle	TITLE
+user	TITLE
+veteran	TITLE
+vice president	TITLE
+vice-president	TITLE
+victim	TITLE
+volunteer	TITLE
+voter	TITLE
+whistleblower	TITLE
+white supremacist	TITLE
+widow	TITLE
+wife	TITLE
+winner	TITLE
+witness	TITLE
+woman	TITLE
+worker	TITLE
+writer	TITLE
+youngster	TITLE
+American	TITLE
+Canadian	TITLE
+master	TITLE
+lunatic	TITLE
+director	TITLE
+zombie	TITLE
+suspect	TITLE
+Star	TITLE
+agent	TITLE
+judge	TITLE
+candidate	TITLE
+executive	TITLE
+Floridian	TITLE
+another	TITLE
+first	TITLE
+second	TITLE	ORDINAL
+someone	TITLE

@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +37,39 @@ public class other {
 	 */
 	public static final String ENGNEWSNAMEFILE = "data" + File.separator + "engnewsname.tab";
 	public static final String ENGDFNAMEFILE = "data" + File.separator + "engdfname.tab";
+	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "english.tab";
+	public static Map<String, String> loadDict() throws IOException{
+		Map<String, String> dict = new HashMap<String, String>();
+		String text = IOUtils.slurpFile(DICTFILE);
+		String[] lines = text.split("\n");
+		for(String line : lines){
+//			System.out.println(line);
+			String[] tokens = line.split("\t");
+			String mention = tokens[0];
+			String mid = tokens[1];
+			String type = tokens[2];
+			dict.put(mention, mid + "\t" + type);
+//			System.out.println(mention + mid + type);			
+		}
+		return dict;
+	}
+	
+	
+	static Map<String,String> dict = new HashMap<String, String>();
+	static {
+		try {
+			dict = loadDict();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public static void getEnglishPerson(String fileDir) throws IOException{
+		FileOutputStream fos = new FileOutputStream("newsdotname.tab");			
+	
+		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		File dir = new File(fileDir);
 		File[] files = dir.listFiles();
 		int all =  files.length;
@@ -44,16 +78,16 @@ public class other {
 			String filePath = file.getAbsolutePath();
 			String text = IOUtils.slurpFile(filePath);
 			String[] lines = text.split("\n");
-			String fileID = file.getName().split("\\.")[0];
+			String fileID = file.getName().replace(".xml", "");
 //			System.out.println(file.getName().split("\\.")[0]);
 			for(String line : lines){
 				int bias = Integer.parseInt(line.split("\t")[0]);
 				line = line.split("\t")[1];
 
-//				String ner = cmnGenMention.getAnsjNER(line.split("\t")[1]);
+				String ner = cmnGenMention.getAnsjSegment(line);
 				
 				Pattern pattern = Pattern.compile("([\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})+)");//提取所有带·的名字
-				Matcher matcher = pattern.matcher(line);
+				Matcher matcher = pattern.matcher(ner);
 				while(matcher.find()){
 					String old = matcher.group(0);
 ////					System.out.println(old+":");
@@ -61,15 +95,20 @@ public class other {
 						continue;
 					}
 					count++;		
+
 					System.out.println(line);
-					int start = matcher.start() + bias - 39 ;
+					System.out.println(bias);
+					int start = line.indexOf(old)+ bias ;
 					int end = start + old.length() - 1;
 					String loc = start +"-"+ end;
-					System.out.println(count + "\t" +  old + "\t" + fileID +":"+ loc);
+					String wline = count + "\t" +  old + "\t" + fileID +":"+ loc + "\n";
+					osw.write(wline);
 				}
 				
 			}			
-		}		
+		}
+		osw.close();
+		fos.close();
 		
 	}
 	
@@ -94,18 +133,22 @@ public class other {
 			String filePath = file.getAbsolutePath();
 			String text = IOUtils.slurpFile(filePath);
 			String[] lines = text.split("\n");
-			String fileID = file.getName().split("\\.")[0];
+			String fileID = file.getName().replace(".xml", "");
 //			System.out.println(file.getName().split("\\.")[0]);
 			for(String line : lines){
 				int bias = Integer.parseInt(line.split("\t")[0]);
 				line = line.split("\t")[1];
+				if(-1 != line.indexOf("<") || -1 != line.indexOf("http")){
+					continue;
+				}
 
 //				String ner = cmnGenMention.getAnsjNER(line.split("\t")[1]);
 				
 //				Pattern pattern = Pattern.compile("([\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})+)");//提取所有带·的名字
 //				Pattern pattern = Pattern.compile("(?<=\\()(.+?)(?=\\))");//提取（）内容，主要是英文人名
 //				Pattern pattern = Pattern.compile("[a-zA-Z|]+\\s?\\.?[a-zA-Z|]+\\s?\\.?[a-zA-Z]*");
-				Pattern pattern = Pattern.compile("[[a-zA-Z]+\\s?\\.?-?]+");//提取英文  排除全是空白或者..
+//				Pattern pattern = Pattern.compile("[[a-zA-Z]+\\s?\\.?-?]+");//提取英文  排除全是空白或者..
+				Pattern pattern = Pattern.compile("[a-zA-Z]+\\s?\\.?-?[a-zA-Z]+[\\s?\\.?-?[a-zA-Z]]*");
 				Matcher matcher = pattern.matcher(line);
 				while(matcher.find()){
 					String old = matcher.group(0);
@@ -113,9 +156,12 @@ public class other {
 					if(old.length() <= 1){
 						continue;
 					}
+					if (!dict.containsKey(old)){
+						continue;
+					}
 					count++;		
 					System.out.println(line);
-					osw.write(line+"\n");
+//					osw.write(line+"\n");
 					int start = matcher.start() + bias - 39 ;
 					int end = start + old.length() - 1;
 					String loc = start +"-"+ end;
@@ -134,6 +180,8 @@ public class other {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
+		getEnglish(NEWSFILEINPUTDIR,"df");
 	}
 
 }

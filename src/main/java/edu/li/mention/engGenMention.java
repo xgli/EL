@@ -6,14 +6,22 @@ package edu.li.mention;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.dom4j.DocumentException;
+
+import edu.li.candidate.engGenCandidate;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
 
@@ -28,8 +36,8 @@ public class engGenMention {
 	public static final String NERHOST =  "127.0.0.1";
 	public static final int NERPORT = 2314;
 	
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator + "df" + File.separator;
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator  +  "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
+	public static final String FILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator;
+//	public static final String NEWSFILEINPUTDIR = "data" + File.separator  +  "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
 	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "eng" +File.separator;
 
@@ -59,24 +67,22 @@ public class engGenMention {
 		 return ner.replaceAll("ORGANIZATION>", "ORG>").replaceAll("<MISC>", "").replaceAll("</MISC>", "");
 	}
 	
-	public static void GetMention(String fileName,String file_type) throws IOException {
+	public static void GetMention(String fileName) throws IOException {
 		 
-		 String text = "";
-		 
-
+		 String text = IOUtils.slurpFile(FILEINPUTDIR + fileName,"utf-8"); 
 
 		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 		 FileOutputStream nerfos = new FileOutputStream(MENTIONFILEOUTDIR + fileName);;
-		 if(file_type.equals("news")){
-			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-//			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-
-		 }
-		 else {
-			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
-//			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
-//			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
-		 } 
+//		 if(file_type.equals("news")){
+//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
+////			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
+//
+//		 }
+//		 else {
+//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
+////			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
+////			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
+//		 } 
 
 		 String[] lines = text.split("\n");
 		 int start = 0; //mention location the first char.
@@ -102,7 +108,7 @@ public class engGenMention {
 			 Pattern pattern;
 			 Matcher matcher;
 			 
-			 pattern = Pattern.compile("<(PER)>(.*?)</PER>");
+			 pattern = Pattern.compile("<(GPE|ORG|PER|LOC|FAC)>(.*?)(</GPE>|</ORG>|</PER>|</LOC>|</FAC>)");
 			 matcher = pattern.matcher(ner);
 			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
 				 start = matcher.start() - len + bias;
@@ -120,86 +126,7 @@ public class engGenMention {
 //				 System.out.println(type);
 				 nerosw.write(type + "\n");
 				 nerosw.flush();
-			 }
-			 
-			 pattern = Pattern.compile("<(GPE)>(.*?)</GPE>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;
-				 len = len + matcher.group(1).length() * 2 + 5;
-				 String mention = matcher.group(2);
-//				 System.out.println(mention);
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;
-				 
-//				 System.out.print(mention + "\t");
-				 nerosw.write(mention + "\t");				 
-//				 System.out.print(loc + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-//				 System.out.println(type);
-				 nerosw.write(type + "\n");
-				 nerosw.flush();
-			 }
-			 pattern = Pattern.compile("<(ORG)>(.*?)</ORG>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;
-				 len = len + matcher.group(1).length() * 2 + 5;
-				 String mention = matcher.group(2);
-//				 System.out.println(mention);
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;
-				 
-//				 System.out.print(mention + "\t");
-				 nerosw.write(mention + "\t");				 
-//				 System.out.print(loc + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-//				 System.out.println(type);
-				 nerosw.write(type + "\n");
-				 nerosw.flush();
-			 }
-			 
-			 pattern = Pattern.compile("<(LOC)>(.*?)</LOC>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;
-				 len = len + matcher.group(1).length() * 2 + 5;
-				 String mention = matcher.group(2);
-//				 System.out.println(mention);
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;
-				 
-//				 System.out.print(mention + "\t");
-				 nerosw.write(mention + "\t");				 
-//				 System.out.print(loc + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-//				 System.out.println(type);
-				 nerosw.write(type + "\n");
-				 nerosw.flush();
-			 }
-			 pattern = Pattern.compile("<(FAC)>(.*?)</FAC>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;
-				 len = len + matcher.group(1).length() * 2 + 5;
-				 String mention = matcher.group(2);
-//				 System.out.println(mention);
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;
-				 
-//				 System.out.print(mention + "\t");
-				 nerosw.write(mention + "\t");				 
-//				 System.out.print(loc + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-//				 System.out.println(type);
-				 nerosw.write(type + "\n");
-				 nerosw.flush();
-			 }
-			 
+			 }			 
 			 
 		 }
 		 nerosw.close();
@@ -208,21 +135,100 @@ public class engGenMention {
 		 segfos.close();
 	}
 	
-	/**
-	 * @param string
-	 * @return
-	 */
-	private static FileOutputStream FileOutputStream(String string) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
+		File dir = new File(fileDir);
+		File[] files = dir.listFiles();
+		int all = files.length;
+		int done = 0;
+		long start = System.currentTimeMillis();
+		if(files != null){
+			FileOutputStream failedFilefos = new FileOutputStream("failedeng.tab");
+			OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");
+			for(File file : files){
+				try {
+					done += 1;
+					System.out.println("doing:" + done + "\t" + "all:" + all);
+					String fileName = file.getName();
+					System.out.println(fileName);
+					if(fileName.endsWith("xml")){
+						System.out.println("GenMention:###########start");
+//						engGenMention.GetMention(fileName, type);
+						System.out.println("GenMention:###########end");
+					}
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.toString());
+					failedFileosw.write(file.getName()+"\n");
+					failedFileosw.write(e.toString()+"\n");
+					continue;	
+				}
 
-	public static void main(String[] args) throws IOException {
+			}
+			failedFileosw.close();
+			failedFilefos.close();
+			long end = System.currentTimeMillis();
+			System.out.println((end - start) + "s");
+		}		
+	}
+	
+
+
+	public static void main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
 		
 		// TODO Auto-generated method stub
-		 String fileName = "ENG_DF_001228_20150614_F001000DP.df.ltf.xml";
-		 GetMention(fileName,"df");
+//		 String fileName = "ENG_DF_001228_20150614_F001000DP.df.ltf.xml";
+//		 GetMention(fileName,"df");
 //		System.out.println(getNer("Don't you mean Chelsea Manning...?"));
+//		String newsFileDir = "data" + File.separator +  "raw" + File.separator + "eng" + File.separator +  "nw";
+//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "df";
+//		processAll(newsFileDir, "news");
+//		processAll(dfFileDir, "df");
+		
+		
+		FileInputStream fis = new FileInputStream("data/engfilenamelist.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		List<String> files = (ArrayList<String>) ois.readObject();
+		
+		
+	
+		int all = files.size();
+		int done = 0;
+		long start = System.currentTimeMillis();
+		
+		FileOutputStream failedFilefos = new FileOutputStream("failedeng.tab");
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");		
+		
+
+		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
+			String fileName = iterator.next();
+			done += 1;
+			System.out.println("doing:" + done + "\t" + "all:" + all);
+			System.out.println(fileName);
+			try {
+//				if(fileName.endsWith("xml")){
+//					System.out.println("GenMention:###########");
+					engGenMention.GetMention(fileName);
+//				}
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e.toString());
+//					System.out.println(e.printStackTrace());
+				failedFileosw.write(fileName + "\n");
+				failedFileosw.write(e.toString() + "\n");
+				continue;					
+			}		
+
+		}	
+		
+		failedFileosw.close();
+		failedFilefos.close();
+		long end = System.currentTimeMillis();
+		System.out.println((end - start) + "s");		
+		
+		
 	}
 	
 	

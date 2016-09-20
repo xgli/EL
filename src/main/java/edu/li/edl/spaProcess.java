@@ -42,7 +42,7 @@ public class spaProcess {
 //						System.out.println("xmlParse:###########");
 //						spaXmlParse.Parse(fileName, type);
 						System.out.println("GenMention:###########");
-						spaGenMention.GetMention(fileName, type);
+						spaGenMention.GetMention(fileName);
 //						System.out.println("GenCandidate:#########");
 //						spaGenCandidate.GenCandidate(fileName, type);
 					}

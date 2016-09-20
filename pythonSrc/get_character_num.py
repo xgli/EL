@@ -1,107 +1,36 @@
 # -*- coding: utf-8 -*-
 
-import os
-from xml.etree.ElementTree import ElementTree
 import cPickle as pickle
 
-#%%Chinese
-character_num_dict = {}
-f = file('cmn_file_len.pk', 'wb')
-entity_discovery_path = '../data/raw/cmn/df/'
-for root, dirs, files in os.walk(entity_discovery_path):
-    for filename in files:
-        #print filename
-        tree = ElementTree()
-        tree.parse(os.path.join(root, filename))
-        tree_root = tree.getroot()
-        doc = tree_root.getchildren()[0]
-        text = doc.getchildren()[0]
-        seg = text.getchildren()[-1]
-        character_num_dict[filename.split('.')[0]] = seg.attrib['end_char']
-        #print seg.attrib['end_char']
 
-entity_discovery_path = '../data/raw/cmn/news/'
-for root, dirs, files in os.walk(entity_discovery_path):
-    for filename in files:
-        #print filename
-        if not filename.endswith("xml"):
-            continue
-        tree = ElementTree()
-        tree.parse(os.path.join(root, filename))
-        tree_root = tree.getroot()
-        doc = tree_root.getchildren()[0]
-        text = doc.getchildren()[0]
-        seg = text.getchildren()[-1]
-        character_num_dict[filename.split('.')[0]] = seg.attrib['end_char']
-        #print seg.attrib['end_char']
-pickle.dump(character_num_dict, f)
-f.close()
+cmn_len_dict = {}
+eng_len_dict = {}
+spa_len_dict = {}
 
-#%%English
-eng_pos_num_dict = {}
-f = file('eng_file_len.pk', 'wb')
-entity_discovery_path = '../data/raw/eng/news/'
-for root, dirs, files in os.walk(entity_discovery_path):
-    for filename in files:
-        if not filename.endswith("xml"):
-            continue
-        #print filename
-        tree = ElementTree()
-        tree.parse(os.path.join(root, filename))
-        tree_root = tree.getroot()
-        doc = tree_root.getchildren()[0]
-        text = doc.getchildren()[0]
-        seg = text.getchildren()[-1]
-        eng_pos_num_dict[filename.split('.')[0]] = seg.attrib['end_char']
-        #print seg.attrib['end_char']
-entity_discovery_path = '../data/raw/eng/df/'
-for root, dirs, files in os.walk(entity_discovery_path):
-    for filename in files:
-        if not filename.endswith("xml"):
-            continue
-        #print filename
-        tree = ElementTree()
-        tree.parse(os.path.join(root, filename))
-        tree_root = tree.getroot()
-        doc = tree_root.getchildren()[0]
-        text = doc.getchildren()[0]
-        seg = text.getchildren()[-1]
-        eng_pos_num_dict[filename.split('.')[0]] = seg.attrib['end_char']
-        #print seg.attrib['end_char']
-pickle.dump(eng_pos_num_dict, f)
-f.close()
+fcmn = file('cmn_file_len.pk', 'wb')
+feng = file('eng_file_len.pk', 'wb')
+fspa = file('spa_file_len.pk', 'wb')
 
 
-#%%Spanish
-spa_pos_num_dict = {}
-f = file('spa_file_len.pk', 'wb')
-entity_discovery_path = '../data/raw/spa/news/'
-for root, dirs, files in os.walk(entity_discovery_path):
-    for filename in files:
-        if not filename.endswith("xml"):
-            continue
-        #print filename
-        tree = ElementTree()
-        tree.parse(os.path.join(root, filename))
-        tree_root = tree.getroot()
-        doc = tree_root.getchildren()[0]
-        text = doc.getchildren()[0]
-        seg = text.getchildren()[-1]
-        spa_pos_num_dict[filename.split('.')[0]] = seg.attrib['end_char']
-        #print seg.attrib['end_char']
-entity_discovery_path = '../data/raw/spa/df/'
-for root, dirs, files in os.walk(entity_discovery_path):
-    for filename in files:
-        if not filename.endswith("xml"):
-            continue
-        #print filename
-        tree = ElementTree()
-        tree.parse(os.path.join(root, filename))
-        tree_root = tree.getroot()
-        doc = tree_root.getchildren()[0]
-        text = doc.getchildren()[0]
-        seg = text.getchildren()[-1]
-        spa_pos_num_dict[filename.split('.')[0]] = seg.attrib['end_char']
-        #print seg.attrib['end_char']
-pickle.dump(spa_pos_num_dict, f)
-f.close()
+fr = open("character_counts.tsv","r")
+text = fr.read()
+fr.close()
+lines = text.split("\n")
+for line in lines:
+    if line == "":
+        continue
+    tokens = line.split("\t")
+    doc_id = tokens[0]
+    doc_len = tokens[1]
+    if "CMN_" in doc_id:
+        cmn_len_dict[doc_id] = doc_len
+    if "ENG_" in doc_id:
+        eng_len_dict[doc_id] = doc_len
+    if "SPA_" in doc_id:
+        spa_len_dict[doc_id] = doc_len
+pickle.dump(cmn_len_dict, fcmn)
+fcmn.close()
+pickle.dump(eng_len_dict, feng)
+feng.close()
+pickle.dump(spa_len_dict, fspa)
+fspa.close()

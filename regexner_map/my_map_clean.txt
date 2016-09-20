@@ -1,0 +1,2 @@
+[uU]niversity of [sS]tanford	UNIVERSITY	ORGANIZATION	1
+( /University/ /of/ [ {ner:LOCATION} ] )	SCHOOL	3

@@ -4,16 +4,26 @@
 package edu.li.candidate;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.util.AttributeFactory.StaticImplementationAttributeFactory;
+import org.dom4j.DocumentException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import edu.li.es.Search;
+import edu.li.mention.engGenMention;
 import edu.li.wordSegment.AnsjSegment;
 import edu.stanford.nlp.io.IOUtils;
 
@@ -38,6 +48,7 @@ public class engGenCandidate {
 	
 	public static final String LANG = "eng";
 	
+	static Map<String,String> DoneMention;
 	static{//判断是否存在文件目录
 		File file ;
 		file = new File(CANDIDATEFILEOUTDIR);
@@ -48,6 +59,30 @@ public class engGenCandidate {
 		if(!file.exists() && !file.isDirectory()){
 			file.mkdirs();
 		}
+		file = new File("eng_candidate.ser");
+		if(file.exists()){
+			FileInputStream fis;
+			try {
+				fis = new FileInputStream("eng_candidate.ser");
+				ObjectInputStream ois = new ObjectInputStream(fis);
+				DoneMention = (HashMap<String, String>) ois.readObject();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+			
+		}
+		else {
+			DoneMention = new HashMap<String, String>();
+			
+		}
+			
 	}
 	
 	
@@ -69,34 +104,30 @@ public class engGenCandidate {
 	}
 	
 	
+	static Map<String,String> dict = new HashMap<String, String>();
+	static {
+		try {
+			dict = loadDict();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	
-	public static void GenCandidate(String fileName, String fileType) throws IOException{
+	public static void GenCandidate(String fileName) throws IOException{
 		
 		String text = IOUtils.slurpFile(MENTIONFILEINPUTDIR + fileName);
 		FileOutputStream fos = new FileOutputStream(CANDIDATEFILEOUTDIR + fileName);
-		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-		
-//		if (fileType.equals("news")){
-//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-//			 fos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-//		 }
-//		 else{
-//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
-//			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
-//		 }
-		
-		Map<String,String> dict = new HashMap<String, String>();
-		dict = loadDict();		
+		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");			
 		
 		 String[] lines = text.split("\n");
-
-		 Map<String, String> DoneMention = new HashMap<String, String>();
 		 
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
 		 OutputStreamWriter mentionosw = new OutputStreamWriter(mentionfos, "utf-8");
 		 
 		 for(String line : lines){
-			 System.out.println(line);
+//			 System.out.println(line);
 			 if(line.equals(""))
 				 continue;
 //			 System.out.println(line);
@@ -115,7 +146,9 @@ public class engGenCandidate {
 				 resultfos.close();
 				 continue;
 			 }	 
-			  
+			 
+			 if(mention_type.equals("FAC"))//字表查错的FAC
+				 continue;			  
 			 			 
 			 if(-1 == mention_type.indexOf("NIL")){
 				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
@@ -135,7 +168,7 @@ public class engGenCandidate {
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
 						 thresholdScore =  (float) 0.5;	
-					 System.out.println(thresholdScore);
+//					 System.out.println(thresholdScore);
 					 String candidates = "";
 					 
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用
@@ -177,10 +210,105 @@ public class engGenCandidate {
 	
 	}	
 	
-	public static void  main(String[] args) throws IOException {
-			 String fileName = "ENG_NW_001001_20150719_F00100059.nw.ltf.xml";
-			 GenCandidate(fileName, "news");		
-//		loadDict();
+	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
+		File dir = new File(fileDir);
+		File[] files = dir.listFiles();
+		int all = files.length;
+		int done = 0;
+		long start = System.currentTimeMillis();
+		if(files != null){
+			FileOutputStream failedFilefos = new FileOutputStream("failedeng.tab");
+			OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");
+			for(File file : files){
+				try {
+					done += 1;
+					System.out.println("doing:" + done + "\t" + "all:" + all);
+					String fileName = file.getName();
+					System.out.println(fileName);
+					if(fileName.endsWith("xml")){
+						System.out.println("GenCandidate:#########start");
+						engGenCandidate.GenCandidate(fileName);
+						System.out.println("GenCandidate:#########end");
+					}
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.toString());
+					failedFileosw.write(file.getName()+"\n");
+					failedFileosw.write(e.toString()+"\n");
+					continue;	
+				}
+
+			}
+			failedFileosw.close();
+			failedFilefos.close();
+			long end = System.currentTimeMillis();
+			System.out.println((end - start) + "s");
+		}		
+	}
+	
+	
+	
+	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
+		
+//		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "engmentionlist.tab";
+//		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
+		
+		File file;
+		file = new File(MENTIONLISTOUTFILE);
+		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();		
+		
+//		String newsFileDir = "data" + File.separator +  "raw" + File.separator + "eng" + File.separator +  "nw";
+//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "df";
+//		processAll(newsFileDir, "news");
+//		processAll(dfFileDir, "df");
+		
+		FileInputStream fis = new FileInputStream("data/engfilenamelist.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		List<String> files = (ArrayList<String>) ois.readObject();
+		
+	
+		int all = files.size();
+		int done = 0;
+		long start = System.currentTimeMillis();
+		
+		FileOutputStream failedFilefos = new FileOutputStream("failedcmn.tab");
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");		
+		
+
+		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
+			String fileName = iterator.next();
+			done += 1;
+			System.out.println("doing:" + done + "\t" + "all:" + all);
+			System.out.println(fileName);
+			try {
+				if(fileName.endsWith("xml")){
+//					System.out.println("GenMention:###########");
+					engGenCandidate.GenCandidate(fileName);
+				}
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e.toString());
+//					System.out.println(e.printStackTrace());
+				failedFileosw.write(fileName + "\n");
+				failedFileosw.write(e.toString() + "\n");
+				continue;					
+			}		
+
+		}		
+		
+		FileOutputStream fos = new FileOutputStream("eng_candidate.ser");
+		ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(DoneMention);
+		oos.close();
+		fos.close();
+
 	}
 	
 

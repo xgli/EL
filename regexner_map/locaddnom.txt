@@ -1,0 +1,30 @@
+world	NOM
+river	NOM
+region	NOM
+point	NOM
+area	NOM
+island	NOM
+base	NOM
+northern border	NOM
+northern Iraq	NOM
+outskirts	NOM
+south	NOM
+north	NOM
+district	NOM
+water	NOM
+territory	NOM
+fringe	NOM
+sea	NOM
+cradle	NOM
+airspace	NOM
+heart	NOM
+entrance	NOM
+coast	NOM
+center	NOM
+desert	NOM
+part	NOM
+planet	NOM
+hilltop	NOM
+heaven	NOM
+overseas	NOM
+downtown	NOM

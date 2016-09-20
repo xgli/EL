@@ -25,6 +25,7 @@ import edu.li.other.testProps;
 import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
+import sun.util.locale.StringTokenIterator;
 
 
 /**
@@ -41,20 +42,22 @@ public class App {
 	 */
 
 	public static void main(String[] args) throws IOException {
-//		Set<String> filterAbbre = new  HashSet<String>();
-//
-//		 FileOutputStream  fos = new FileOutputStream("test.tab");
-//		 OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-//		for(String element : filterAbbre){
-//			osw.write(element + "\n");
-//			osw.flush();
-//		}
-//		osw.close();
-//		fos.close();
-		String text = "中国";
-		char[] words = text.toCharArray();
-		for(char word : words){
-			System.out.println(word+"a");
+		String filename = "data/xmlParse/spa/df/SPA_DF_001253_20151213_G00A0HPDU.xml";
+		String text = IOUtils.slurpFile(filename,"utf-8");
+		String[] lines = text.split("\n");
+		for (String line : lines){
+			String[] tokens = line.split("\t");
+			String start = tokens[0];
+			String line_text = tokens[1];
+			if(line_text.startsWith("\ufeff")){
+				System.out.println(line.length());
+				line = line.replace("\ufeff", "");
+				System.out.println(line.length());				
+			}
+//			System.out.println(start);
+//			System.out.println(line_text.replace("\u0096", " ").replace("\u0093", " ").replace("<feff>", " "));
+			
+		
 		}
 	}
 

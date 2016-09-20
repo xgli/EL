@@ -44,12 +44,12 @@ public class engProcess {
 //						System.out.println("xmlParse:###########start");
 //						engXmlParse.Parse(fileName, type);
 //						System.out.println("xmlParse:###########end");
-						System.out.println("GenMention:###########start");
-						engGenMention.GetMention(fileName, type);
-						System.out.println("GenMention:###########end");
-//						System.out.println("GenCandidate:#########start");
-//						engGenCandidate.GenCandidate(fileName, type);
-//						System.out.println("GenCandidate:#########end");
+//						System.out.println("GenMention:###########start");
+//						engGenMention.GetMention(fileName, type);
+//						System.out.println("GenMention:###########end");
+						System.out.println("GenCandidate:#########start");
+						engGenCandidate.GenCandidate(fileName);
+						System.out.println("GenCandidate:#########end");
 //						engExpandMention.expand(fileName, type);
 
 					}

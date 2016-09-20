@@ -6,30 +6,23 @@ package edu.li.mention;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Properties;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.crypto.Mac;
-
-import org.elasticsearch.common.lang3.ObjectUtils.Null;
-import org.elasticsearch.common.text.StringAndBytesText;
-import org.omg.CORBA.SystemException;
-
-import com.hankcs.hanlp.HanLP;
-
+import org.dom4j.DocumentException;
 import TraToSim.TraToSim;
-import edu.li.other.testProps;
-import edu.li.wordSegment.segServer;
 import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
 
@@ -41,8 +34,8 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class cmnGenMention {
 	
-	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
+	public static final String FILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator;
+//	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn"+ File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "cmn" + File.separator;
 	
@@ -83,97 +76,7 @@ public class cmnGenMention {
 		}
 		
 	}
-	
-	public static String getAnsjNER(String text)throws IOException{
-	  	
-		 StringReader sr = new StringReader(text);
-		 BufferedReader br = new BufferedReader(sr);
-		 
-		 StringWriter sw = new StringWriter(); // create client writer not to write a file
-		 BufferedWriter bw = new BufferedWriter(sw);
 
-		 segServer.segClient.communicateWithsegServer(SEGHOST, SEGPORT, "utf-8",br,bw,false);
-		 
-		 br.close();
-		 bw.close();
-//		 System.out.println(sw.toString());
-		 String[] lines = sw.toString().split("\n");
-		 StringBuilder sb = new StringBuilder();
-		 for(String line : lines){	
-//			 System.out.println(line);
-			 line = line.substring(1,line.length()-1);			 
-			 String[] tokens = line.split(", ");//只能先隔断词语了。
-			 			
-			 for(String token : tokens){
-//				 System.out.println(token);
-				
-				 if(token.equals("/")){//过滤这个只有/
-					 sb.append("/");
-					 continue;
-				 }
-				 
-				 if(-1 == token.indexOf("/")){ //没有词性
-					 sb.append(token);
-					 continue;
-				 }
-				 
-				 String[] terms = token.split("/");					 
-
-				 if(-1 != terms[1].indexOf("nr")){
-					 sb.append("<PER>"+ terms[0] + "</PER>");
-				 }
-				 else if (-1 != terms[1].indexOf("ns")){
-					 sb.append("<GPE>" + terms[0] + "</GPE>");
-				 }
-				 else if(-1 != terms[1].indexOf("nt")){
-					 sb.append("<ORG>" + terms[0] + "</ORG>");
-				 }
-				 else if (-1 != terms[1].indexOf("nz")){
-					 if(terms.equals("博科圣地")){
-						 sb.append("<ORG>"+terms[0]+"</ORG>");
-						 continue;
-					 }
-					 if(terms.equals("查理周刊")){
-						 sb.append("<ORG>"+terms[0]+"</ORG>");
-						 continue;
-					 }
-					 sb.append("<NIL>" + terms[0] + "</NIL>"); 
-					 System.out.println(line);
-					 System.out.println("nz" + terms[0]);
-				 }
-				 else if(terms[1].equals("j")){
-					 if(filterAbbre.contains(terms[0])){
-						 sb.append(terms[0]);						 
-					 }
-					 else{
-						 sb.append("<GPE>" + terms[0] + "</GPE>");	
-						 System.out.println("j" + ":" +  terms[0]);
-					 }
-
-//					 System.out.println(line);
-
-				 }
-				 else if(terms[1].equals("nw") && (-1 != terms[0].indexOf("·") || -1 != terms[0].indexOf("•"))){
-					 sb.append("<PER>"+ terms[0] + "</PER>");
-//					 System.out.println("nw" + ":" + terms[0]);
-				 }
-				 else if(terms[1].equals("nw")){
-					 if(terms[0].equals("杰布")){
-						 sb.append("<PER>"+ terms[0] + "</PER>");
-						 continue;
-					 }
-
-					 System.out.println(line);
-					 sb.append("<NIL>" + terms[0] + "</NIL>");
-					 System.out.println("nw"+":"+terms[0]);
-				 }
-				 else {
-					 sb.append(terms[0]); 						 
-				 }					 
-			 }
-		 } 
-		 return sb.toString();		
-	}
 	
 	public static String getAnsjSegment(String text) throws IOException{
 	  	 StringReader sr = new StringReader(text);
@@ -227,19 +130,20 @@ public class cmnGenMention {
 		 return  ner.replace("<MISC>", "").replace("</MISC>", "");//这一类有点特殊。
 	}
 	
-	public static void GetMention(String fileName,String file_type) throws IOException {//还得进行繁转简
+	public static void GetMention(String fileName) throws IOException {//还得进行繁转简
 
 		 String text = "";
 
 		 FileOutputStream nerfos = new FileOutputStream(MENTIONFILEOUTDIR + fileName);
 
 		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
-		 if(file_type.equals("news")){
-			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-		 }
-		 else {
-			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
-		 }
+		 text = IOUtils.slurpFile(FILEINPUTDIR + fileName);
+//		 if(file_type.equals("news")){
+//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
+//		 }
+//		 else {
+//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
+//		 }
  
 		 String[] lines = text.split("\n");//以行进行处理
 		 int start = 0; //mention location the first char.
@@ -273,16 +177,16 @@ public class cmnGenMention {
 			 String ner = getNer(segLine);//斯坦福实体识别
 //			 String ner = getAnsjNER(rawLine);//ansj实体识别					 
 //			 System.out.println(ner);
-			 System.out.println(ner);
+//			 System.out.println(ner);
 			 int len = 0;
 			 Pattern pattern;
 			 Matcher matcher;
-			 pattern = Pattern.compile("<(GPE)>(.*?)</GPE>");
+			 pattern = Pattern.compile("<(GPE|ORG|PER|LOC|FAC)>(.*?)(</GPE>|</ORG>|</PER>|</LOC>|</FAC>)");
 			 matcher = pattern.matcher(ner);
 			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
-//				 System.out.println(matcher.group(0));
-//				 System.out.println(matcher.group(1));
 //				 System.out.println(matcher.group(2));
+//				 System.out.println(matcher.start(2));
+//				 System.out.println(matcher.end(2));
 				 start = matcher.start() - len + bias;
 				 end = start + matcher.group(2).length() - 1;			 
 
@@ -297,93 +201,7 @@ public class cmnGenMention {
 				 nerosw.write(fileID + ":" + loc + "\t");					 
 				 nerosw.write(type + "\n");
 				 nerosw.flush(); 
-			}
-			 pattern = Pattern.compile("<(PER)>(.*?)</PER>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
-//				 System.out.println(matcher.group(0));
-//				 System.out.println(matcher.group(1));
-//				 System.out.println(matcher.group(2));
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;			 
-
-				 String mention = matcher.group(2);					 
-				
-				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
-
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;		 
-		
-				 nerosw.write(mention + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-				 nerosw.write(type + "\n");
-				 nerosw.flush(); 
-			}
-			 pattern = Pattern.compile("<(ORG)>(.*?)</ORG>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
-//				 System.out.println(matcher.group(0));
-//				 System.out.println(matcher.group(1));
-//				 System.out.println(matcher.group(2));
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;			 
-
-				 String mention = matcher.group(2);					 
-				
-				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
-
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;		 
-		
-				 nerosw.write(mention + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-				 nerosw.write(type + "\n");
-				 nerosw.flush(); 
-			}
-			 pattern = Pattern.compile("<(LOC)>(.*?)</LOC>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
-//				 System.out.println(matcher.group(0));
-//				 System.out.println(matcher.group(1));
-//				 System.out.println(matcher.group(2));
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;			 
-
-				 String mention = matcher.group(2);					 
-				
-				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
-
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;		 
-		
-				 nerosw.write(mention + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-				 nerosw.write(type + "\n");
-				 nerosw.flush(); 
-			}
-			 pattern = Pattern.compile("<(FAC)>(.*?)</FAC>");
-			 matcher = pattern.matcher(ner);
-			 while(matcher.find()){	 //考虑提取后的，标签对位置的影响   增加内嵌类型
-//				 System.out.println(matcher.group(0));
-//				 System.out.println(matcher.group(1));
-//				 System.out.println(matcher.group(2));
-				 start = matcher.start() - len + bias;
-				 end = start + matcher.group(2).length() - 1;			 
-
-				 String mention = matcher.group(2);					 
-				
-				 len = len + matcher.group(1).length() * 2 + 5;//过滤标签的影响
-
-				 String type = matcher.group(1);
-				 String loc = start + "-" + end;		 
-		
-				 nerosw.write(mention + "\t");
-				 nerosw.write(fileID + ":" + loc + "\t");					 
-				 nerosw.write(type + "\n");
-				 nerosw.flush(); 
-			}		 
-		 
-		 
+			}	 
 		 
 		 }
 		 nerosw.close();
@@ -392,20 +210,104 @@ public class cmnGenMention {
 		 segfos.close();		
 	}
 	
-	public static void main(String[] args) throws IOException {
+	
+	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
+		File dir = new File(fileDir);
+		File[] files = dir.listFiles();
+		int all = files.length;
+		int done = 0;
+		long start = System.currentTimeMillis();
+		
+		FileOutputStream failedFilefos = new FileOutputStream("failedcmn.tab");
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");	
+		
+		
+		if(files != null){
+			for(File file : files){
+				try {
+					done += 1;
+					System.out.println("doing:" + done + "\t" + "all:" + all);
+					String fileName = file.getName();
+					System.out.println(fileName);
+					if(fileName.endsWith("xml")){
+						System.out.println("GenMention:###########");
+						cmnGenMention.GetMention(fileName);
+					}
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(e.toString());
+//					System.out.println(e.printStackTrace());
+					failedFileosw.write(file.getName() + "\n");
+					failedFileosw.write(e.toString() + "\n");
+					continue;					
+				}
+
+			}
+			failedFileosw.close();
+			failedFilefos.close();
+			long end = System.currentTimeMillis();
+			System.out.println((end - start) + "s");
+		}	
+		
+	}
+	
+	
+	public static void main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
 		
 		// TODO Auto-generated method stub
-		String fileName = "CMN_DF_000020_20110201_G00A0E8P9.xml";
-		GetMention(fileName,"df");
-//		String text = "法国巴黎《查理周刊》杂志社7日遭一伙武装人员持冲锋枪,.?+=-{}][;'|asdfdasdf火箭炮袭击，导致包括周刊主编在内的至少12人死亡，其中两人是警察，多人受伤，袭击者随后在拦截一辆车辆后逃脱，目前警方还在抓捕中。";
-//		String segtext = getAnsjSegment(text);
-//		System.out.println(segtext);
-//		String anner = getAnsjNER(text);
-//		System.out.println(anner);
-//		String result =  getNer(segtext);
-////		String text = ",";
-////		String result = getAnsjSegment(text);
-//		System.out.println(result);
+//		String fileName = "CMN_DF_000020_20160423_G00A0BG4T.xml";
+//		GetMention(fileName,"df");
+//		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "nw";
+//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "df";
+//		
+//		processAll(newsFileDir, "news");
+//		processAll(dfFileDir, "df");
+		
+		FileInputStream fis = new FileInputStream("data/cmnfilenamelist.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		List<String> files = (ArrayList<String>) ois.readObject();
+		
+		
+	
+		int all = files.size();
+		int done = 0;
+		long start = System.currentTimeMillis();
+		
+		FileOutputStream failedFilefos = new FileOutputStream("failedcmn.tab");
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");	
+		
+		
+
+		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
+			String fileName = iterator.next();
+			done += 1;
+			System.out.println("doing:" + done + "\t" + "all:" + all);
+			System.out.println(fileName);
+			try {
+				if(fileName.endsWith("xml")){
+//					System.out.println("GenMention:###########");
+					cmnGenMention.GetMention(fileName);
+				}
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e.toString());
+//					System.out.println(e.printStackTrace());
+				failedFileosw.write(fileName + "\n");
+				failedFileosw.write(e.toString() + "\n");
+				continue;					
+			}		
+
+		}	
+		
+		failedFileosw.close();
+		failedFilefos.close();
+		long end = System.currentTimeMillis();
+		System.out.println((end - start) + "s");
+		
+		
+
 	}
 
 }

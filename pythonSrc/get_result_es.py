@@ -48,28 +48,28 @@ def is_repetition(pos_dict, filename, begin_pos, end_pos):
         return True #repetion
     else:
         return False
-
+'''
 #%%Chinese
 print 'Chinese'
-#character_num_dict = pickle.load(file('file_loc_dict.pk', 'rb'))
-cmn_author_and_pinyin_found_dict = pickle.load(file('file_loc_dict.pk','rb'))
+character_num_dict = pickle.load(file('cmn_file_len.pk', 'rb'))
+cmn_author_and_pinyin_found_dict = {}
 cmn_es_find_dict = {}
 filter_for_research_file = open('../data/dict/chinese.tab', 'r')#词表
-fw = open('cmn_res.txt', 'w')
-
+fw = open('../data/result/cmn/cmn_res.tab', 'w')
 
 p = re.compile('<tag>.+?</tag>')
-url_str = 'http://10.110.6.43:9200/train_text/text/_search?size=500'
+url_str = 'http://10.110.6.43:9200/chinese_kbp2016/text/_search?size=40000'
 for line in filter_for_research_file:
     print line
     line = line.strip().decode('utf-8')
     line_list = line.split('\t')
+    mention = line_list[0]
     mention_str = line_list[1]
     decodejson = json.loads(http_post(url_str, mention_str))
     cnt = 0
     try:
         for candidation in decodejson["hits"]["hits"]:
-            cmn_author_and_pinyin_found_dict.setdefault(candidation['_id'], [0]*10000)
+            cmn_author_and_pinyin_found_dict.setdefault(candidation['_id'], [0]*(int(character_num_dict[candidation['_id']]) + 1))
             cmn_es_find_dict.setdefault(candidation["_id"],[])
             flag = 0
             res = ''
@@ -89,6 +89,10 @@ for line in filter_for_research_file:
                     begin = int(tag_seg[1])
                     is_start = False
                 if(not flag):
+                    if res != mention:
+                        res = ''
+                        is_start = True
+                        continue
                     end = int(tag_seg[1])
                     res += '\t' + candidation['_id'] + ':' + str(begin) + '-' + str(end) + '\t' + line_list[2] + '\t' + line_list[3]
 
@@ -109,19 +113,18 @@ for line in filter_for_research_file:
 fw.close()
 filter_for_research_file.close()
 pickle.dump(cmn_es_find_dict,file("cmn_es_found.pk","wb"))
-pickle.dump(cmn_author_and_pinyin_found_dict, file('file_loc_dict.pk', 'wb'))
-
+pickle.dump(cmn_author_and_pinyin_found_dict, file('cmn_es_found_loc.pk', 'wb'))
 
 #%%English
 print 'English'
-#eng_pos_num_dict = pickle.load(file('eng_file_len.pk', 'rb'))
-eng_es_find_dict = pickle.load(file("file_loc_dict.pk","wb"))
+eng_pos_num_dict = pickle.load(file('eng_file_len.pk', 'rb'))
+eng_es_find_dict = {}
 eng_author_and_words_found_dict = {}
 
 #filter_for_research_file = open('d:/data/tmp/english/all_types.txt', 'r')
 filter_for_research_file = open('../data/dict/english.tab', 'r')
-fw = open('eng_res.txt', 'w')
-url_str = 'http://10.110.6.43:9200/english_text/text/_search?size=500'
+fw = open('../data/result/eng/eng_res.tab', 'w')
+url_str = 'http://10.110.6.43:9200/english_kbp2016/text/_search?size=40000'
 
 p = re.compile('<tag>.+?</tag>')
 for line in filter_for_research_file:
@@ -133,7 +136,7 @@ for line in filter_for_research_file:
     cnt = 0
     try:
         for candidation in decodejson["hits"]["hits"]:
-            eng_author_and_words_found_dict.setdefault(candidation['_id'], [0]*1000)
+            eng_author_and_words_found_dict.setdefault(candidation['_id'], [0]*(int(eng_pos_num_dict[candidation['_id']]) + 1))
             eng_es_find_dict.setdefault(candidation["_id"],[])
             flag = 0
             res = ''
@@ -182,11 +185,8 @@ for line in filter_for_research_file:
 fw.close()
 filter_for_research_file.close()
 pickle.dump(eng_author_and_words_found_dict, file('eng_es_found_loc.pk', 'wb'))
-pickle.dump(eng_es_find_dict,file("file_loc_dict.pk","wb"))
-
-
+pickle.dump(eng_es_find_dict,file("eng_es_found.pk","wb"))
 '''
-
 #%%Spanish
 print 'Spanish'
 spa_pos_num_dict = pickle.load(file('spa_file_len.pk', 'rb'))
@@ -194,8 +194,8 @@ spa_es_find_dict = {}
 spa_author_and_words_found_dict = {}
 
 filter_for_research_file = open('../data/dict/spanish.tab', 'r')
-fw = open('spa_res.txt', 'w')
-url_str = 'http://10.110.6.43:9200/spanish_text/text/_search'
+fw = open('../data/result/spa/spa_res.tab', 'w')
+url_str = 'http://10.110.6.43:9200/spanish_kbp2016/text/_search?size=40000'
 
 p = re.compile('<tag>.+?</tag>')
 for line in filter_for_research_file:
@@ -229,7 +229,10 @@ for line in filter_for_research_file:
                     if(not flag):
                         end = int(tag_seg[2][:-6])
                         res = res.strip(' ')
-                        
+                        if res != mention_str:
+                            res = ''
+                            is_start = True
+                            continue
     #                    if(end < begin or end - begin > 100):
     #                        print res
                         if(end > begin  and res.lower() == mention_str.lower() and end-begin < 100 and not is_repetition(spa_author_and_words_found_dict, candidation['_id'], begin, end + 1)):            
@@ -249,4 +252,3 @@ fw.close()
 filter_for_research_file.close()
 pickle.dump(spa_author_and_words_found_dict, file('spa_es_found_loc.pk', 'wb'))
 pickle.dump(spa_es_find_dict,file("spa_es_found.pk","wb"))
-'''
