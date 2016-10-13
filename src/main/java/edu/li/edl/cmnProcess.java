@@ -6,12 +6,6 @@ package edu.li.edl;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import edu.li.candidate.cmnGenCandidate;
-import edu.li.expand.expandMention;
-import edu.li.mention.cmnGenMention;
-import edu.li.result.cmnMergerResult;
-import edu.li.xmlParse.cmnXmlParse;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
@@ -52,7 +46,7 @@ public class cmnProcess {
 //						cmnGenMention.GetMention(fileName, type);
 						
 						System.out.println("GenCandidate:#########");
-						cmnGenCandidate.GenCandidate(fileName);
+//						cmnGenCandidate.GenCandidate(fileName);
 //						expandMention.expand(fileName, type);
 					}
 					

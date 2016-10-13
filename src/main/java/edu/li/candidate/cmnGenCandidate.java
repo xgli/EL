@@ -17,13 +17,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.dom4j.DocumentException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import edu.li.es.Search;
-import edu.li.mention.engGenMention;
-import edu.li.wordSegment.AnsjSegment;
+//import edu.li.wordSegment.AnsjSegment;
 import edu.stanford.nlp.io.IOUtils;
 
 /**
@@ -87,7 +88,16 @@ public class cmnGenCandidate {
 	}
 	
 	
-	
+	public static String getAnsjSegment(String text) throws IOException{
+		List<Term> terms = NlpAnalysis.parse(text);
+		 String seg = "";
+		 for (Term term : terms){
+			 seg += term.getName() + "\t";
+		 }
+		 seg = seg.trim();
+		 System.out.println(seg);
+		 return seg;
+	}
 	public static Map<String, String> loadDict() throws IOException{
 		Map<String, String> dict = new HashMap<String, String>();
 		String text = IOUtils.slurpFile(DICTFILE);
@@ -209,7 +219,7 @@ public class cmnGenCandidate {
 //							System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
 //							break;// 获取第一个结果
 							String entitytext = hit.getFields().get("f_common.topic.description_zh").getValue().toString();
-							entitytext = AnsjSegment.getAnsjSegment(entitytext);
+							entitytext = getAnsjSegment(entitytext);
 							FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + hit.getId());
 							OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
 							candidateFileosw.write(entitytext);

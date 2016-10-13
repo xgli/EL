@@ -3,28 +3,26 @@
  */
 package edu.li.mention;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.dom4j.DocumentException;
-import TraToSim.TraToSim;
-import edu.stanford.nlp.ie.NERServer.NERClient;
+
+import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.CoreLabel;
 
 /**
  *date:Jun 17, 2016 9:24:51 AM
@@ -39,15 +37,20 @@ public class cmnGenMention {
 	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "cmn"+ File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "cmn" + File.separator;
 	
-	//ansj的服务地址
-	public static final String SEGHOST = "127.0.0.1";
-	public static final int SEGPORT = 4465;
-	//stanford的服务地址
-	public static final String NERHOST =  "127.0.0.1";
-	public static final int NERPORT = 2310;
+	public static final String serializedClassifier = "classifiers/chinese.misc.distsim.crf.ser.gz";
+	public static AbstractSequenceClassifier<CoreLabel> ner;
 	
-	public static final String ABBREFILEPATH = "data" + File.separator + "dict" + File.separator + "abbre.tab";
-	public static final String ABBREFILOUTEPATH = "data" + File.separator + "dict" + File.separator + "abbreOut.tab";
+	static {	
+			ner = CRFClassifier.getClassifierNoExceptions(serializedClassifier);
+	}     
+	
+//	//ansj的服务地址
+//	public static final String SEGHOST = "127.0.0.1";
+//	public static final int SEGPORT = 4465;
+//	//stanford的服务地址
+//	public static final String NERHOST =  "127.0.0.1";
+//	public static final int NERPORT = 2310;
+	
 
 	static{//判断文件目录是否存在
 		File file;
@@ -57,77 +60,48 @@ public class cmnGenMention {
 		file = new File(MENTIONTEXTOUTDIR);
 		if(!file.exists() && !file.isDirectory())
 			file.mkdirs();
-
 	}	
 	
-	public static Set<String> filterAbbre = new  HashSet<String>();
-	static {
-		try {
-			FileOutputStream  fos = new FileOutputStream("test.tab");
-			OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
-			String text = IOUtils.slurpFile(ABBREFILEPATH);
-			String[] words = text.split("\n");
-			for (String word : words){
-				filterAbbre.add(word);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 
 	
 	public static String getAnsjSegment(String text) throws IOException{
-	  	 StringReader sr = new StringReader(text);
-		 BufferedReader br = new BufferedReader(sr);
-		 
-		 StringWriter sw = new StringWriter(); // create client writer not to write a file
-		 BufferedWriter bw = new BufferedWriter(sw);
-
-		 NERClient.communicateWithNERServer(SEGHOST, SEGPORT, "utf-8",br,bw,true);//使用stanfordner的client程序进行交互
-		 
-		 br.close();
-		 bw.close();
-		 String[] lines = sw.toString().split("\n");
-		 StringBuilder sb = new StringBuilder();
-		 for(String line : lines){
-//			 System.out.println(line);
-			 line = line.substring(1,line.length()-1);
-			 String[] tokens = line.split(", ");
-			 for(String token : tokens){
-//				 System.out.println(token);
-				 if(token.equals("/")){
-					 sb.append("/\t");
-					 continue;
-				 }
-				 
-				 if(-1 == token.indexOf("/")){
-					 sb.append(token + "\t");
-					 continue;
-				 }
-				 
-				 String[] terms = token.split("/");
-				 sb.append(terms[0] + "\t"); 
-
-			 }
-			 sb.append("\n");
-		 } 
-		 return sb.toString();		
+		List<Term> terms = NlpAnalysis.parse(text);
+		 String seg = "";
+		 for (Term term : terms){
+			 seg += term.getName() + "\t";
+		 }
+		 seg = seg.trim();
+		 System.out.println(seg);
+		 return seg;
+//	  	 StringReader sr = new StringReader(text);
+//		 BufferedReader br = new BufferedReader(sr);
+//		 
+//		 StringWriter sw = new StringWriter(); // create client writer not to write a file
+//		 BufferedWriter bw = new BufferedWriter(sw);
+//
+//		 NERClient.communicateWithNERServer(SEGHOST, SEGPORT, "utf-8",br,bw,true);//使用stanfordner的client程序进行交互
+//		 
+//		 br.close();
+//		 bw.close();
 	}
 	
 	public static String getNer(String text) throws IOException{
-	   	 StringReader sr = new StringReader(text); //输入切分好的text
-		 BufferedReader br = new BufferedReader(sr);
-		 StringWriter sw = new StringWriter();
-		 BufferedWriter bw = new BufferedWriter(sw);
-		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
-		 bw.close();
-		 br.close();
-//		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
-		 String ner = sw.toString().replaceAll("\t", "").replace("PERSON>", "PER>");
-		 ner = ner.replaceAll("</PER>·<PER>", "·");
-		 return  ner.replace("<MISC>", "").replace("</MISC>", "");//这一类有点特殊。
+		String  str = ner.classifyWithInlineXML(text);
+		 str = str.replaceAll("\t", "").replace("PERSON>", "PER>");
+		 str = str.replaceAll("</PER>·<PER>", "·");
+		 return  str.replace("<MISC>", "").replace("</MISC>", "");//这一类有点特殊。
+		
+//	   	 StringReader sr = new StringReader(text); //输入切分好的text
+//		 BufferedReader br = new BufferedReader(sr);
+//		 StringWriter sw = new StringWriter();
+//		 BufferedWriter bw = new BufferedWriter(sw);
+//		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
+//		 bw.close();
+//		 br.close();
+////		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
+//		 String ner = sw.toString().replaceAll("\t", "").replace("PERSON>", "PER>");
+//		 ner = ner.replaceAll("</PER>·<PER>", "·");
+//		 return  ner.replace("<MISC>", "").replace("</MISC>", "");//这一类有点特殊。
 	}
 	
 	public static void GetMention(String fileName) throws IOException {//还得进行繁转简
@@ -165,8 +139,8 @@ public class cmnGenMention {
 			 String tempLine = line.split("\t")[1];
 			
 			 tempLine = tempLine.replaceAll("•", "·").replace("－", "·");
-			 String rawLine = TraToSim.TraToSim(tempLine);//全部进行转换,然后在templine中找位置,在
-		 	 	
+//			 String rawLine = TraToSim.TraToSim(tempLine);//全部进行转换,然后在templine中找位置,在
+		 	 String rawLine = tempLine;
 
 			 String segLine = getAnsjSegment(rawLine);//ansj分词
 //			 System.out.println("segline:" + segLine);
@@ -256,19 +230,10 @@ public class cmnGenMention {
 	public static void main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
 		
 		// TODO Auto-generated method stub
-//		String fileName = "CMN_DF_000020_20160423_G00A0BG4T.xml";
-//		GetMention(fileName,"df");
-//		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "nw";
-//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "df";
-//		
-//		processAll(newsFileDir, "news");
-//		processAll(dfFileDir, "df");
 		
 		FileInputStream fis = new FileInputStream("data/cmnfilenamelist.ser");
 		ObjectInputStream ois = new ObjectInputStream(fis);
-		List<String> files = (ArrayList<String>) ois.readObject();
-		
-		
+		List<String> files = (ArrayList<String>) ois.readObject();	
 	
 		int all = files.size();
 		int done = 0;
@@ -276,8 +241,7 @@ public class cmnGenMention {
 		
 		FileOutputStream failedFilefos = new FileOutputStream("failedcmn.tab");
 		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");	
-		
-		
+			
 
 		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
 			String fileName = iterator.next();

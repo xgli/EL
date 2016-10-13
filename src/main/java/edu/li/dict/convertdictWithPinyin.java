@@ -6,15 +6,12 @@ package edu.li.dict;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.dictionary.py.Pinyin;
-import com.sun.xml.internal.bind.v2.runtime.reflect.Accessor.SetterOnlyReflection;
-
 import edu.stanford.nlp.io.IOUtils;
 
 /**

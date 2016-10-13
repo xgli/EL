@@ -13,20 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.lucene.util.AttributeFactory.StaticImplementationAttributeFactory;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.script.ScriptService;
-import org.elasticsearch.search.SearchHits;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
-
-import TraToSim.TraToSim;
-import edu.li.other.testProps;
-import edu.stanford.nlp.dcoref.SieveCoreferenceSystem;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;

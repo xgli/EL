@@ -13,24 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.util.AttributeFactory.StaticImplementationAttributeFactory;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.script.ScriptService;
-import org.elasticsearch.search.SearchHits;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
-
-import com.google.common.io.Files;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.dictionary.py.Pinyin;
 
-import TraToSim.TraToSim;
-import edu.li.other.testProps;
-import edu.stanford.nlp.dcoref.SieveCoreferenceSystem;
 import edu.stanford.nlp.io.IOUtils;
 
 /**
@@ -124,7 +114,8 @@ public class cmnPutDocumentIntoES {
 		String[] lines = text.split("\n");
 		String  textIndex = "";
 		for(String line : lines){
-			line = TraToSim.TraToSim(line);
+//			line = TraToSim.TraToSim(line);
+			
 			int start = Integer.parseInt(line.split("\t")[0]);
 			String lineText = line.split("\t")[1];
 			
@@ -158,7 +149,7 @@ public class cmnPutDocumentIntoES {
 		String text = IOUtils.slurpFile(fileInputPath, "utf-8");
 	
 	
-		text = TraToSim.TraToSim(text);
+//		text = TraToSim.TraToSim(text);
 
 		
 		List<Pinyin> pinyins = HanLP.convertToPinyinList(text);

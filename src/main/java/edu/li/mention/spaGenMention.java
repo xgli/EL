@@ -3,16 +3,12 @@
  */
 package edu.li.mention;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,9 +17,10 @@ import java.util.regex.Pattern;
 
 import org.dom4j.DocumentException;
 
-import edu.li.candidate.engGenCandidate;
-import edu.stanford.nlp.ie.NERServer.NERClient;
+import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.CoreLabel;
 
 /**
  *date:Jun 17, 2016 9:24:27 AM
@@ -33,17 +30,21 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class spaGenMention {
 
-	public static final String NERHOST =  "127.0.0.1";
-	public static final int NERPORT = 2311;
+//	public static final String NERHOST =  "127.0.0.1";
+//	public static final int NERPORT = 2311;
 	
 	public static final String FILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator;
 //	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "spa" +File.separator;
 	
+	public static final String serializedClassifier = "classifiers/spanish.ancora.distsim.s512.crf.ser.gz";
+	public static AbstractSequenceClassifier<CoreLabel> ner;
+	
+	static {	
+			ner = CRFClassifier.getClassifierNoExceptions(serializedClassifier);
+	}
 
-//	public static final String DFFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "spa" + File.separator + "df" + File.separator;
-//	public static final String DFSEGMENTOUTDIR = "data" + File.separator + "segment" + File.separator  + "spa" + File.separator;
 	
 	static{//判断文件目录是否存在
 		File file;
@@ -56,16 +57,18 @@ public class spaGenMention {
 	}	
 	
 	public static String getNer(String text) throws IOException{
-	   	 StringReader sr = new StringReader(text); //输入切分好的text
-		 BufferedReader br = new BufferedReader(sr);
-		 StringWriter sw = new StringWriter();
-		 BufferedWriter bw = new BufferedWriter(sw);
-		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
-		 bw.close();
-		 br.close();
-		 String ner = sw.toString().replace("LUG>", "GPE>").replace("PERS>", "PER>");
-		 //		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
-		 return ner.replace("<OTROS>", "").replace("</OTROS>", "");
+		 String  str = ner.classifyWithInlineXML(text);
+		
+//	   	 StringReader sr = new StringReader(text); //输入切分好的text
+//		 BufferedReader br = new BufferedReader(sr);
+//		 StringWriter sw = new StringWriter();
+//		 BufferedWriter bw = new BufferedWriter(sw);
+//		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
+//		 bw.close();
+//		 br.close();
+		 str = str.toString().replace("LUG>", "GPE>").replace("PERS>", "PER>");
+//		 //		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
+		 return str.replace("<OTROS>", "").replace("</OTROS>", "");
 	}
 	
 	public static void GetMention(String fileName) throws IOException {
@@ -75,16 +78,6 @@ public class spaGenMention {
 		 FileOutputStream segfos = new FileOutputStream(MENTIONTEXTOUTDIR + fileName);
 
 		 FileOutputStream nerfos = new FileOutputStream(MENTIONFILEOUTDIR + fileName);	
-//		 if(file_type.equals("news")){
-//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-////			 nerfos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-//
-//		 }
-//		 else {
-//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);	
-////			 nerfos = new FileOutputStream(DFFILEOUTDIR + fileName);
-////			 segfos = new FileOutputStream(DFSEGMENTOUTDIR + fileName);
-//		 } 
 
 		 String[] lines = text.split("\n");
 		 int start = 0; //mention location the first char.

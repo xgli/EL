@@ -3,17 +3,12 @@
  */
 package edu.li.expand;
 
-import java.awt.print.Printable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.api.client.util.Key;
-import com.sun.media.sound.SoftInstrument;
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
 
 import edu.stanford.nlp.io.IOUtils;
 

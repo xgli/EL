@@ -6,28 +6,16 @@ package edu.li.xmlParse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.elasticsearch.search.facet.terms.doubles.TermsDoubleFacetExecutor.StaticAggregatorValueProc;
-import org.omg.CORBA.PUBLIC_MEMBER;
-
-import com.hankcs.hanlp.dependency.nnparser.util.std;
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
-import edu.li.other.testProps;
 import edu.stanford.nlp.io.IOUtils;
 
 /**

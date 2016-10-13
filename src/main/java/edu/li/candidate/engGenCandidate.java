@@ -17,14 +17,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.util.AttributeFactory.StaticImplementationAttributeFactory;
 import org.dom4j.DocumentException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import edu.li.es.Search;
-import edu.li.mention.engGenMention;
-import edu.li.wordSegment.AnsjSegment;
+//import edu.li.wordSegment.AnsjSegment;
 import edu.stanford.nlp.io.IOUtils;
 
 /**

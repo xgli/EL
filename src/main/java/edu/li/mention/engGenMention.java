@@ -3,16 +3,12 @@
  */
 package edu.li.mention;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,9 +17,10 @@ import java.util.regex.Pattern;
 
 import org.dom4j.DocumentException;
 
-import edu.li.candidate.engGenCandidate;
-import edu.stanford.nlp.ie.NERServer.NERClient;
+import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.CoreLabel;
 
 /**
  *date:Jun 17, 2016 9:24:05 AM
@@ -33,14 +30,21 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class engGenMention {
 
-	public static final String NERHOST =  "127.0.0.1";
-	public static final int NERPORT = 2314;
+//	public static final String NERHOST =  "127.0.0.1";
+//	public static final int NERPORT = 2314;
 	
 	public static final String FILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "eng" + File.separator;
 //	public static final String NEWSFILEINPUTDIR = "data" + File.separator  +  "xmlParse" + File.separator + "eng" + File.separator + "news" + File.separator;
 	public static final String MENTIONFILEOUTDIR = "data" + File.separator + "mention" + File.separator + "eng" + File.separator;
 	public static final String MENTIONTEXTOUTDIR = "data" + File.separator + "mentionText" + File.separator + "eng" +File.separator;
 
+	public static final String serializedClassifier = "classifiers/english.nowiki.3class.distsim.crf.ser.gz";
+	public static AbstractSequenceClassifier<CoreLabel> ner;
+	
+	static {	
+			ner = CRFClassifier.getClassifierNoExceptions(serializedClassifier);
+	}
+	
 	
 	static{//判断文件目录是否存在
 		File file;
@@ -54,17 +58,21 @@ public class engGenMention {
 
 	
 	public static String getNer(String text) throws IOException{
-	   	 StringReader sr = new StringReader(text); //输入切分好的text
-		 BufferedReader br = new BufferedReader(sr);
-		 StringWriter sw = new StringWriter();
-		 BufferedWriter bw = new BufferedWriter(sw);
-		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
-		 bw.close();
-		 br.close();
-//		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
-		 String ner = sw.toString().replaceAll("PERSON>", "PER>").replaceAll("LOCATION>", "GPE>");
-//		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
-		 return ner.replaceAll("ORGANIZATION>", "ORG>").replaceAll("<MISC>", "").replaceAll("</MISC>", "");
+		 String  str = ner.classifyWithInlineXML(text);
+		 str = str.replaceAll("PERSON>", "PER>").replaceAll("LOCATION>", "GPE>");
+		 return str.replaceAll("ORGANIZATION>", "ORG>").replaceAll("<MISC>", "").replaceAll("</MISC>", "");
+				 
+//	   	 StringReader sr = new StringReader(text); //输入切分好的text
+//		 BufferedReader br = new BufferedReader(sr);
+//		 StringWriter sw = new StringWriter();
+//		 BufferedWriter bw = new BufferedWriter(sw);
+//		 NERClient.communicateWithNERServer(NERHOST, NERPORT, "UTF-8",br,bw,false);
+//		 bw.close();
+//		 br.close();
+////		 String ner = sw.toString().replaceAll("\t", "").replaceAll("LOC", "GPE").replaceAll("PERSON", "PER");
+//		 String ner = sw.toString().replaceAll("PERSON>", "PER>").replaceAll("LOCATION>", "GPE>");
+////		 return  ner.replaceAll("MISC", "NIL");//这一类有点特殊。
+//		 return ner.replaceAll("ORGANIZATION>", "ORG>").replaceAll("<MISC>", "").replaceAll("</MISC>", "");
 	}
 	
 	public static void GetMention(String fileName) throws IOException {

@@ -10,13 +10,6 @@ import java.io.OutputStreamWriter;
 
 import org.dom4j.DocumentException;
 
-import edu.li.candidate.engGenCandidate;
-import edu.li.expand.engExpandMention;
-import edu.li.expand.expandMention;
-import edu.li.mention.engGenMention;
-import edu.li.result.engMergerResult;
-import edu.li.xmlParse.engXmlParse;
-
 /**
  *date:Jun 18, 2016 10:02:37 PM
  * @author lxg xgli0807@gmail.com
@@ -48,8 +41,8 @@ public class engProcess {
 //						engGenMention.GetMention(fileName, type);
 //						System.out.println("GenMention:###########end");
 						System.out.println("GenCandidate:#########start");
-						engGenCandidate.GenCandidate(fileName);
-						System.out.println("GenCandidate:#########end");
+//						engGenCandidate.GenCandidate(fileName);
+//						System.out.println("GenCandidate:#########end");
 //						engExpandMention.expand(fileName, type);
 
 					}

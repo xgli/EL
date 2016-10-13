@@ -22,7 +22,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import edu.li.es.Search;
-import edu.li.mention.spaGenMention;
 import edu.stanford.nlp.io.IOUtils;
 
 /**
