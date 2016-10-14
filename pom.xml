@@ -157,6 +157,13 @@
   		<version>5.1.39</version>
   	</dependency>  
  
+ 	<dependency>
+		<groupId>com.spreada</groupId>
+		<artifactId>zhconverter</artifactId>
+		<version>1.0</version>
+	</dependency>
+ 
+ 
   
     <dependency>
       <groupId>junit</groupId>

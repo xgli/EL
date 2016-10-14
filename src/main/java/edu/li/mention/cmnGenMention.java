@@ -19,11 +19,12 @@ import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.dom4j.DocumentException;
 
+import TraToSim.TraToSim;
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.io.IOUtils;
 import edu.stanford.nlp.ling.CoreLabel;
-
+//import TraToSim.TraTosim;
 /**
  *date:Jun 17, 2016 9:24:51 AM
  * @author lxg xgli0807@gmail.com
@@ -139,8 +140,9 @@ public class cmnGenMention {
 			 String tempLine = line.split("\t")[1];
 			
 			 tempLine = tempLine.replaceAll("•", "·").replace("－", "·");
-//			 String rawLine = TraToSim.TraToSim(tempLine);//全部进行转换,然后在templine中找位置,在
-		 	 String rawLine = tempLine;
+			 String rawLine = TraToSim.TraToSim(tempLine);//全部进行转换,然后在templine中找位置,在
+//		 	 String rawLine = tempLine;
+
 
 			 String segLine = getAnsjSegment(rawLine);//ansj分词
 //			 System.out.println("segline:" + segLine);

@@ -21,6 +21,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.dictionary.py.Pinyin;
 
+import TraToSim.TraToSim;
 import edu.stanford.nlp.io.IOUtils;
 
 /**
@@ -149,7 +150,7 @@ public class cmnPutDocumentIntoES {
 		String text = IOUtils.slurpFile(fileInputPath, "utf-8");
 	
 	
-//		text = TraToSim.TraToSim(text);
+		text = TraToSim.TraToSim(text);
 
 		
 		List<Pinyin> pinyins = HanLP.convertToPinyinList(text);
