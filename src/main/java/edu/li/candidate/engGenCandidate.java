@@ -36,7 +36,7 @@ public class engGenCandidate {
 	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mentiones" + File.separator + "eng" + File.separator;
 	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "eng" + File.separator;
 	
-	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "english.tab";
+	public static final String DICTFILE = "dict" + File.separator + "english.dict";
 	
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + "eng" + File.separator;
 	

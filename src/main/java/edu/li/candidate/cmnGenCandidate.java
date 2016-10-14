@@ -44,7 +44,7 @@ public class cmnGenCandidate {
 	//候选的文本
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + LANG + File.separator;
 
-	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "cmn_candidate_dict.tab";
+	public static final String DICTFILE =  "dict" + File.separator + "cmn_candidate_dict.tab";
 	
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator +"tempresult.tab";

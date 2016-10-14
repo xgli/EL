@@ -44,7 +44,7 @@ public class spaGenCandidate {
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator +"tempresult.tab";
 	
-	public static final String DICTFILE = "data" + File.separator + "dict" + File.separator + "spanish.tab";
+	public static final String DICTFILE = "dict" + File.separator + "spanish.tab";
 	
 	static Map<String,String> DoneMention;
 	

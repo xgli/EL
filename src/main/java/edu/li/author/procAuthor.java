@@ -3,26 +3,18 @@
  */
 package edu.li.author;
 
-import java.awt.font.TextMeasurer;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.List;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.NlpAnalysis;
-import org.apache.lucene.analysis.tokenattributes.TermToBytesRefAttribute;
+
 
 //import com.hankcs.hanlp.seg.common.Term;
 
-import edu.stanford.nlp.ie.NERServer.NERClient;
 import edu.stanford.nlp.io.IOUtils;
 
 /**
