@@ -42,7 +42,7 @@ public class index {
 		List<String> spafilenamelist = new ArrayList<String>();
 		
 		try {
-			String text = IOUtils.slurpFile("data/character_counts.tsv", "utf-8");
+			String text = IOUtils.slurpFile("data/filesnamelist.tab", "utf-8");
 			String[] lines = text.split("\n");
 			for(String line : lines){
 				String fileName = line.split("\t")[0];

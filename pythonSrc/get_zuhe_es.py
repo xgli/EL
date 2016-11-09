@@ -54,8 +54,8 @@ print 'Chinese'
 character_num_dict = pickle.load(file('cmn_file_len.pk', 'rb'))
 cmn_author_and_pinyin_found_dict = pickle.load(file('cmn_es_found_loc.pk','rb')) 
 cmn_es_find_dict = {}
-filter_for_research_file = open('../dict/zuhewithpinyin_add.tab', 'r')#词表
-fw = open('../data/result/cmn/zuhe_add_res.tab', 'w')
+filter_for_research_file = open('../dict/zuhewithpinyin.dict', 'r')#词表
+fw = open('../data/result/cmn/zuhe_es.tab', 'w')
 
 
 p = re.compile('<tag>.+?</tag>')
@@ -110,6 +110,6 @@ for line in filter_for_research_file:
         print traceback.format_exc()
 fw.close()
 filter_for_research_file.close()
-pickle.dump(cmn_es_find_dict,file("cmn_es_zuhe_add_found.pk","wb"))
-pickle.dump(cmn_author_and_pinyin_found_dict, file('cmn_es_found_loc_zuhe_add.pk', 'wb'))
+pickle.dump(cmn_es_find_dict,file("cmn_es_zuhe_found.pk","wb"))
+pickle.dump(cmn_author_and_pinyin_found_dict, file('cmn_es_found_loc_zuhe.pk', 'wb'))
 

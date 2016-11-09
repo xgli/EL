@@ -11,11 +11,9 @@ def is_repetition(loc_dict,filename,begin_pos,end_pos):
     else:
         return False
 
-author_file = "../data/result/result/dfauthor.tab"
-fw_author = open(author_file,"w")
-
 file_loc_dict = {}
 file_len_dict = {}
+
 with open("character_counts.tsv","r") as fr:
     text = fr.read()
 lines = text.split("\n")
@@ -46,13 +44,71 @@ for line in lines:
     else:
         print doc_id
 
-fw_fail = open("dffail.tab","w")
+fw_fail = open("parsefail.tab","w")
+
+
+fw_news_author = open("../data/result/result/newsauthor.tab","w")
+author_reg = re.compile('<AUTHOR>(.*?)</AUTHOR>'.decode("utf-8"))
+
+author_file = "../data/result/result/dfauthor.tab"
+fw_df_author = open(author_file,"w")
+
+def parsenews(fileindir,fileoutdir,filename):
+    try:
+        print filename
+        doc_id = filename.replace(".xml","")
+        fileinpath = fileindir + filename
+        fileoutpath = fileoutdir + filename
+        fw = open(fileoutpath,"w")
+        with open(fileinpath,'r') as fr:
+            lines = fr.readlines()
+        start = 0
+        for line in lines:
+            line = line.decode("utf-8")
+            if "<TEXT>\n" == line or "</TEXT>\n" == line or "<HEADLINE>\n" == line or "</HEADLINE>\n" == line:
+                start += len(line)
+                continue
+            if "</DOC>\n" == line or line.startswith("<DOC") or line.startswith("<DATE_TIME>"):
+                start += len(line)
+                continue
+            if "\n" == line:
+                start += len(line)
+                continue
+            if "<AUTHOR/>\n" == line:
+                start += len(line)
+                continue
+            if '<AUTHOR>' in line:
+                author_group = re.search(author_reg,line)
+                author = author_group.group(1)
+                author_start = start + author_group.start(1)
+                author_end = author_start + len(author) - 1
+                author_line = author + "\t" + doc_id + ":" +str(author_start) + "-" + str(author_end) + "\n"
+                fw_news_author.write(author_line.encode("utf-8"))
+                #print author_line
+                #print line
+                start = start + len(line)
+                continue
+            line = line.replace("\t"," ")
+            fw_line =  str(start) + "\t" + line
+            fw.write(fw_line.encode("utf-8"))
+            start += len(line)
+        fw.close()
+        
+        #print start
+        #print file_len_dict[doc_id]
+        if start - 1 == file_len_dict[doc_id]:
+            pass 
+        else:
+            fw_fail.write("not equel:" + doc_id + str(start) + "\t" + file_len_dict[doc_id] + "\n")
+    except Exception,e:
+        print e
+        fw_fail.write("error:" + doc_id + "\n")
 
 def parsedf(fileindir,fileoutdir,filename):
     try:
         doc_id = filename.replace(".xml","")
         fileinpath = fileindir + filename
-        print fileinpath
+        print filename
         fileoutpath = fileoutdir + filename
         fw = open(fileoutpath,'w')
         author_reg = re.compile(' author="(.*?)"'.decode("utf-8"))
@@ -83,8 +139,8 @@ def parsedf(fileindir,fileoutdir,filename):
                 author_start = start + author_group.start(1)
                 author_end = author_start + len(author) - 1
                 author_line =  author + "\t" + doc_id + ":" + str(author_start) + "-" + str(author_end) + "\n"
-                fw_author.write(author_line.encode("utf-8"))
-                fw_author.flush()
+                fw_df_author.write(author_line.encode("utf-8"))
+                fw_df_author.flush()
                 #print str(start) +"\t" + line
                 #print author_line 
                 start = start + len(line)
@@ -108,23 +164,41 @@ def parsedf(fileindir,fileoutdir,filename):
         fw_fail.write("error:" + doc_id + str(e) + "\n")
         
     
-cmnfileindir = "../data/raw/cmn/df/"
+cmndffileindir = "../data/raw/cmn/df/"
+cmnnewsfileindir = "../data/raw/cmn/nw/"
 cmnfileoutdir = "../data/xmlParse/cmn/"
 
-engfileindir = "../data/raw/eng/df/"
+engdffileindir = "../data/raw/eng/df/"
+engnewsfileindir = "../data/raw/eng/nw/"
 engfileoutdir = "../data/xmlParse/eng/"
 
-spafileindir = "../data/raw/spa/df/"
+spadffileindir = "../data/raw/spa/df/"
+spanewsfileindir = "../data/raw/spa/nw/"
 spafileoutdir = "../data/xmlParse/spa/"
+
+print len(file_loc_dict)
 
 for key in file_len_dict.keys():
     if "CMN_" in key:
-        parsedf(cmnfileindir, cmnfileoutdir,key+".xml")
+        if os.path.isfile(cmndffileindir+key+".xml"):
+            parsedf(cmndffileindir, cmnfileoutdir,key+".xml")
+        else:
+            parsenews(cmnnewsfileindir,cmnfileoutdir, key+".xml")
     elif "ENG_" in key:
-        parsedf(engfileindir, engfileoutdir,key+".xml")
+        if os.path.isfile(engdffileindir+key+".xml"):
+            parsedf(engdffileindir, engfileoutdir,key+".xml")
+        else:
+            parsenews(engnewsfileindir, engfileoutdir, key+".xml")
     else:
-        parsedf(spafileindir, spafileoutdir,key+".xml")
+        if os.path.isfile(spadffileindir+key+".xml"):
+            parsedf(spadffileindir, spafileoutdir,key+".xml")
+        else:
+            parsenews(spanewsfileindir, spafileoutdir, key+".xml")
 
 fw_fail.close()
-fw_author.close()
+fw_news_author.close()
+fw_df_author.close()
 pickle.dump(file_loc_dict,file("file_loc_dict.pk","wb"))
+
+
+

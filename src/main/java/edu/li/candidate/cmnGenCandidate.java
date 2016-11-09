@@ -44,7 +44,7 @@ public class cmnGenCandidate {
 	//候选的文本
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + LANG + File.separator;
 
-	public static final String DICTFILE =  "dict" + File.separator + "cmn_candidate_dict.tab";
+	public static final String DICTFILE =  "dict" + File.separator + "chinese_sort.dict";
 	
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator +"tempresult.tab";
@@ -95,7 +95,7 @@ public class cmnGenCandidate {
 			 seg += term.getName() + "\t";
 		 }
 		 seg = seg.trim();
-		 System.out.println(seg);
+//		 System.out.println(seg);
 		 return seg;
 	}
 	public static Map<String, String> loadDict() throws IOException{
@@ -106,8 +106,8 @@ public class cmnGenCandidate {
 //			System.out.println(line);
 			String[] tokens = line.split("\t");
 			String mention = tokens[0];
-			String mid = tokens[1];
-			String type = tokens[2];
+			String mid = tokens[2];
+			String type = tokens[3];
 			dict.put(mention, mid + "\t" + type);
 //			System.out.println(mention + mid + type);			
 		}
@@ -246,47 +246,7 @@ public class cmnGenCandidate {
 		 fos.close();		
 	}	
 	
-	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
-		File dir = new File(fileDir);
-		File[] files = dir.listFiles();
-		int all = files.length;
-		int done = 0;
-		long start = System.currentTimeMillis();
-		
-		FileOutputStream failedFilefos = new FileOutputStream("failedcmn.tab");
-		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");	
-		
-		
-		if(files != null){
-			for(File file : files){
-				try {
-					done += 1;
-					System.out.println("doing:" + done + "\t" + "all:" + all);
-					String fileName = file.getName();
-					System.out.println(fileName);
-					if(fileName.endsWith("xml")){						
-						System.out.println("GenCandidate:#########");
-//						cmnGenCandidate.GenCandidate(fileName, type);
-					}
-					
-				} catch (Exception e) {
-					// TODO: handle exception
-					System.out.println(e.toString());
-//					System.out.println(e.printStackTrace());
-					failedFileosw.write(file.getName() + "\n");
-					failedFileosw.write(e.toString() + "\n");
-					continue;					
-				}
 
-			}
-			failedFileosw.close();
-			failedFilefos.close();
-			long end = System.currentTimeMillis();
-			System.out.println((end - start) + "s");
-		}
-				
-		
-	}
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
 //		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.ltf.xml";

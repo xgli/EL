@@ -72,7 +72,7 @@ public class cmnGenMention {
 			 seg += term.getName() + "\t";
 		 }
 		 seg = seg.trim();
-		 System.out.println(seg);
+//		 System.out.println(seg);
 		 return seg;
 //	  	 StringReader sr = new StringReader(text);
 //		 BufferedReader br = new BufferedReader(sr);

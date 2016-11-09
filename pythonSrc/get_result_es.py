@@ -48,13 +48,13 @@ def is_repetition(pos_dict, filename, begin_pos, end_pos):
         return True #repetion
     else:
         return False
-'''
+
 #%%Chinese
 print 'Chinese'
 character_num_dict = pickle.load(file('cmn_file_len.pk', 'rb'))
 cmn_author_and_pinyin_found_dict = {}
 cmn_es_find_dict = {}
-filter_for_research_file = open('../dict/chinese.tab', 'r')#词表
+filter_for_research_file = open('../dict/chinese_sort.dict', 'r')#词表
 fw = open('../data/result/cmn/cmn_res.tab', 'w')
 
 p = re.compile('<tag>.+?</tag>')
@@ -122,7 +122,7 @@ eng_es_find_dict = {}
 eng_author_and_words_found_dict = {}
 
 #filter_for_research_file = open('d:/data/tmp/english/all_types.txt', 'r')
-filter_for_research_file = open('../dict/english.tab', 'r')
+filter_for_research_file = open('../dict/english_sort.dict', 'r')
 fw = open('../data/result/eng/eng_res.tab', 'w')
 url_str = 'http://10.110.6.43:9200/english_kbp2016/text/_search?size=40000'
 
@@ -186,14 +186,14 @@ fw.close()
 filter_for_research_file.close()
 pickle.dump(eng_author_and_words_found_dict, file('eng_es_found_loc.pk', 'wb'))
 pickle.dump(eng_es_find_dict,file("eng_es_found.pk","wb"))
-'''
+
 #%%Spanish
 print 'Spanish'
 spa_pos_num_dict = pickle.load(file('spa_file_len.pk', 'rb'))
 spa_es_find_dict = {}
 spa_author_and_words_found_dict = {}
 
-filter_for_research_file = open('../dict/spanish.tab', 'r')
+filter_for_research_file = open('../dict/spanish_sort.dict', 'r')
 fw = open('../data/result/spa/spa_res.tab', 'w')
 url_str = 'http://10.110.6.43:9200/spanish_kbp2016/text/_search?size=40000'
 

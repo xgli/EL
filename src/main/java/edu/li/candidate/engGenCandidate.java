@@ -36,7 +36,7 @@ public class engGenCandidate {
 	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mentiones" + File.separator + "eng" + File.separator;
 	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "eng" + File.separator;
 	
-	public static final String DICTFILE = "dict" + File.separator + "english.dict";
+	public static final String DICTFILE = "dict" + File.separator + "english_sort.dict";
 	
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + "eng" + File.separator;
 	
@@ -44,7 +44,7 @@ public class engGenCandidate {
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
 	
 	
-	public static final String LANG = "eng";
+//	public static final String LANG = "eng";
 	
 	static Map<String,String> DoneMention;
 	static{//判断是否存在文件目录
@@ -154,7 +154,7 @@ public class engGenCandidate {
 				 mentionosw.flush();
 //				 System.out.println(mention + ":" + mention_type);
 				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
-					 SearchHits hits = Search.getHits(mention, mention_type, LANG);
+					 SearchHits hits = Search.getHits(mention, mention_type, "eng");
 					 if (0 == hits.totalHits()){
 //						 osw.write(mention + "\t" + mention_loc + "\t" + "NIL"  + "\t" + mention_type + "\n");
 //						 DoneMention.put(mention+mention_type, "NIL");
@@ -207,45 +207,7 @@ public class engGenCandidate {
 		 fos.close();
 	
 	}	
-	
-	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
-		File dir = new File(fileDir);
-		File[] files = dir.listFiles();
-		int all = files.length;
-		int done = 0;
-		long start = System.currentTimeMillis();
-		if(files != null){
-			FileOutputStream failedFilefos = new FileOutputStream("failedeng.tab");
-			OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");
-			for(File file : files){
-				try {
-					done += 1;
-					System.out.println("doing:" + done + "\t" + "all:" + all);
-					String fileName = file.getName();
-					System.out.println(fileName);
-					if(fileName.endsWith("xml")){
-						System.out.println("GenCandidate:#########start");
-						engGenCandidate.GenCandidate(fileName);
-						System.out.println("GenCandidate:#########end");
-					}
-					
-				} catch (Exception e) {
-					// TODO: handle exception
-					System.out.println(e.toString());
-					failedFileosw.write(file.getName()+"\n");
-					failedFileosw.write(e.toString()+"\n");
-					continue;	
-				}
-
-			}
-			failedFileosw.close();
-			failedFilefos.close();
-			long end = System.currentTimeMillis();
-			System.out.println((end - start) + "s");
-		}		
-	}
-	
-	
+		
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
 		

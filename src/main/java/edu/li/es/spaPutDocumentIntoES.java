@@ -4,12 +4,17 @@
 package edu.li.es;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -43,12 +48,12 @@ public class spaPutDocumentIntoES {
 	//解析成es索引格式
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "news" + File.separator;
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "spa" + File.separator + "df" + File.separator;
-//	public static final String INDEXOUTDIR = "data" + File.separator + "esindex" + File.separator  + "spa" + File.separator;
+	public static final String INDEXOUTDIR = "data" + File.separator + "esindex" + File.separator  + "spa" + File.separator;
 	
 	//查看位置信息
 //	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "spa" + File.separator + "nw" + File.separator;
 //	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "spa" + File.separator + "df" + File.separator;
-	public static final String INDEXOUTDIR = "data" + File.separator + "rawloc" + File.separator  + "spa" + File.separator;
+//	public static final String INDEXOUTDIR = "data" + File.separator + "rawloc" + File.separator  + "spa" + File.separator;
 //	
 	
 	
@@ -283,18 +288,25 @@ public class spaPutDocumentIntoES {
 	
 	
 	
-	public static void putES() throws IOException{
+	public static void putES() throws IOException, ClassNotFoundException{
 		
 //		将文件放到es中
 		File dir = new File(INDEXOUTDIR);
-		File[] files = dir.listFiles();
-		for(File file : files){
-			System.out.println(file.getName());
-			String fileName = file.getName().replace(".xml", "");
-			String indexText = IOUtils.slurpFile(file, "utf-8");
+		
+
+
+		FileInputStream fis = new FileInputStream("data/spafilenamelist.ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		List<String> files = (ArrayList<String>) ois.readObject();
+		
+		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
+			String fileName = iterator.next();
+			String id = fileName.replace(".xml", "");
+			String indexText = IOUtils.slurpFile(dir + File.separator + fileName,"utf-8");
+		
 
 			TransportClient client = geTransportClient();
-			IndexResponse response =  client.prepareIndex("spanish_raw_kbp2016", "text", fileName)
+			IndexResponse response =  client.prepareIndex("spanish_kbp2016", "text", id)
 							.setSource("snt",indexText)
 							.get();
 			if(!response.isCreated()){
@@ -306,7 +318,7 @@ public class spaPutDocumentIntoES {
 	}
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 
 		//测试特殊字符
@@ -315,54 +327,54 @@ public class spaPutDocumentIntoES {
 //		genES();		
 		//产生位置
 //		genRawloc();
-//		putES();
+		putES();
 		
-		String textIndex = "";
-		String lineText = "Cámara Americana-Nicaragüense (Amcham) a--";
-		Annotation doc = new Annotation(lineText);
-		pipline.annotate(doc);
-		for(CoreMap sentence : doc.get(CoreAnnotations.SentencesAnnotation.class)){
-			for (CoreLabel token : sentence.get(TokensAnnotation.class)){
-//				String word = token.get(TextAnnotation.class);
-				String word = token.originalText();
-				System.out.println(word);
-//				if(word.indexOf("-") > 0){
-//					int s = token.beginPosition();
-//					String[] segs = word.split("-");
-//					int num = segs.length;
-//					for (int i = 0; i < num-1; i++){
-//						String seg = segs[i];
-//						int seg_start = s;
-//						int seg_end = s + seg.length() - 1;
-//						String outline = seg + ":" + seg_start + ":" + seg_end + " ";
-//						System.out.println(outline);
-//						System.out.println("-" + ":" + (seg_end + 1) + ":" + (seg_end + 1));
-//						s = seg_end + 2;
-//					}
-//					System.out.println(segs[num-1] + ":" + s + ":" + (segs[num-1].length() + s - 1));				
-//					continue;
-//				}
-//				System.out.print(word + ":");
-//				System.out.print(start);
-//				System.out.print(":");
-				
-				int word_start = token.beginPosition();
-				int word_end = token.endPosition() - 1;
-				
-				int token_len = word_end - word_start + 1;
-				int word_len = word.length();
-//				System.out.println(token.);
-//				if (token_len != word_len)
-//					System.out.println(word);
-				System.out.println(token.size());
-//				token.
-				
-				String es_line = word + ":" + word_start + ":" + word_end + " ";
-				textIndex = textIndex + es_line;
-				System.out.println(es_line);				
-			}
-
-		}
+//		String textIndex = "";
+//		String lineText = "Cámara Americana-Nicaragüense (Amcham) a--";
+//		Annotation doc = new Annotation(lineText);
+//		pipline.annotate(doc);
+//		for(CoreMap sentence : doc.get(CoreAnnotations.SentencesAnnotation.class)){
+//			for (CoreLabel token : sentence.get(TokensAnnotation.class)){
+////				String word = token.get(TextAnnotation.class);
+//				String word = token.originalText();
+//				System.out.println(word);
+////				if(word.indexOf("-") > 0){
+////					int s = token.beginPosition();
+////					String[] segs = word.split("-");
+////					int num = segs.length;
+////					for (int i = 0; i < num-1; i++){
+////						String seg = segs[i];
+////						int seg_start = s;
+////						int seg_end = s + seg.length() - 1;
+////						String outline = seg + ":" + seg_start + ":" + seg_end + " ";
+////						System.out.println(outline);
+////						System.out.println("-" + ":" + (seg_end + 1) + ":" + (seg_end + 1));
+////						s = seg_end + 2;
+////					}
+////					System.out.println(segs[num-1] + ":" + s + ":" + (segs[num-1].length() + s - 1));				
+////					continue;
+////				}
+////				System.out.print(word + ":");
+////				System.out.print(start);
+////				System.out.print(":");
+//				
+//				int word_start = token.beginPosition();
+//				int word_end = token.endPosition() - 1;
+//				
+//				int token_len = word_end - word_start + 1;
+//				int word_len = word.length();
+////				System.out.println(token.);
+////				if (token_len != word_len)
+////					System.out.println(word);
+//				System.out.println(token.size());
+////				token.
+//				
+//				String es_line = word + ":" + word_start + ":" + word_end + " ";
+//				textIndex = textIndex + es_line;
+//				System.out.println(es_line);				
+//			}
+//
+//		}
 		
 		
 	

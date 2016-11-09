@@ -4,12 +4,16 @@
 package edu.li.es;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -39,12 +43,12 @@ public class cmnPutDocumentIntoES {
 	//产生es索引文件
 	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "news" + File.separator;
 	public static final String DFFILEINPUTDIR = "data" + File.separator + "xmlParse" + File.separator + "cmn" + File.separator + "df" + File.separator;
-//	public static final String INDEXOUTDIR = "data" + File.separator + "esindex" + File.separator  + "cmn" + File.separator;
+	public static final String INDEXOUTDIR = "data" + File.separator + "esindex" + File.separator  + "cmn" + File.separator;
 	
 	//产生raw文件位置
 //	public static final String NEWSFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "nw" + File.separator;
 //	public static final String DFFILEINPUTDIR = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator + "df" + File.separator;
-	public static final String INDEXOUTDIR = "data" + File.separator + "rawloc" + File.separator  + "cmn" + File.separator;
+//	public static final String INDEXOUTDIR = "data" + File.separator + "rawloc" + File.separator  + "cmn" + File.separator;
 	
 	
 	
@@ -248,18 +252,25 @@ public class cmnPutDocumentIntoES {
 	}
 	
 	
-	public static void putES() throws IOException{
+	public static void putES() throws IOException, ClassNotFoundException{
 		
 //		将文件放到es中
-			File dir = new File(INDEXOUTDIR);
-			File[] files = dir.listFiles();
-			for(File file : files){
-				System.out.println(file.getName());
-				String fileName = file.getName().replace(".xml", "");
-				String indexText = IOUtils.slurpFile(file, "utf-8");
+			File dir = new File(INDEXOUTDIR);		
+			
+			FileInputStream fis = new FileInputStream("data/cmnfilenamelist.ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			List<String> files = (ArrayList<String>) ois.readObject();
+			
+//			File[] files = dir.listFiles();
+//			for(File file : files){
+			for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
+				String fileName = iterator.next();
+//				System.out.println(fileName);
+				String id = fileName.replace(".xml", "");
+				String indexText = IOUtils.slurpFile(dir + File.separator + fileName,"utf-8");
 
 				TransportClient client = geTransportClient();
-				IndexResponse response =  client.prepareIndex("chinese_row_kbp2016", "text", fileName)
+				IndexResponse response =  client.prepareIndex("chinese_kbp2016", "text", id)
 								.setSource("snt",indexText)
 								.get();
 				if(!response.isCreated()){
@@ -273,7 +284,7 @@ public class cmnPutDocumentIntoES {
 	
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		
 		//测试特殊字符

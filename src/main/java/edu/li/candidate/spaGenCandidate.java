@@ -34,17 +34,13 @@ public class spaGenCandidate {
 	
 	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mentiones" + File.separator + "spa" + File.separator;
 	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + "spa" + File.separator;
-	
-
-	public static final String LANG = "spa";
-	
-	
+		
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + "spa" + File.separator;
 	
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator +"tempresult.tab";
 	
-	public static final String DICTFILE = "dict" + File.separator + "spanish.tab";
+	public static final String DICTFILE = "dict" + File.separator + "spanish_sort.dict";
 	
 	static Map<String,String> DoneMention;
 	
@@ -154,7 +150,7 @@ public class spaGenCandidate {
 				 mentionosw.flush();
 				 
 				 if(!DoneMention.containsKey(mention + mention_type)){//如果没有查询过
-					 SearchHits hits = Search.getHits(mention, mention_type, LANG);
+					 SearchHits hits = Search.getHits(mention, mention_type, "spa");
 					 if (0 == hits.totalHits()){
 //						 osw.write(mention + "\t" + mention_loc + "\t" + "NIL"  + "\t" + mention_type + "\n");
 //						 DoneMention.put(mention+mention_type, "NIL");
@@ -177,8 +173,9 @@ public class spaGenCandidate {
 //								osw.write(mention + "\t" + mention_loc + "\t"+  hit.getId().replace("f_", "")  + "\t" + mention_type + "\n");
 //								System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
 //								break;// 获取第一个结果
-								String entitytext = hit.getFields().get("f_common.topic.description_es").getValue().toString();
-//								entitytext = AnsjSegment.getAnsjSegment(entitytext);
+//								System.out.println(mention);
+//								System.out.println(hit.getId().toString());			
+								String 	entitytext = hit.getFields().get("f_common.topic.description_es").getValue().toString();
 								FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + hit.getId());
 								OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
 								candidateFileosw.write(entitytext);
@@ -205,42 +202,7 @@ public class spaGenCandidate {
 	}	
 	
 	
-	public static void processAll(String fileDir, String type) throws DocumentException, IOException{
-		File dir = new File(fileDir);
-		File[] files = dir.listFiles();
-		int all = files.length;
-		int done = 0;
-		long start = System.currentTimeMillis();
-		if(files != null){
-			FileOutputStream failedFilefos = new FileOutputStream("failedspa.tab");
-			OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");
-			for(File file : files){
-				try {
-					done += 1;
-					System.out.println("doing:" + done + "\t" + "all:" + all);
-					String fileName = file.getName();
-					System.out.println(fileName);
-					if(fileName.endsWith("xml")){
-						System.out.println("GenCandidate:#########");
-//						spaGenCandidate.GenCandidate(fileName, type);
-					}
-					
-				} catch (Exception e) {
-					// TODO: handle exception
-					System.out.println(e.toString());
-					failedFileosw.write(file.getName() + "\n");
-					failedFileosw.write(e.toString() + "\n");
-					continue;	
-				}
-			}
-			failedFileosw.close();
-			failedFilefos.close();
-			long end = System.currentTimeMillis();
-			System.out.println((end - start) + "s");
-		}
-				
-		
-	}
+
 	
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
@@ -248,6 +210,12 @@ public class spaGenCandidate {
 //		 GenCandidate(fileName, "news");	
 //		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "mentionlist.tab";
 //		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator +"tempresult.tab";
+		
+		
+//		spaGenCandidate.GenCandidate("SPA_DF_001253_20150903_G00A0HK11.xml");
+		
+		
+	
 		
 		File file;
 		file = new File(MENTIONLISTOUTFILE);
@@ -257,25 +225,17 @@ public class spaGenCandidate {
 		file = new File(TEMPRESULTOUTFILE);
 		if(file.exists())
 			file.delete();	  			
-		
-		
-//		String newsFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "nw";
-//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "spa" + File.separator +  "df";
-//		processAll(newsFileDir, "news");
-//		processAll(dfFileDir, "df");	
-		
+				
 		FileInputStream fis = new FileInputStream("data/spafilenamelist.ser");
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		List<String> files = (ArrayList<String>) ois.readObject();
-		
-		
-	
+			
 		int all = files.size();
 		int done = 0;
 		long start = System.currentTimeMillis();
 		
 		FileOutputStream failedFilefos = new FileOutputStream("failedspa.tab");
-		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");		
+		OutputStreamWriter failedFileosw = new OutputStreamWriter(failedFilefos, "UTF-8");
 		
 
 		for(Iterator<String> iterator = files.iterator();iterator.hasNext();){
@@ -284,11 +244,7 @@ public class spaGenCandidate {
 			System.out.println("doing:" + done + "\t" + "all:" + all);
 			System.out.println(fileName);
 			try {
-//				if(fileName.endsWith("xml")){
-//					System.out.println("GenMention:###########");
-//					cmnGenCandidate(fileName);
 					spaGenCandidate.GenCandidate(fileName);
-
 //				}
 				
 			} catch (Exception e) {
@@ -305,10 +261,7 @@ public class spaGenCandidate {
 		failedFileosw.close();
 		failedFilefos.close();
 		long end = System.currentTimeMillis();
-		System.out.println((end - start) + "s");
-		
-		
-		
+		System.out.println((end - start) + "s");		
 		
 		
 		FileOutputStream fos = new FileOutputStream("spa_candidate.ser");
@@ -317,6 +270,7 @@ public class spaGenCandidate {
 		oos.close();
 		fos.close(); 
 		 
+	
 	}
 	
 	

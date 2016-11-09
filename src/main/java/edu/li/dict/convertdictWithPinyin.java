@@ -22,9 +22,9 @@ import edu.stanford.nlp.io.IOUtils;
  */
 public class convertdictWithPinyin {
 	
-	public static void getNominalPinyin() throws IOException{
-		String fileinputpath = "data/dict/cmn_add_sort.tab";
-		String fileoutputpath = "data/dict/cmn_add_pinyin.tab";
+	public static void getPinyin() throws IOException{
+		String fileinputpath = "dict/cmn_add.dict";
+		String fileoutputpath = "dict/cmn_add_pinyin.dict";
 		FileOutputStream fos = new FileOutputStream(fileoutputpath);
 		OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
 		String text = IOUtils.slurpFile(fileinputpath, "utf-8");
@@ -57,8 +57,8 @@ public class convertdictWithPinyin {
 	}
 	
 	public static void getDictPinyin(){
-		String fileinputpath = "data/dict/zuhe_add.tab";
-		String fileoutputpath = "data/dict/zuhewithpinyin_add.tab";
+		String fileinputpath = "dict/zuhe_add.tab";
+		String fileoutputpath = "dict/zuhewithpinyin_add.tab";
 		try {
 			FileOutputStream fos = new FileOutputStream(fileoutputpath);
 			OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
@@ -97,8 +97,8 @@ public class convertdictWithPinyin {
 	
 	public static void main(String[] args) throws IOException{
 //		getDictPinyin();
-//		getNominalPinyin();
-		getDictPinyin();
+		getPinyin();
+//		getDictPinyin();
 	}
 
 }
