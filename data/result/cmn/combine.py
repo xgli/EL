@@ -60,7 +60,8 @@ for line in lines_linking:
         fw.write(line.encode("utf-8"))
         count += 1
 fw.flush()
-    
+
+''' 
 with open("tempresult.tab") as fr_temp:
     text = fr_temp.read()
     lines_temp = text.split("\n")
@@ -79,6 +80,7 @@ for line in lines_temp:
         fw.write("li\t" +"EDL_" + str(count) + "\t" + line + "\tNAM\t1.0\n")
         count += 1
 fw.flush()  
+'''
 
 with open("zuhe.tab","r") as fr:
     lines = fr.read().split("\n")
@@ -91,9 +93,7 @@ for line in lines:
     count += 1
     #print count
 fw.flush()  
-fw.close()
         
-'''
 with open("author.tab","r") as fr_author:
     text = fr_author.read().decode("utf-8")
     lines_author = text.split("\n")
@@ -118,4 +118,4 @@ for line in lines_author:
         fw.write(line.encode("utf-8"))
         count += 1
 fw.flush()    
-'''
+fw.close()
