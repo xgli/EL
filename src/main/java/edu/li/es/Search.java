@@ -84,6 +84,7 @@ public class Search {
 		return client;
 	}
 	
+	
 	public static  SearchHits getHits(String mention,String mention_type, String lang){
 		Map<String, Object> templateParams = new HashMap<String, Object>();
 		templateParams.put("mention_"+mention_type, mention);
@@ -100,9 +101,10 @@ public class Search {
 		return actionGet.getHits();		
 	}
 	
-	public static  SearchHits getHitsById(String mid){
+	public static  String getEntityTextById(String mid, String lang){
 		Map<String, Object> templateParams = new HashMap<String, Object>();
 		templateParams.put("mid", mid);
+		String text = null;
 		
 		TransportClient client = geTransportClient();
 		SearchResponse actionGet = client.prepareSearch(INDEX)
@@ -110,10 +112,37 @@ public class Search {
 										.setTemplateName("template_search_id")
 										.setTemplateType(ScriptService.ScriptType.FILE)
 										.setTemplateParams(templateParams)						
-//										.setQuery( QueryBuilders.termQuery("_id", "2"))
 										.execute()
 										.actionGet();
-		return actionGet.getHits();		
+		if ("cmn".equals(lang)){
+			try {
+				text = actionGet.getHits().getAt(0).getFields().get("f_common.topic.description_zh").getValue();
+			} catch (Exception e) {
+				// TODO: handle exception
+				text = "";
+			}
+		}
+			 
+		if ("eng".equals(lang)){
+			try {
+				text = actionGet.getHits().getAt(0).getFields().get("f_common.topic.description_en").getValue();
+			} catch (Exception e) {
+				// TODO: handle exception
+				text = "";
+			}
+		}
+				
+		if ("spa".equals(lang)){
+			try {
+				text = actionGet.getHits().getAt(0).getFields().get("f_common.topic.description_es").getValue();
+			} catch (Exception e) {
+				// TODO: handle exception
+				text = "";
+			}
+		}
+				
+//		System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());
+		return text;
 	}
 	
 	
@@ -131,20 +160,42 @@ public class Search {
 ////		
 		String mention = "上海市";
 		String mention_type = "GPE";
-		String lang = "cmn";
-
-		SearchHits hits = getHits(mention, mention_type, lang);
-//		System.out.println(hits.totalHits());
-		for (SearchHit hit : hits.getHits()){ //getHits 的使用			
-			if(hit.getScore() >= 1){
+		String lang = "spa";
+		String mid = "f_m.051_4z2";
+		
+		/*
+		//search mention
+	    SearchHits hits = getHits(mention, mention_type, lang);
+		for (SearchHit hit : hits.getHits()){ //getHits 的使用				
 				System.out.println(hit.getId());
 				System.out.println(hit.getScore());
 				System.out.println(hit.getFields().get("rs_label_zh").getValue());
-				System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());			
-			}
-
+				System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());
 		}
+		*/
+		
+	
+	   //search entity text by mid
+	    String text = getEntityTextById(mid, "spa");
+	    System.out.println(text);
+//		System.out.println(hit.getId());
+//		System.out.println(hit.getScore());
+//		System.out.println(hit.getFields().get("f_common.topic.description_zh").getValue());			
+			
 
+		
+		
+
+	}
+
+
+	/**
+	 * @param mid
+	 * @return
+	 */
+	private static String getHitsById(String mid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

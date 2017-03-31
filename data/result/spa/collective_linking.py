@@ -90,20 +90,29 @@ coding = "utf-8"
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
+eng_tf_idf_model_file_path = "../../../data/resource/eng_tf_idf.model"
+eng_tf_idf_dictionary_file_path = "../../../data/resource/english.dic"
+eng_tfidf_model = models.TfidfModel.load(eng_tf_idf_model_file_path)
+eng_tfidf_dictionary = corpora.Dictionary.load(eng_tf_idf_dictionary_file_path)
 
 cmn_tf_idf_model_file_path = "../../../data/resource/cmn_tf_idf.model"
 cmn_tf_idf_dictionary_file_path = "../../../data/resource/chinese.dic"
 cmn_tfidf_model = models.TfidfModel.load(cmn_tf_idf_model_file_path)
 cmn_tfidf_dictionary = corpora.Dictionary.load(cmn_tf_idf_dictionary_file_path)
 
+spa_tf_idf_model_file_path = "../../../data/resource/spa_tf_idf.model"
+spa_tf_idf_dictionary_file_path = "../../../data/resource/spanish.dic"
+spa_tfidf_model = models.TfidfModel.load(spa_tf_idf_model_file_path)
+spa_tfidf_dictionary = corpora.Dictionary.load(spa_tf_idf_dictionary_file_path)
+
 mention_tfidf_expand_file_path = "mentionlist.tab"
-entity_documents_file_path = "../../../data/entityText/cmn/"
+entity_documents_file_path = "../../../data/entityText/spa/"
 entity_link_to_entity_file_path = "../entity_link_to_entity_file"
 
-candidate_dir = "../../../data/candidate/cmn/"
+candidate_dir = "../../../data/candidate/spa/"
 
-output_dir = "../../../data/collective_linking_result/cmn/"
-mention_entity_score_dir = "../../../data/mention_entity_score/cmn/"
+output_dir = "../../../data/collective_linking_result/spa/"
+mention_entity_score_dir = "../../../data/mention_entity_score/spa/"
 
 #from entity_id to page_id dic...
 temp_entity_id_to_page_id_dic = {}#entity_id-[page_id1,page_id2,page_id3,...]
@@ -147,7 +156,7 @@ print("init tf-idf model...")
 #for _,_,candidate_file_name_list in os.walk(candidate_dir):
 #    break
 #candidate_file_name_list = pickle.load(file('../data/resource/mention_files_list.pk', 'rb'))
-candidate_file_name_list = os.listdir("../../../data/candidate/cmn/")
+candidate_file_name_list = os.listdir("../../../data/candidate/spa/")
 collective_linking_result_file = open('collective_linking_result.txt', 'w')
 for candidate_file_name in candidate_file_name_list:
     #if(os.path.exists(output_dir + candidate_file_name) == True):continue

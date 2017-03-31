@@ -63,13 +63,10 @@ public class spaGenCandidate {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				DoneMention = (HashMap<String, String>) ois.readObject();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
 			
@@ -89,8 +86,7 @@ public class spaGenCandidate {
 			String mention = tokens[0];
 			String mid = tokens[1];
 			String type = tokens[2];
-			dict.put(mention, mid + "\t" + type);
-//			System.out.println(mention + mid + type);			
+			dict.put(mention, mid + "\t" + type);	
 		}
 		return dict;
 	}
@@ -100,7 +96,6 @@ public class spaGenCandidate {
 		try {
 			dict = loadDict();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -122,20 +117,27 @@ public class spaGenCandidate {
 		 for(String line : lines){
 			 if (line.equals(""))
 				 continue;
-//			 System.out.println(line);
 			 String[] tokens = line.trim().split("\t");
 			 String mention = tokens[0];
 			 String mention_type = tokens[2];
 			 String mention_loc = tokens[1];
 			 
 			 //判断是否在词表中
-			 if(dict.containsKey(mention)){		 
-//				 osw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
-				 FileOutputStream resultfos = new FileOutputStream(TEMPRESULTOUTFILE,true);
-				 OutputStreamWriter resultosw = new OutputStreamWriter(resultfos, "utf-8");
-				 resultosw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
-				 resultosw.close();
-				 resultfos.close();
+			 if(dict.containsKey(mention)){	
+				 String mid = dict.get(mention).split("\t")[0];
+				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+				 osw.write(mid + "\n");
+				 osw.flush();
+				
+				 mentionosw.write(mention_loc + "\n");
+				 mentionosw.flush();
+				 				 
+				 String entitytext = Search.getEntityTextById("f_" + mid, "spa");
+				 FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + mid);
+				 OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
+				 candidateFileosw.write(entitytext);
+				 candidateFileosw.close();
+				 candidateFilefos.close();	 			
 				 continue;
 			 }		 
 			 
@@ -144,7 +146,6 @@ public class spaGenCandidate {
 			 
 			 
 			 if(-1 == mention_type.indexOf("NIL")){// 实验识别出来的两个相同的mention有不同的类型
-//				 System.out.println(mention + ":" + mention_type);
 				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
 				 mentionosw.write(mention_loc + "\n");
 				 mentionosw.flush();
@@ -152,9 +153,6 @@ public class spaGenCandidate {
 				 if(!DoneMention.containsKey(mention + mention_type)){//如果没有查询过
 					 SearchHits hits = Search.getHits(mention, mention_type, "spa");
 					 if (0 == hits.totalHits()){
-//						 osw.write(mention + "\t" + mention_loc + "\t" + "NIL"  + "\t" + mention_type + "\n");
-//						 DoneMention.put(mention+mention_type, "NIL");
-//						 continue;//继续循环
 						 DoneMention.put(mention+mention_type, "");
 						 osw.flush();
 						 continue;//继续循环
@@ -163,18 +161,10 @@ public class spaGenCandidate {
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
 						 thresholdScore =  (float) 0.5;	
-//					 System.out.println(thresholdScore);
-					 String candidates = "";					 
-					 
-					 
+					 String candidates = "";
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用	
 							if(hit.getScore() >= thresholdScore){
 								candidates = candidates + hit.getId().toString() + "\n";
-//								osw.write(mention + "\t" + mention_loc + "\t"+  hit.getId().replace("f_", "")  + "\t" + mention_type + "\n");
-//								System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
-//								break;// 获取第一个结果
-//								System.out.println(mention);
-//								System.out.println(hit.getId().toString());			
 								String 	entitytext = hit.getFields().get("f_common.topic.description_es").getValue().toString();
 								FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + hit.getId());
 								OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
@@ -188,7 +178,6 @@ public class spaGenCandidate {
 				 }
 				 else {//已经查询过了
 					 osw.write(DoneMention.get(mention+mention_type));
-//					 osw.write(mention + "\t" + mention_loc + "\t" + DoneMention.get(mention+mention_type) + "\t" + mention_type  + "\n");
 				 }
 				 osw.flush();
 		 	 }			 
@@ -206,17 +195,6 @@ public class spaGenCandidate {
 	
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
-//		 String fileName = "SPA_NW_001075_20150615_F0010003L.nw.ltf.xml";
-//		 GenCandidate(fileName, "news");	
-//		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "mentionlist.tab";
-//		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator +"tempresult.tab";
-		
-		
-//		spaGenCandidate.GenCandidate("SPA_DF_001253_20150903_G00A0HK11.xml");
-		
-		
-	
-		
 		File file;
 		file = new File(MENTIONLISTOUTFILE);
 		
@@ -248,9 +226,7 @@ public class spaGenCandidate {
 //				}
 				
 			} catch (Exception e) {
-				// TODO: handle exception
 				System.out.println(e.toString());
-//					System.out.println(e.printStackTrace());
 				failedFileosw.write(fileName + "\n");
 				failedFileosw.write(e.toString() + "\n");
 				continue;					
@@ -269,8 +245,6 @@ public class spaGenCandidate {
 		oos.writeObject(DoneMention);
 		oos.close();
 		fos.close(); 
-		 
-	
 	}
 	
 	

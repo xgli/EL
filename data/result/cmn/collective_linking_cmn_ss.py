@@ -16,10 +16,10 @@ def init_mention_tfidf_expand(mention_tfidf_expand_file_path):
         line = line.strip()
         line_list = line.split()
         querys.append(line_list[0])
-    for queryid in querys:
-        tfidf = 0.5
-        mention_tfidf_dic.setdefault(queryid,{})
-        mention_tfidf_dic[queryid]["tf-idf"] = tfidf
+        for queryid in querys:
+            tfidf = 0.5
+            mention_tfidf_dic.setdefault(queryid,{})
+            mention_tfidf_dic[queryid]["tf-idf"] = tfidf
 
     return mention_tfidf_dic
 
@@ -52,7 +52,7 @@ def get_entity_to_from_page_list(search_entity_id):
     except KeyError as ke:
         pass
     return page_id_list
-    
+
 def get_entity_entity_score(first_entity_id,second_entity_id,entity_entity_score_method):
     from_entity_total_count = 3425926
     try:
@@ -64,9 +64,9 @@ def get_entity_entity_score(first_entity_id,second_entity_id,entity_entity_score
         A = len(first_entity_page_list)
         B = len(second_entity_page_list)
         AB = len(set(first_entity_page_list).intersection(set(second_entity_page_list)))
-#        A = 3
-#        B = 3
-#        AB = 1
+        #        A = 3
+        #        B = 3
+        #        AB = 1
         if(entity_entity_score_method == "1"):
             if(AB == 0): return 0
             score = math.log(from_entity_total_count) - (math.log(max([A,B])) - math.log(AB)) / (math.log(from_entity_total_count) - math.log(min([A,B])))
@@ -74,27 +74,27 @@ def get_entity_entity_score(first_entity_id,second_entity_id,entity_entity_score
             if(AB == 0):return 0
             NGD_score = (math.log(max([A,B])) - math.log(AB)) / (math.log(from_entity_total_count) - math.log(min([A,B])));
             score = 1 / (NGD_score + 1)
-        """
-        if(score < 0):
+            """
+            if(score < 0):
             print(A)
             print(B)
             print(AB)
-       """
+            """
 
         temp_entity_entity_score_dic[(first_entity_id,second_entity_id)] = score
         temp_entity_entity_score_dic[(second_entity_id,first_entity_id)] = score
-    return score
+        return score
 #%%
-        
+
 coding = "utf-8"
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-
 
 cmn_tf_idf_model_file_path = "../../../data/resource/cmn_tf_idf.model"
 cmn_tf_idf_dictionary_file_path = "../../../data/resource/chinese.dic"
 cmn_tfidf_model = models.TfidfModel.load(cmn_tf_idf_model_file_path)
 cmn_tfidf_dictionary = corpora.Dictionary.load(cmn_tf_idf_dictionary_file_path)
+
 
 mention_tfidf_expand_file_path = "mentionlist.tab"
 entity_documents_file_path = "../../../data/entityText/cmn/"
@@ -151,23 +151,15 @@ candidate_file_name_list = os.listdir("../../../data/candidate/cmn/")
 collective_linking_result_file = open('collective_linking_result.txt', 'w')
 for candidate_file_name in candidate_file_name_list:
     #if(os.path.exists(output_dir + candidate_file_name) == True):continue
-#    if( not candidate_file_name.startswith('SPA_')):
-#        continue
+    #    if( not candidate_file_name.startswith('SPA_')):
+    #        continue
     print("process {0}...".format(candidate_file_name))
     #init query document tf-idf vector
     if('CMN_' in candidate_file_name):
         source_docs_dir_path = "../../../data/mentionText/cmn/"
         tfidf_model = cmn_tfidf_model
         tfidf_dictionary = cmn_tfidf_dictionary
-    if('SPA_' in candidate_file_name):
-        source_docs_dir_path = "../../../data/mentionText/spa/"
-        tfidf_model = spa_tfidf_model
-        tfidf_dictionary = spa_tfidf_dictionary
-    if('ENG_' in candidate_file_name):
-        source_docs_dir_path = "../../../data/mentionText/eng/"
-        tfidf_model = eng_tfidf_model
-        tfidf_dictionary = eng_tfidf_dictionary
-        
+
     fr = open(source_docs_dir_path + candidate_file_name,'r')
 
     context_text = ""
@@ -176,8 +168,8 @@ for candidate_file_name in candidate_file_name_list:
         line = line.strip().decode('utf-8')
         if(line != ''):
             context_text += line + " "
-        line = fr.readline()
-    fr.close()
+            line = fr.readline()
+            fr.close()
 
     query_document_tfidf_vector = tfidf_model[tfidf_dictionary.doc2bow(context_text.strip().lower().split())]
 
@@ -196,7 +188,6 @@ for candidate_file_name in candidate_file_name_list:
         continue
     while(line):
         line = line.strip().decode('utf-8')
-
         if(line != ''):
             if(line.startswith("@")):
                 #query_id = line.split("\t")[0].strip("@")
@@ -209,8 +200,6 @@ for candidate_file_name in candidate_file_name_list:
 
             else:
                 entity_id = line
-                
-                
 
                 if(entity_id not in  mention_candidate_dic[query_id]):
                     mention_candidate_dic[query_id].append(entity_id)
@@ -220,7 +209,7 @@ for candidate_file_name in candidate_file_name_list:
 
         line = fr.readline()
     fr.close()
-    
+
     print("\tmention_list_len:{0}".format(len(mention_list)))
     print("\tentity_list_len:{0}".format(len(entity_list)))
 
@@ -231,7 +220,6 @@ for candidate_file_name in candidate_file_name_list:
     mention_entity_score_dic = {}#mention-entity_id_list-score total_score
     for query_id in mention_candidate_dic:
         candidate_list = mention_candidate_dic[query_id]
-
         mention_entity_score_dic[query_id] = {}
         mention_entity_score_dic[query_id]["total_score"] = 0.0
         mention_entity_score_dic[query_id]["entity_score"] = {}#entity_id cosine-score
@@ -246,9 +234,9 @@ for candidate_file_name in candidate_file_name_list:
             mention_entity_score_dic[query_id]["total_score"] += score
 
     fw.close()
-    
 
-#entity-entity score
+
+    #entity-entity score
     print("\tentity and entity score...")
     entity_entity_score_matrix = []#[[] [] []]
 
@@ -281,35 +269,35 @@ for candidate_file_name in candidate_file_name_list:
     init_s = []
     for query_id in mention_list:
         init_s.append(mention_information_dic[query_id]["tf-idf"] / mention_total_value)
-    for entity_id in entity_list:
-        init_s.append(0)
-    #print("\ts = {0}".format(init_s))
-    init_s = np.matrix(init_s).T
-    #init T matrix
-    mention_list_len = len(mention_list)
-    entity_list_len = len(entity_list)
-    T_matrix_size = mention_list_len + len(entity_list)
-    T_matrix = np.zeros(T_matrix_size * T_matrix_size).reshape((T_matrix_size,T_matrix_size))
-    #init T entity part
+        for entity_id in entity_list:
+            init_s.append(0)
+            #print("\ts = {0}".format(init_s))
+            init_s = np.matrix(init_s).T
+            #init T matrix
+            mention_list_len = len(mention_list)
+            entity_list_len = len(entity_list)
+            T_matrix_size = mention_list_len + len(entity_list)
+            T_matrix = np.zeros(T_matrix_size * T_matrix_size).reshape((T_matrix_size,T_matrix_size))
+            #init T entity part
     for i in range(entity_list_len):
-        for j in range(entity_list_len):
-            T_matrix[i + mention_list_len][j + mention_list_len] = entity_entity_score_matrix[j][i]
-    #inti T mention-entity part
-    entity_id_index_list = [(entity_list[index],index) for index in range(entity_list_len)]
-    for i in range(mention_list_len):
-        for j in range(entity_list_len):#mention to entity score
-            #mention_entity_score_dic[query_id]["entity_score"][candidate_entity_id] = score
-            #mention_entity_score_dic[query_id]["total_score"] += score
-            query_id = mention_list[i]
-            entity_id = entity_list[j]
-            try:
-                if(mention_entity_score_dic[query_id]["total_score"] == 0):
-                    T_matrix[j + mention_list_len][i] = 0
-                    #print(query_id)
-                else:
-                    T_matrix[j + mention_list_len][i] = mention_entity_score_dic[query_id]["entity_score"][entity_id] / mention_entity_score_dic[query_id]["total_score"]
-            except KeyError as ke:
-                pass
+            for j in range(entity_list_len):
+                    T_matrix[i + mention_list_len][j + mention_list_len] = entity_entity_score_matrix[j][i]
+                    #inti T mention-entity part
+                    entity_id_index_list = [(entity_list[index],index) for index in range(entity_list_len)]
+                    for i in range(mention_list_len):
+                        for j in range(entity_list_len):#mention to entity score
+                        #mention_entity_score_dic[query_id]["entity_score"][candidate_entity_id] = score
+                        #mention_entity_score_dic[query_id]["total_score"] += score
+                            query_id = mention_list[i]
+                            entity_id = entity_list[j]
+                        try:
+                            if(mention_entity_score_dic[query_id]["total_score"] == 0):
+                                T_matrix[j + mention_list_len][i] = 0
+                                #print(query_id)
+                            else:
+                                T_matrix[j + mention_list_len][i] = mention_entity_score_dic[query_id]["entity_score"][entity_id] / mention_entity_score_dic[query_id]["total_score"]
+                        except KeyError as ke:
+                            pass
     #solve analysis solution
     print("\tsolve solution...")
     lambda_value = 0.1
@@ -335,8 +323,8 @@ for candidate_file_name in candidate_file_name_list:
                         #fw_list.append(entity_list[x])
                         #fw_list.append(str(r[x + mention_list_len,0]))
                         fw_dict[entity_list[x]] = r[x + mention_list_len,0]
-                #fwString += '\t'.join(fw_list) + '\n'
-                fwString += '\t' + str(fw_dict) + '\n'
+                        #fwString += '\t'.join(fw_list) + '\n'
+                        fwString += '\t' + str(fw_dict) + '\n'
 
 #            else:
 #                fwString = "{0}\t{1}\n".format(entity_list[i - mention_list_len],r[i,0])
@@ -345,8 +333,8 @@ for candidate_file_name in candidate_file_name_list:
                 fw.flush()
                 collective_linking_result_file.write(fwString.encode('utf-8'))
                 fw.flush
-        fw.close()
+                fw.close()
     except ValueError as ve:
         print("Can not process:{0}".format(candidate_file_name))
         print traceback.format_exc()
-collective_linking_result_file.close()
+        collective_linking_result_file.close()

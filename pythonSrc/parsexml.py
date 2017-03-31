@@ -53,6 +53,14 @@ author_reg = re.compile('<AUTHOR>(.*?)</AUTHOR>'.decode("utf-8"))
 author_file = "../data/result/result/dfauthor.tab"
 fw_df_author = open(author_file,"w")
 
+fw_df_author_cmn = open("../data/result/cmn/dfauthor.tab",'w')
+fw_df_author_eng = open("../data/result/eng/dfauthor.tab",'w')
+fw_df_author_spa = open("../data/result/spa/dfauthor.tab",'w')
+
+fw_news_author_cmn = open("../data/result/cmn/newsauthor.tab","w")
+fw_news_author_eng = open("../data/result/eng/newsauthor.tab","w")
+fw_news_author_spa = open("../data/result/spa/newsauthor.tab","w")
+
 def parsenews(fileindir,fileoutdir,filename):
     try:
         print filename
@@ -83,7 +91,18 @@ def parsenews(fileindir,fileoutdir,filename):
                 author_start = start + author_group.start(1)
                 author_end = author_start + len(author) - 1
                 author_line = author + "\t" + doc_id + ":" +str(author_start) + "-" + str(author_end) + "\n"
-                fw_news_author.write(author_line.encode("utf-8"))
+                author_line = author_line.encode("utf-8")
+                fw_news_author.write(author_line)
+
+                if "CMN_" in filename:
+                    fw_news_author_cmn.write(author_line)
+                elif "ENG_" in filename:
+                    fw_news_author_eng.write(author_line)
+                else:
+                    fw_news_author_spa.write(author_line)
+
+
+
                 #print author_line
                 #print line
                 start = start + len(line)
@@ -139,8 +158,17 @@ def parsedf(fileindir,fileoutdir,filename):
                 author_start = start + author_group.start(1)
                 author_end = author_start + len(author) - 1
                 author_line =  author + "\t" + doc_id + ":" + str(author_start) + "-" + str(author_end) + "\n"
-                fw_df_author.write(author_line.encode("utf-8"))
+                author_line = author_line.encode('utf-8')
+                fw_df_author.write(author_line)
                 fw_df_author.flush()
+
+                if "CMN_" in filename:
+                    fw_df_author_cmn.write(author_line)
+                elif "ENG_" in filename:
+                    fw_df_author_eng.write(author_line)
+                else:
+                    fw_df_author_spa.write(author_line)
+
                 #print str(start) +"\t" + line
                 #print author_line 
                 start = start + len(line)
@@ -200,5 +228,12 @@ fw_news_author.close()
 fw_df_author.close()
 pickle.dump(file_loc_dict,file("file_loc_dict.pk","wb"))
 
+fw_news_author_cmn.close()
+fw_news_author_eng.close()
+fw_news_author_spa.close()
+
+fw_df_author_cmn.close()
+fw_df_author_eng.close()
+fw_df_author_spa.close()
 
 

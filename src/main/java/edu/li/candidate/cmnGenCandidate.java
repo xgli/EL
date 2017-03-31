@@ -40,7 +40,6 @@ public class cmnGenCandidate {
 	public static final String MENTIONFILEINPUTDIR = "data" + File.separator + "mentiones" + File.separator +  LANG  + File.separator;
 	public static final String CANDIDATEFILEOUTDIR = "data" + File.separator + "candidate" + File.separator + LANG + File.separator;	
 
-	
 	//候选的文本
 	public static final String ENTITYTEXTOUTDIR = "data" + File.separator + "entityText" + File.separator + LANG + File.separator;
 
@@ -131,64 +130,35 @@ public class cmnGenCandidate {
 		FileOutputStream fos = new FileOutputStream(CANDIDATEFILEOUTDIR + fileName);
 		OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
 		
-//		if (fileType.equals("news")){
-//			 text = IOUtils.slurpFile(NEWSFILEINPUTDIR + fileName);
-//			 fos = new FileOutputStream(NEWSFILEOUTDIR + fileName);
-//		 }
-//		 else{
-//			 text = IOUtils.slurpFile(DFFILEINPUTDIR + fileName);
-//			 fos = new FileOutputStream(DFFILEOUTDIR + fileName);
-//		 }
-		
-		//加载词表
-//		 Map<String,String> dict = new HashMap<String, String>();
-//		 dict = loadDict();		 
-		
-		
-		
 		 String[] lines = text.split("\n");
 
-//		 Map<String, String> DoneMention = new HashMap<String, String>();
-//		 System.out.println(lines[0]);
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
 		 OutputStreamWriter mentionosw = new OutputStreamWriter(mentionfos, "utf-8");
 		 for(String line : lines){
 			 if(line.equals("")){
 				 continue;
 			 }
-//			 System.out.println(line);
 			 String[] tokens = line.trim().split("\t");
 			 String mention = tokens[0];
 			 String mention_type = tokens[2];
-			 String mention_loc = tokens[1];
-//			 System.out.println(mention);
-			 
+			 String mention_loc = tokens[1];			 
 			 if(dict.containsKey(mention)){
-				 FileOutputStream resultfos = new FileOutputStream(TEMPRESULTOUTFILE,true);
-				 OutputStreamWriter resultosw = new OutputStreamWriter(resultfos, "utf-8");
-				 resultosw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
-				 resultosw.close();
-				 resultfos.close();				 
-//				 String mid_type =dict.get(mention);
-//				 String mid = mid_type.split("\t") 
-//				 osw.write("@" + mention + "\t" + mention_loc + "\t" + dict.get(mention).split("\t")[1] + "\n" +  dict.get(mention).split("\t")[0] + "\n");
-//				 System.out.println(mention_loc);
-//				 System.out.println("f_"+dict.get(mention).split("\t")[0]);
-//				 SearchHit hit = Search.getHitsById("f_" + dict.get(mention).split("\t")[0]).getHits()[0];
-//				String entitytext = hit.getFields().get("f_common.topic.description_zh").getValue().toString();
-//				
-//				entitytext = AnsjSegment.getAnsjSegment(entitytext);
-//				FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + hit.getId());
-//				OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
-//				candidateFileosw.write(entitytext);
-//				candidateFileosw.close();
-//				candidateFilefos.close();
+				 String mid = dict.get(mention).split("\t")[0];
+				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+				 osw.write(mid + "\n");
+				 osw.flush();
+				
+				 mentionosw.write(mention_loc + "\n");
+				 mentionosw.flush();			 
 				 
-				 
-//				 mentionosw.write(mention_loc + "\n");
-//				 mentionosw.flush();
+				 String entitytext = Search.getEntityTextById("f_" + mid, "cmn");
+				 entitytext = getAnsjSegment(entitytext);
+				 FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + mid);
+				 OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
+				 candidateFileosw.write(entitytext);
+				 candidateFileosw.close();
+				 candidateFilefos.close();	 
 				 continue;
-//				 DoneMention.put(mention+mention_type, "NIL");
 			 }
 			 
 			 if(mention_type.equals("FAC"))//字表查错的FAC
@@ -209,15 +179,10 @@ public class cmnGenCandidate {
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
 						 thresholdScore =  (float) 0.5;
-					 
-//					 System.out.println(thresholdScore);
 					 String candidates = "";
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用						 
 						if(hit.getScore() >= thresholdScore){							
 							candidates = candidates + hit.getId().toString() + "\n";
-//							osw.write(mention + "\t" + mention_loc + "\t"+  hit.getId().replace("f_", "")  + "\t" + mention_type + "\n");
-//							System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
-//							break;// 获取第一个结果
 							String entitytext = hit.getFields().get("f_common.topic.description_zh").getValue().toString();
 							entitytext = getAnsjSegment(entitytext);
 							FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + hit.getId());
@@ -249,10 +214,6 @@ public class cmnGenCandidate {
 
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
-//		 String fileName = "CMN_NW_000020_20150604_F00100013.nw.ltf.xml";
-//		 GenCandidate(fileName, "news");	
-//		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "mentionlist.tab";
-//		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator +"tempresult.tab";
 		File file;
 		file = new File(MENTIONLISTOUTFILE);		
 		if(file.exists())
@@ -260,15 +221,7 @@ public class cmnGenCandidate {
 		file = new File(TEMPRESULTOUTFILE);
 		if(file.exists())
 			file.delete();		
-		
-		
-//		String newsFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "nw";
-//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "cmn" + File.separator +  "df";
-		
-		
-//		processAll(newsFileDir, "news");
-//		processAll(dfFileDir, "df");
-		
+	
 		FileInputStream fis = new FileInputStream("data/cmnfilenamelist.ser");
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		List<String> files = (ArrayList<String>) ois.readObject();
@@ -289,22 +242,16 @@ public class cmnGenCandidate {
 			System.out.println("doing:" + done + "\t" + "all:" + all);
 			System.out.println(fileName);
 			try {
-//				if(fileName.endsWith("xml")){
-//					System.out.println("GenMention:###########");
-//					cmnGenCandidate(fileName);
 					cmnGenCandidate.GenCandidate(fileName);
 
 //				}
 				
 			} catch (Exception e) {
-				// TODO: handle exception
 				System.out.println(e.toString());
-//					System.out.println(e.printStackTrace());
 				failedFileosw.write(fileName + "\n");
 				failedFileosw.write(e.toString() + "\n");
 				continue;					
-			}		
-
+			}
 		}	
 		
 		failedFileosw.close();
@@ -316,8 +263,7 @@ public class cmnGenCandidate {
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(DoneMention);
 		oos.close();
-		fos.close();
-		 
+		fos.close(); 
 		 
 	}
 

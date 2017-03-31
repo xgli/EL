@@ -43,9 +43,6 @@ public class engGenCandidate {
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
 	
-	
-//	public static final String LANG = "eng";
-	
 	static Map<String,String> DoneMention;
 	static{//判断是否存在文件目录
 		File file ;
@@ -65,49 +62,38 @@ public class engGenCandidate {
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				DoneMention = (HashMap<String, String>) ois.readObject();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
 			
 		}
 		else {
-			DoneMention = new HashMap<String, String>();
-			
-		}
-			
+			DoneMention = new HashMap<String, String>();			
+		}		
 	}
-	
-	
 	
 	public static Map<String, String> loadDict() throws IOException{
 		Map<String, String> dict = new HashMap<String, String>();
 		String text = IOUtils.slurpFile(DICTFILE);
 		String[] lines = text.split("\n");
 		for(String line : lines){
-//			System.out.println(line);
 			String[] tokens = line.split("\t");
 			String mention = tokens[0];
 			String mid = tokens[1];
 			String type = tokens[2];
 			dict.put(mention, mid + "\t" + type);
-//			System.out.println(mention + mid + type);			
 		}
 		return dict;
-	}
-	
+	}	
 	
 	static Map<String,String> dict = new HashMap<String, String>();
 	static {
 		try {
 			dict = loadDict();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -136,12 +122,20 @@ public class engGenCandidate {
 			 
 			 //判断是否在词表中
 			 if(dict.containsKey(mention)){		 
-//				 osw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
-				 FileOutputStream resultfos = new FileOutputStream(TEMPRESULTOUTFILE,true);
-				 OutputStreamWriter resultosw = new OutputStreamWriter(resultfos, "utf-8");
-				 resultosw.write(mention + "\t" + mention_loc + "\t" + dict.get(mention) + "\n");
-				 resultosw.close();
-				 resultfos.close();
+				 String mid = dict.get(mention).split("\t")[0];
+				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+				 osw.write(mid + "\n");
+				 osw.flush();
+				
+				 mentionosw.write(mention_loc + "\n");
+				 mentionosw.flush();
+				 				 
+				 String entitytext = Search.getEntityTextById("f_" + mid, "eng");
+				 FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + mid);
+				 OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
+				 candidateFileosw.write(entitytext);
+				 candidateFileosw.close();
+				 candidateFilefos.close();				
 				 continue;
 			 }	 
 			 
@@ -152,12 +146,9 @@ public class engGenCandidate {
 				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
 				 mentionosw.write(mention_loc + "\n");
 				 mentionosw.flush();
-//				 System.out.println(mention + ":" + mention_type);
 				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
 					 SearchHits hits = Search.getHits(mention, mention_type, "eng");
 					 if (0 == hits.totalHits()){
-//						 osw.write(mention + "\t" + mention_loc + "\t" + "NIL"  + "\t" + mention_type + "\n");
-//						 DoneMention.put(mention+mention_type, "NIL");
 						 DoneMention.put(mention+mention_type, "");
 						 osw.flush();
 						 continue;//继续循环
@@ -166,17 +157,11 @@ public class engGenCandidate {
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
 						 thresholdScore =  (float) 0.5;	
-//					 System.out.println(thresholdScore);
-					 String candidates = "";
-					 
+					 String candidates = "";					 
 					 for (SearchHit hit : hits.getHits()){ //getHits 的使用
 						if(hit.getScore() >= thresholdScore){
 							candidates = candidates + hit.getId().toString() + "\n";
-//							osw.write(mention + "\t" + mention_loc + "\t"+  hit.getId().replace("f_", "")  + "\t" + mention_type + "\n");
-//							System.out.println(mention + "\t" + mention_loc + "\t"+  hit.getId()  + "\t" + mention_type + "\n");
-//							break;// 获取第一个结果
 							String entitytext = hit.getFields().get("f_common.topic.description_en").getValue().toString();
-//							entitytext = AnsjSegment.getAnsjSegment(entitytext);
 							FileOutputStream candidateFilefos = new FileOutputStream(ENTITYTEXTOUTDIR + hit.getId());
 							OutputStreamWriter candidateFileosw = new OutputStreamWriter(candidateFilefos, "UTF-8");
 							candidateFileosw.write(entitytext);
@@ -210,10 +195,6 @@ public class engGenCandidate {
 		
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
-		
-//		String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "engmentionlist.tab";
-//		String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
-		
 		File file;
 		file = new File(MENTIONLISTOUTFILE);
 		
@@ -222,11 +203,6 @@ public class engGenCandidate {
 		file = new File(TEMPRESULTOUTFILE);
 		if(file.exists())
 			file.delete();		
-		
-//		String newsFileDir = "data" + File.separator +  "raw" + File.separator + "eng" + File.separator +  "nw";
-//		String dfFileDir = "data" + File.separator + "raw" + File.separator + "eng" + File.separator +  "df";
-//		processAll(newsFileDir, "news");
-//		processAll(dfFileDir, "df");
 		
 		FileInputStream fis = new FileInputStream("data/engfilenamelist.ser");
 		ObjectInputStream ois = new ObjectInputStream(fis);
@@ -248,14 +224,11 @@ public class engGenCandidate {
 			System.out.println(fileName);
 			try {
 				if(fileName.endsWith("xml")){
-//					System.out.println("GenMention:###########");
 					engGenCandidate.GenCandidate(fileName);
 				}
 				
 			} catch (Exception e) {
-				// TODO: handle exception
 				System.out.println(e.toString());
-//					System.out.println(e.printStackTrace());
 				failedFileosw.write(fileName + "\n");
 				failedFileosw.write(e.toString() + "\n");
 				continue;					

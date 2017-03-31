@@ -122,64 +122,6 @@ for candidate_file in candidate_files:
             print fwStr            
             entity_link_entity_file.write(fwStr.encode("utf-8"))
             entity_link_entity_file.flush()
-
-candidate_file_path = "../../data/candidate/eng/"
-candidate_files = os.listdir(candidate_file_path)
-for candidate_file in candidate_files:
-    filePath = candidate_file_path + candidate_file
-    print filePath
-    with open(filePath,"r") as fr:
-        text = fr.read()
-    lines = text.split("\n")
-    mention_type = ""
-    for line in lines:
-        if line == "":
-            continue
-        if line.startswith("@"):
-            mention_type = line.split("\t")[-1]        
-            continue
-        else:
-            entity_id = line
-            if entity_id in id_set:
-                continue
-            else:
-                id_set.add(entity_id)
-            entity_link_entity_res = entity_link_entity(entity_id,mention_type)
-            if(entity_link_entity_res == None):
-                continue
-            fwStr = entity_id + "\t" + "\t".join(entity_link_entity_res) + "\n"
-            print fwStr            
-            entity_link_entity_file.write(fwStr.encode("utf-8"))
-            entity_link_entity_file.flush()
-
-candidate_file_path = "../../data/candidate/spa/"
-candidate_files = os.listdir(candidate_file_path)
-for candidate_file in candidate_files:
-    filePath = candidate_file_path + candidate_file
-    print filePath
-    with open(filePath,"r") as fr:
-        text = fr.read()
-    lines = text.split("\n")
-    mention_type = ""
-    for line in lines:
-        if line == "":
-            continue
-        if line.startswith("@"):
-            mention_type = line.split("\t")[-1]        
-            continue
-        else:
-            entity_id = line
-            if entity_id in id_set:
-                continue
-            else:
-                id_set.add(entity_id)
-            entity_link_entity_res = entity_link_entity(entity_id,mention_type)
-            if(entity_link_entity_res == None):
-                continue
-            fwStr = entity_id + "\t" + "\t".join(entity_link_entity_res) + "\n"
-            print fwStr            
-            entity_link_entity_file.write(fwStr.encode("utf-8"))
-            entity_link_entity_file.flush()
 entity_link_entity_file.close()
                 
 pickle.dump(id_set,file("entity_ids.pk","wb"))
