@@ -171,7 +171,8 @@ public class cmnGenCandidate {
 				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
 					 SearchHits hits = Search.getHits(mention, mention_type, "cmn");
 					 if (0 == hits.totalHits()){
-						 DoneMention.put(mention+mention_type, "");
+						 DoneMention.put(mention+mention_type, "NIL\n");
+						 osw.write("NIL\n");
 						 osw.flush();
 						 continue;//继续循环
 					 }

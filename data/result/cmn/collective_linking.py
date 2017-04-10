@@ -336,7 +336,8 @@ for candidate_file_name in candidate_file_name_list:
                         #fw_list.append(str(r[x + mention_list_len,0]))
                         fw_dict[entity_list[x]] = r[x + mention_list_len,0]
                 #fwString += '\t'.join(fw_list) + '\n'
-                fwString += '\t' + str(fw_dict) + '\n'
+                d = sorted(fw_dict.iteritems(), key=lambda d:d[1], reverse=True)
+                fwString += '\t' + str(d) + '\n'
 
 #            else:
 #                fwString = "{0}\t{1}\n".format(entity_list[i - mention_list_len],r[i,0])

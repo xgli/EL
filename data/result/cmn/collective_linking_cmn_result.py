@@ -221,13 +221,12 @@ for candidate_file_name in candidate_file_name_list:
         line = fr.readline()
     fr.close()
 
-    #将list转为set，去掉重复元素    
-    entity_set = set(entity_list)
+    #将list转为tuple，去掉重复元素
+    entity_tuple = tuple(entity_list)
+    
     print("\tmention_list_len:{0}".format(len(mention_list)))
     print("\tentity_list_len:{0}".format(len(entity_list)))
-    print("\tentity_set_len:{0}".format(len(entity_set)))
-    #print entity_list
-    #print entity_set
+    print("\tentity_tuple_len:{0}".format(len(entity_tuple)))
 
 
     #mention_document entity document score
@@ -295,8 +294,6 @@ for candidate_file_name in candidate_file_name_list:
 
     #init s
     #document sematic feature
-    #print T_matrix.tolist()
-    print("\t document sematic feature...")
     init_s_d = [] 
     for i in range(mention_list_len):
         mention = mention_list[i]
@@ -308,25 +305,22 @@ for candidate_file_name in candidate_file_name_list:
             init_s_d.append(mention_entity_score_dic[mention]["entity_score"][candi] / total_score) 
     init_s_d = np.matrix(init_s_d).T
     init_s_d = init_s_d / init_s_d.sum()
-    #print init_s_d.shape
+    print init_s_d.shape
     if T_matrix.shape[0] != 0: 
         doc = get_sematic_feature(T_matrix,init_s_d)
-        print("\tdss:{0}").format(doc.tolist())
         
     
     #entity sematic feature
-    print("\tentity sematic feature...")
+    print("\tinit s...")
     sse = []
     for i in range(entity_list_len):
         init_s = [0]*entity_list_len
         init_s[i] = 1
         init_s = np.matrix(init_s).T
         se = get_sematic_feature(T_matrix,init_s)
-        #se = np.matrix(se).T
-        #r = se*doc  
-        se = se.reshape(entity_list_len) 
-        sse.append(se.tolist())
-        #print se.tolist()
+        se = np.matrix(se).T
+        r = se*doc  
+        sse.append(r.tolist()[0])
     j = 0 
     c = 0
     for i in range(mention_list_len):
@@ -336,28 +330,14 @@ for candidate_file_name in candidate_file_name_list:
         candidate_list = mention_candidate_dic[mention]
         c += len(candidate_list)
         for i in range(len(candidate_list)):
-            s[candidate_list[i]] = sse[j]
-            assert candidate_list[i] == entity_list[j]
+            s[candidate_list[i]] = sse[j][0]
             #s.append(sse[j])
-            #print s
             j += 1
         #print s
         #d = sorted(s.iteritems(), key=lambda d:d[1],reverse=True)
         w_line = mention_info +'\t' +str(s) + "\n"
         fw_res.write(w_line.encode('utf8'))
-        #print w_line 
-    #print sse
-    sse_matr = np.array(sse).reshape(entity_list_len,entity_list_len)
-
-    doc_matr = np.array(doc).reshape(entity_list_len,1)
-    #print sse_matr.shape
-    #print doc_matr.shape
-    b = np.dot(sse_matr,doc_matr)
-    #print len(sse)
-    for i in range(entity_list_len):
-        print("entity:{0} value:{1}\n ss:{2}".format(entity_list[i],b[i],sse[i]))
-    #print b.shape
-    #print b
+        print w_line 
     assert j == c
     fw_res.flush()
 fw_res.close()
