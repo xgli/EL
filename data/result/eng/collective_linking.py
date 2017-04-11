@@ -219,8 +219,6 @@ for candidate_file_name in candidate_file_name_list:
             else:
                 entity_id = line
                 
-                
-
                 if(entity_id not in  mention_candidate_dic[query_id]):
                     mention_candidate_dic[query_id].append(entity_id)
 

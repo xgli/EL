@@ -3,3 +3,4 @@
 !*.py
 !*.dict
 !pom.xml
+!./resource/*

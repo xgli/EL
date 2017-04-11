@@ -14,6 +14,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,10 @@ public class engGenCandidate {
 	
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator +"tempresult.tab";
+	public static final String NILFILE = "data" + File.separator + "result" + File.separator + "eng" + File.separator + "nil.tab";
+	
+	static List<String> nilList = new LinkedList<String>();
+
 	
 	static Map<String,String> DoneMention;
 	static{//判断是否存在文件目录
@@ -54,6 +59,18 @@ public class engGenCandidate {
 		if(!file.exists() && !file.isDirectory()){
 			file.mkdirs();
 		}
+		file = new File(MENTIONLISTOUTFILE);		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();
+		file = new File(NILFILE);		
+		if(file.exists())
+			file.delete();
+		
+		
+		
 		file = new File("eng_candidate.ser");
 		if(file.exists()){
 			FileInputStream fis;
@@ -110,6 +127,9 @@ public class engGenCandidate {
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
 		 OutputStreamWriter mentionosw = new OutputStreamWriter(mentionfos, "utf-8");
 		 
+		 FileOutputStream nilfos = new FileOutputStream(NILFILE,true);
+		 OutputStreamWriter nilosw = new OutputStreamWriter(nilfos, "utf-8");
+		 
 		 for(String line : lines){
 //			 System.out.println(line);
 			 if(line.equals(""))
@@ -143,17 +163,21 @@ public class engGenCandidate {
 				 continue;			  
 			 			 
 			 if(-1 == mention_type.indexOf("NIL")){
-				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
-				 mentionosw.write(mention_loc + "\n");
-				 mentionosw.flush();
+
 				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
 					 SearchHits hits = Search.getHits(mention, mention_type, "eng");
 					 if (0 == hits.totalHits()){
-						 DoneMention.put(mention+mention_type, "");
-						 osw.flush();
+//						 DoneMention.put(mention+mention_type, "");
+						 nilosw.write(mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+						 nilosw.flush();
+//						 osw.write("NIL\n");
+//						 osw.flush();
 						 continue;//继续循环
 					 }
-					 
+					 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+					 mentionosw.write(mention_loc + "\n");
+					 mentionosw.flush();
+
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
 						 thresholdScore =  (float) 0.5;	
@@ -179,6 +203,9 @@ public class engGenCandidate {
 
 				 }
 				 else {//已经查询过了
+					 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+					 mentionosw.write(mention_loc + "\n");
+					 mentionosw.flush();
 //					 osw.write(mention + "\t" + mention_loc + "\t" + DoneMention.get(mention + mention_type) + "\t" + mention_type  + "\n");
 					 osw.write(DoneMention.get(mention+mention_type));
 				 }
@@ -195,14 +222,7 @@ public class engGenCandidate {
 		
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
-		File file;
-		file = new File(MENTIONLISTOUTFILE);
 		
-		if(file.exists())
-			file.delete();
-		file = new File(TEMPRESULTOUTFILE);
-		if(file.exists())
-			file.delete();		
 		
 		FileInputStream fis = new FileInputStream("data/engfilenamelist.ser");
 		ObjectInputStream ois = new ObjectInputStream(fis);
@@ -240,8 +260,8 @@ public class engGenCandidate {
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(DoneMention);
 		oos.close();
-		fos.close();
-
+		fos.close();		
+	
 	}
 	
 

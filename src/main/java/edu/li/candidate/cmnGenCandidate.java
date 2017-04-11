@@ -47,6 +47,9 @@ public class cmnGenCandidate {
 	
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator +"tempresult.tab";
+	public static final String NILFILE = "data" + File.separator + "result" + File.separator + "cmn" + File.separator + "nil.tab";
+	
+	
 	
 	static Map<String,String> DoneMention;
 	
@@ -60,6 +63,18 @@ public class cmnGenCandidate {
 		if(!file.exists() && !file.isDirectory()){
 			file.mkdirs();
 		}
+//		File file;
+		file = new File(MENTIONLISTOUTFILE);		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();
+		file = new File(NILFILE);
+		if(file.exists())
+			file.delete();
+		
+		
 		
 		file = new File("cmn_candidate.ser");
 		if(file.exists()){
@@ -134,6 +149,10 @@ public class cmnGenCandidate {
 
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
 		 OutputStreamWriter mentionosw = new OutputStreamWriter(mentionfos, "utf-8");
+		 
+		 FileOutputStream nilfos = new FileOutputStream(NILFILE,true);
+		 OutputStreamWriter nilosw = new OutputStreamWriter(nilfos, "utf-8");
+		 
 		 for(String line : lines){
 			 if(line.equals("")){
 				 continue;
@@ -165,17 +184,20 @@ public class cmnGenCandidate {
 				 continue;
 			 		 			 
 			 if(-1 == mention_type.indexOf("NIL")){  //已经判定类型的
-				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
-				 mentionosw.write(mention_loc + "\n");
-				 mentionosw.flush();
+
 				 if(!DoneMention.containsKey(mention+mention_type)){//如果没有查询过
 					 SearchHits hits = Search.getHits(mention, mention_type, "cmn");
 					 if (0 == hits.totalHits()){
-						 DoneMention.put(mention+mention_type, "NIL\n");
-						 osw.write("NIL\n");
-						 osw.flush();
+						 nilosw.write(mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+//						 DoneMention.put(mention+mention_type, "NIL\n");
+//						 osw.write("NIL\n");
+//						 osw.flush();
 						 continue;//继续循环
 					 }
+					 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+					 mentionosw.write(mention_loc + "\n");
+					 mentionosw.flush();
+					 
 					 
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
@@ -198,6 +220,9 @@ public class cmnGenCandidate {
 					osw.write(candidates);
 				 }
 				 else {//已经查询过了
+					 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+					 mentionosw.write(mention_loc + "\n");
+					 mentionosw.flush();
 					 osw.write(DoneMention.get(mention+mention_type));
 				 }
 				 osw.flush();
@@ -215,13 +240,7 @@ public class cmnGenCandidate {
 
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
-		File file;
-		file = new File(MENTIONLISTOUTFILE);		
-		if(file.exists())
-			file.delete();
-		file = new File(TEMPRESULTOUTFILE);
-		if(file.exists())
-			file.delete();		
+		
 	
 		FileInputStream fis = new FileInputStream("data/cmnfilenamelist.ser");
 		ObjectInputStream ois = new ObjectInputStream(fis);

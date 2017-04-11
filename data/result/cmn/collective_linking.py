@@ -155,18 +155,9 @@ for candidate_file_name in candidate_file_name_list:
 #        continue
     print("process {0}...".format(candidate_file_name))
     #init query document tf-idf vector
-    if('CMN_' in candidate_file_name):
-        source_docs_dir_path = "../../../data/mentionText/cmn/"
-        tfidf_model = cmn_tfidf_model
-        tfidf_dictionary = cmn_tfidf_dictionary
-    if('SPA_' in candidate_file_name):
-        source_docs_dir_path = "../../../data/mentionText/spa/"
-        tfidf_model = spa_tfidf_model
-        tfidf_dictionary = spa_tfidf_dictionary
-    if('ENG_' in candidate_file_name):
-        source_docs_dir_path = "../../../data/mentionText/eng/"
-        tfidf_model = eng_tfidf_model
-        tfidf_dictionary = eng_tfidf_dictionary
+    source_docs_dir_path = "../../../data/mentionText/cmn/"
+    tfidf_model = cmn_tfidf_model
+    tfidf_dictionary = cmn_tfidf_dictionary
         
     fr = open(source_docs_dir_path + candidate_file_name,'r')
 
@@ -335,9 +326,9 @@ for candidate_file_name in candidate_file_name_list:
                         #fw_list.append(entity_list[x])
                         #fw_list.append(str(r[x + mention_list_len,0]))
                         fw_dict[entity_list[x]] = r[x + mention_list_len,0]
-                #fwString += '\t'.join(fw_list) + '\n'
-                d = sorted(fw_dict.iteritems(), key=lambda d:d[1], reverse=True)
-                fwString += '\t' + str(d) + '\n'
+                #fwString += '\t'.join(fw_dict) + '\n'
+                #d = sorted(fw_dict.iteritems(), key=lambda d:d[1], reverse=True)
+                fwString += '\t' + str(fw_dict) + '\n'
 
 #            else:
 #                fwString = "{0}\t{1}\n".format(entity_list[i - mention_list_len],r[i,0])

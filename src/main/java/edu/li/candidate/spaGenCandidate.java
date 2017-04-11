@@ -39,6 +39,8 @@ public class spaGenCandidate {
 	
 	public static final String MENTIONLISTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "mentionlist.tab";
 	public static final String	TEMPRESULTOUTFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator +"tempresult.tab";
+	public static final String NILFILE = "data" + File.separator + "result" + File.separator + "spa" + File.separator + "nil.tab";
+	
 	
 	public static final String DICTFILE = "dict" + File.separator + "spanish_sort.dict";
 	
@@ -54,6 +56,18 @@ public class spaGenCandidate {
 		if(!file.exists() && file.isDirectory()){
 			file.mkdirs();
 		}
+//		File file;
+		file = new File(MENTIONLISTOUTFILE);		
+		if(file.exists())
+			file.delete();
+		file = new File(TEMPRESULTOUTFILE);
+		if(file.exists())
+			file.delete();
+		file = new File(NILFILE);
+		if(file.exists())
+			file.delete();
+				
+		
 		
 		file = new File("spa_candidate.ser");
 		if(file.exists()){
@@ -114,6 +128,10 @@ public class spaGenCandidate {
 		 FileOutputStream mentionfos = new FileOutputStream(MENTIONLISTOUTFILE,true);
 		 OutputStreamWriter mentionosw = new OutputStreamWriter(mentionfos, "utf-8");
 		 
+		 FileOutputStream nilfos = new FileOutputStream(NILFILE,true);
+		 OutputStreamWriter nilosw = new OutputStreamWriter(nilfos, "utf-8");
+		 
+		 
 		 for(String line : lines){
 			 if (line.equals(""))
 				 continue;
@@ -146,17 +164,21 @@ public class spaGenCandidate {
 			 
 			 
 			 if(-1 == mention_type.indexOf("NIL")){// 实验识别出来的两个相同的mention有不同的类型
-				 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
-				 mentionosw.write(mention_loc + "\n");
-				 mentionosw.flush();
+
 				 
 				 if(!DoneMention.containsKey(mention + mention_type)){//如果没有查询过
 					 SearchHits hits = Search.getHits(mention, mention_type, "spa");
 					 if (0 == hits.totalHits()){
-						 DoneMention.put(mention+mention_type, "");
-						 osw.flush();
+						 nilosw.write(mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+						 nilosw.flush();
+//						 DoneMention.put(mention+mention_type, "");
+//						 osw.flush();
 						 continue;//继续循环
 					 }
+					 
+					 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+					 mentionosw.write(mention_loc + "\n");
+					 mentionosw.flush();
 					 
 					 float thresholdScore = hits.getHits()[0].getScore() / 2;
 					 if (thresholdScore < (float) 0.5)
@@ -177,6 +199,9 @@ public class spaGenCandidate {
 					osw.write(candidates);
 				 }
 				 else {//已经查询过了
+					 osw.write("@" + mention + "\t" + mention_loc + "\t" + mention_type + "\n");
+					 mentionosw.write(mention_loc + "\n");
+					 mentionosw.flush();
 					 osw.write(DoneMention.get(mention+mention_type));
 				 }
 				 osw.flush();
@@ -195,15 +220,7 @@ public class spaGenCandidate {
 	
 	
 	public static void  main(String[] args) throws IOException, DocumentException, ClassNotFoundException {
-		File file;
-		file = new File(MENTIONLISTOUTFILE);
-		
-		if(file.exists())
-			file.delete();
-		file = new File(TEMPRESULTOUTFILE);
-		if(file.exists())
-			file.delete();	  			
-				
+
 		FileInputStream fis = new FileInputStream("data/spafilenamelist.ser");
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		List<String> files = (ArrayList<String>) ois.readObject();
