@@ -12,10 +12,13 @@ import java.util.List;
 import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 
+import edu.stanford.nlp.ie.AbstractSequenceClassifier;
+import edu.stanford.nlp.ie.crf.CRFClassifier;
 
 //import com.hankcs.hanlp.seg.common.Term;
 
 import edu.stanford.nlp.io.IOUtils;
+import edu.stanford.nlp.ling.CoreLabel;
 
 /**
  *date:Aug 9, 2016 2:09:09 PM
@@ -28,8 +31,8 @@ public class procAuthor {
 	/**
 	 * @param args
 	 */
-	public static final String SEGHOST = "127.0.0.1";
-	public static final int SEGPORT = 4465;
+	//public static final String SEGHOST = "127.0.0.1";
+	//public static final int SEGPORT = 4465;
 	public static final String authorinputpath = "data" + File.separator + "result" + File.separator + "result" + File.separator + "newsauthor.tab"; 
 	public static final String authoroutputpath = "data" + File.separator + "result" + File.separator + "result" + File.separator + "newsauthor_new.tab"; 
 

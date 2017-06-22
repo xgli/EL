@@ -23,8 +23,8 @@ import edu.stanford.nlp.io.IOUtils;
 public class convertdictWithPinyin {
 	
 	public static void getPinyin() throws IOException{
-		String fileinputpath = "dict/cmn_add.dict";
-		String fileoutputpath = "dict/cmn_add_pinyin.dict";
+		String fileinputpath = "dict/cmn_loc_fac.dict";
+		String fileoutputpath = "dict/cmn_loc_fac_pinyin.dict";
 		FileOutputStream fos = new FileOutputStream(fileoutputpath);
 		OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
 		String text = IOUtils.slurpFile(fileinputpath, "utf-8");
@@ -37,7 +37,7 @@ public class convertdictWithPinyin {
 			String mention_text = tokens[0];
 			String mid = tokens[1];
 			String mtype = tokens[2];
-			String  mclass = tokens[3];
+			String  mclass = "NAM";
 			
 			if (mention_text.length() < 2 ){
 				continue;
@@ -48,7 +48,7 @@ public class convertdictWithPinyin {
 				pinyinstr += pinyins.get(i) + " ";
 			}
 			pinyinstr = pinyinstr.trim();
-			String outline = pinyinstr + "\t" + mid +  "\t" +  mtype + "\t" + mclass + "\n";
+			String outline = pinyinstr + "\t" + mid +  "\t" +  mtype +"\n";
 			osw.write(outline);
 			System.out.println(outline);
 		}

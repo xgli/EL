@@ -65,8 +65,7 @@ public class spaGenCandidate {
 			file.delete();
 		file = new File(NILFILE);
 		if(file.exists())
-			file.delete();
-				
+			file.delete();		
 		
 		
 		file = new File("spa_candidate.ser");
