@@ -10,7 +10,6 @@ mention_dict = {}
 count = 0
 
 nilcount = 0
-'''    
 with open("cmn_res.tab","r") as fr_res:
     text = fr_res.read().decode("utf-8")
     lines_res = text.split("\n")
@@ -29,7 +28,7 @@ for line in lines_res:
         fw.write(line.encode("utf-8"))
         count += 1
 fw.flush()
-'''
+
 with open("collective_linking_result.txt","r") as fr_linking:
     text = fr_linking.read().decode("utf-8")
     lines_linking = text.split("\n")
@@ -93,8 +92,7 @@ for line in lines:
     count += 1
     #print count
 fw.flush()  
-        
-with open("author.tab","r") as fr_author:
+with open("dfauthor.tab","r") as fr_author:
     text = fr_author.read().decode("utf-8")
     lines_author = text.split("\n")
 for line in lines_author:

@@ -186,6 +186,7 @@ for candidate_file_name in candidate_file_name_list:
     #init mention and entity
     mention_list = []#mention query_id list
     entity_list = []#entity entity_id list
+    mention_entity_dict = {} #query_id:{entity_id:0.1}
 
     mention_candidate_dic = {}#mention  candidate_list
     #init mention-candidate
@@ -202,18 +203,21 @@ for candidate_file_name in candidate_file_name_list:
         if(line != ''):
             if(line.startswith("@")):
                 #query_id = line.split("\t")[0].strip("@")
-                query_id = line.split('\t')[1]
-                mention_information_dic[query_id]["info"] = line.strip('@')
+                query_id = line.split('\t')[1] # query_id document_id:loc
+                mention_information_dic[query_id]["info"] = line.strip('@') # li document_id:loc per 
                 mention_total_value += mention_information_dic[query_id]["tf-idf"]
 
                 mention_list.append(query_id)
                 mention_candidate_dic.setdefault(query_id,[])
+                mention_entity_dict.setdefault(query_id,{})
 
             else:
                 entity_id = line
+                mention_entity_dict[query_id].setdefault(entity_id,0.) #
                 
                 if(entity_id not in  mention_candidate_dic[query_id]):
                     mention_candidate_dic[query_id].append(entity_id)
+            
 
                 #if(entity_id not in entity_list):
                 entity_list.append(entity_id)
@@ -242,6 +246,14 @@ for candidate_file_name in candidate_file_name_list:
         mention_entity_score_dic[query_id]["total_score"] = 0.0
         mention_entity_score_dic[query_id]["entity_score"] = {}#entity_id cosine-score
 
+        for candidate_entity_id in mention_entity_dict[query_id]:
+            score = get_query_entity_document_score(query_document_tfidf_vector,candidate_entity_id)
+            fwString = "{0}\t{1}\t{2}\n".format(query_id,candidate_entity_id,score)
+            fw.write(fwString)
+            mention_entity_dict[query_id][candidate_entity_id] = score
+            
+
+        '''
         for candidate_entity_id in candidate_list:
             score = get_query_entity_document_score(query_document_tfidf_vector,candidate_entity_id)
 
@@ -250,6 +262,7 @@ for candidate_file_name in candidate_file_name_list:
 
             mention_entity_score_dic[query_id]["entity_score"][candidate_entity_id] = score
             mention_entity_score_dic[query_id]["total_score"] += score
+        '''
 
     fw.close()
     
@@ -290,9 +303,10 @@ for candidate_file_name in candidate_file_name_list:
     #init T entity part
     for i in range(entity_list_len):
         for j in range(entity_list_len):
-            T_matrix[i][j] = entity_entity_score_matrix[j][i]
+        #    T_matrix[i][j] = entity_entity_score_matrix[j][i]
+             T_matrix[i][j] = entity_entity_score_matrix[i][j]
 
-
+    '''
     #init s
     #document sematic feature
     #print T_matrix.tolist()
@@ -312,11 +326,31 @@ for candidate_file_name in candidate_file_name_list:
     if T_matrix.shape[0] != 0: 
         doc = get_sematic_feature(T_matrix,init_s_d)
         print("\tdss:{0}").format(doc.tolist())
+
+    '''
+    # metion sematic feature
+    print("\t mention sematic feature")
+    mss = []
+    for mention in mention_entity_dict:
+        index = 0
+        init_s = [0]*entity_list_len
+        total_score = mention_entity_score_dic[mention]['total_score']
+        if total_score == 0:
+            total_score = 1
+        for entity_id in mention_entity_dict[mention]:
+            init_s[index] = mention_entity_dict[mention][entity_id] / total_score 
+            index += 1
+        init_s = np.matrix(init_s).T
+        ms = get_sematic_feature(T_matrix,init_s)
+        ms = ms.reshape(-1)
+        mss.append(ms.tolist())
+        #print("\tmss:{0}").format(mss.tolist())
+
         
     
     #entity sematic feature
     print("\tentity sematic feature...")
-    sse = []
+    ess = []
     for i in range(entity_list_len):
         init_s = [0]*entity_list_len
         init_s[i] = 1
@@ -325,8 +359,11 @@ for candidate_file_name in candidate_file_name_list:
         #se = np.matrix(se).T
         #r = se*doc  
         se = se.reshape(entity_list_len) 
-        sse.append(se.tolist())
+        ess.append(se.tolist())
         #print se.tolist()
+
+
+
     j = 0 
     c = 0
     for i in range(mention_list_len):
@@ -336,7 +373,7 @@ for candidate_file_name in candidate_file_name_list:
         candidate_list = mention_candidate_dic[mention]
         c += len(candidate_list)
         for i in range(len(candidate_list)):
-            s[candidate_list[i]] = sse[j]
+            s[candidate_list[i]] = ess[j]
             assert candidate_list[i] == entity_list[j]
             #s.append(sse[j])
             #print s
@@ -346,6 +383,25 @@ for candidate_file_name in candidate_file_name_list:
         w_line = mention_info +'\t' +str(s) + "\n"
         fw_res.write(w_line.encode('utf8'))
         #print w_line 
+    m_index = 0
+    e_index = 0
+    for mention in mention_list:
+        ms = mss[m_index]
+        m_index += 1
+        candidate_list = mention_candidate_dic[mention]
+        for can in candidate_list:
+            es = ess[e_index]
+            es = np.matrix(es).T
+            b =  np.dot(ms,es)
+            e_index += 1
+            print b
+
+        
+
+
+        
+    '''
+
     #print sse
     sse_matr = np.array(sse).reshape(entity_list_len,entity_list_len)
 
@@ -360,6 +416,7 @@ for candidate_file_name in candidate_file_name_list:
     #print b
     assert j == c
     fw_res.flush()
+    '''
 fw_res.close()
         
 

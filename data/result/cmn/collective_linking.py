@@ -98,6 +98,7 @@ cmn_tfidf_dictionary = corpora.Dictionary.load(cmn_tf_idf_dictionary_file_path)
 
 mention_tfidf_expand_file_path = "mentionlist.tab"
 entity_documents_file_path = "../../../data/entityText/cmn/"
+#entity_link_to_entity_file_path = "../entity_entities.tab"
 entity_link_to_entity_file_path = "../entity_link_to_entity_file"
 
 candidate_dir = "../../../data/candidate/cmn/"
