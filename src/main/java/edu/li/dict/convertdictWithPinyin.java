@@ -23,8 +23,8 @@ import edu.stanford.nlp.io.IOUtils;
 public class convertdictWithPinyin {
 	
 	public static void getPinyin() throws IOException{
-		String fileinputpath = "dict/cmn_loc_fac.dict";
-		String fileoutputpath = "dict/cmn_loc_fac_pinyin.dict";
+		String fileinputpath = "dict/zuhe.dict";
+		String fileoutputpath = "dict/zuhewithpinyin.dict";
 		FileOutputStream fos = new FileOutputStream(fileoutputpath);
 		OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
 		String text = IOUtils.slurpFile(fileinputpath, "utf-8");
@@ -57,8 +57,8 @@ public class convertdictWithPinyin {
 	}
 	
 	public static void getDictPinyin(){
-		String fileinputpath = "dict/zuhe_add.tab";
-		String fileoutputpath = "dict/zuhewithpinyin_add.tab";
+		String fileinputpath = "dict/zuhe.dict";
+		String fileoutputpath = "dict/zuhewithpinyin.dict";
 		try {
 			FileOutputStream fos = new FileOutputStream(fileoutputpath);
 			OutputStreamWriter osw = new OutputStreamWriter(fos, "utf-8");
@@ -97,8 +97,8 @@ public class convertdictWithPinyin {
 	
 	public static void main(String[] args) throws IOException{
 //		getDictPinyin();
-		getPinyin();
-//		getDictPinyin();
+//		getPinyin();
+		getDictPinyin();
 	}
 
 }
