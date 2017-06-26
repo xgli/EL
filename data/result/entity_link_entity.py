@@ -4,12 +4,56 @@ Created on Sun Jul 31 14:20:09 2016
 
 @author: li
 """
-
 import urllib2
 import json
 import os
 import cPickle as pickle
 import os
+
+def entity_entity(entity_id):
+    entities = []
+    if "NIL" == entity_id:
+        return  entities
+    if "f_m" not in entity_id:
+        entity_id = "f_" + entity_id
+
+    url='http://10.110.6.43:9200/base_kb/entity/_search?size=1'
+    search_query = '''{
+        "query":{
+            "match":{
+                "_id":"f_m.06bnz"
+            }
+        }
+    }'''
+    search_dict = eval(search_query)
+    search_dict['query']['match']['_id'] =  entity_id
+    jdata = json.dumps(search_dict)
+    req = urllib2.Request(url,jdata)
+    response = urllib2.urlopen(req)
+    decodejson = json.loads(response.read())
+    print entity_id
+    #print decodejson
+    hits = decodejson["hits"]["hits"]
+    if 0 == len(hits):
+        return entities
+    hit = hits[0]
+    source = hit["_source"]
+    for key in source:
+        value = source[key]
+        if type(value) == type(u'str'):
+            if 'f_m.' in value:
+                entities.append(value)
+        if type(value) == type([1,2]):
+            if 0 == len(value):
+                continue
+            for el in value:
+                if "f_m." in el:
+                    entities.append(el)
+
+    return entities
+
+
+
 def entity_link_entity(entity_id, mention_type):
     url='http://10.110.6.43:9200/base_kb/entity/_search'
     if mention_type == "GPE":
@@ -115,11 +159,12 @@ for candidate_file in candidate_files:
                 continue
             else:
                 id_set.add(entity_id)
-            entity_link_entity_res = entity_link_entity(entity_id,mention_type)
+            #entity_link_entity_res = entity_link_entity(entity_id,mention_type)
+            entity_link_entity_res = entity_entity(entity_id)
             if(entity_link_entity_res == None):
                 continue
             fwStr = entity_id + "\t" + "\t".join(entity_link_entity_res) + "\n"
-            print fwStr            
+            #print fwStr            
             entity_link_entity_file.write(fwStr.encode("utf-8"))
             entity_link_entity_file.flush()
 
@@ -144,11 +189,12 @@ for candidate_file in candidate_files:
                 continue
             else:
                 id_set.add(entity_id)
-            entity_link_entity_res = entity_link_entity(entity_id,mention_type)
+            #entity_link_entity_res = entity_link_entity(entity_id,mention_type)
+            entity_link_entity_res = entity_entity(entity_id)
             if(entity_link_entity_res == None):
                 continue
             fwStr = entity_id + "\t" + "\t".join(entity_link_entity_res) + "\n"
-            print fwStr            
+            #print fwStr            
             entity_link_entity_file.write(fwStr.encode("utf-8"))
             entity_link_entity_file.flush()
 
@@ -173,11 +219,12 @@ for candidate_file in candidate_files:
                 continue
             else:
                 id_set.add(entity_id)
-            entity_link_entity_res = entity_link_entity(entity_id,mention_type)
+            #entity_link_entity_res = entity_link_entity(entity_id,mention_type)
+            entity_link_entity_res = entity_entity(entity_id)
             if(entity_link_entity_res == None):
                 continue
             fwStr = entity_id + "\t" + "\t".join(entity_link_entity_res) + "\n"
-            print fwStr            
+            #print fwStr            
             entity_link_entity_file.write(fwStr.encode("utf-8"))
             entity_link_entity_file.flush()
 entity_link_entity_file.close()

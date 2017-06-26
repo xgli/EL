@@ -114,7 +114,7 @@ fw.close()
 filter_for_research_file.close()
 pickle.dump(cmn_es_find_dict,file("cmn_es_found.pk","wb"))
 pickle.dump(cmn_author_and_pinyin_found_dict, file('cmn_es_found_loc.pk', 'wb'))
-
+'''
 #%%English
 print 'English'
 eng_pos_num_dict = pickle.load(file('eng_file_len.pk', 'rb'))
@@ -186,7 +186,6 @@ fw.close()
 filter_for_research_file.close()
 pickle.dump(eng_author_and_words_found_dict, file('eng_es_found_loc.pk', 'wb'))
 pickle.dump(eng_es_find_dict,file("eng_es_found.pk","wb"))
-
 #%%Spanish
 print 'Spanish'
 spa_pos_num_dict = pickle.load(file('spa_file_len.pk', 'rb'))
@@ -252,3 +251,4 @@ fw.close()
 filter_for_research_file.close()
 pickle.dump(spa_author_and_words_found_dict, file('spa_es_found_loc.pk', 'wb'))
 pickle.dump(spa_es_find_dict,file("spa_es_found.pk","wb"))
+'''

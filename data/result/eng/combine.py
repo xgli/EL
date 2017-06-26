@@ -83,8 +83,7 @@ with open("tempresult.tab") as fr_temp:
             count += 1
             fw.flush()  
 '''
-
-with open("author.tab","r") as fr_author:
+with open("dfauthor.tab","r") as fr_author:
     text = fr_author.read().decode("utf-8")
     lines_author = text.split("\n")
     for line in lines_author:

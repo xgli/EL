@@ -95,14 +95,13 @@ for line in filter_for_research_file:
                     end = int(tag_seg[1])
                     res += '\t' + candidation['_id'] + ':' + str(begin) + '-' + str(end) + '\t' + line_list[2] + '\t' + line_list[3]
 
-                    if(not is_repetition(cmn_author_and_pinyin_found_dict, candidation['_id'], begin, end + 1)):            
-                        #print res
-                        cnt += 1
-                        fw.write(res.encode('utf-8') + '\n')
-                        fw.flush()
-                        cmn_es_find_dict[candidation["_id"]].append(res)
-                        for i in range(begin, end + 1):
-                            cmn_author_and_pinyin_found_dict[candidation['_id']][i] = 1
+                    print res
+                    cnt += 1
+                    fw.write(res.encode('utf-8') + '\n')
+                    fw.flush()
+                    cmn_es_find_dict[candidation["_id"]].append(res)
+                    for i in range(begin, end + 1):
+                        cmn_author_and_pinyin_found_dict[candidation['_id']][i] = 1
                     res = ''
                     is_start = True
     except Exception,e:
